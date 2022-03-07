@@ -35,7 +35,7 @@ Say goodbye to ugly and proprietary MS Word files!
 
 ## Thanks to
 
+- Steven Roh, for this bachelor thesis style
 - Maria Sisto, for the title page
 - Loïc Monney, for the section title style, captions style and font idea
-- Steven Roh, for the bachelor thesis style
 - EPFL, for the basic structure
