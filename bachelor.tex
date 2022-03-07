@@ -1,0 +1,123 @@
+%    Copyright 2017 Marc Demierre, HES-SO//Master
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%
+% http://www.apache.org/licenses/LICENSE-2.0
+%
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" BASIS,
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+% See the License for the specific language governing permissions and
+% limitations under the License.
+
+% =============================================================================
+% | HES-SO//Master - Thesis project report template                           |
+% |                                                                           |
+% | Originally based on the EPFL template, with many adjustements             |
+% =============================================================================
+
+% Document settings
+\documentclass[a4paper,11pt,fleqn]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french,english]{babel}
+
+% -----------------------------------------------------------------------------
+% Preamble
+% -----------------------------------------------------------------------------
+\input{00-settings/metadata.tex}         % your project data
+\input{00-settings/settings_base.tex}    % template settings
+\input{00-settings/codestyles.tex}       % code styles for minted
+\input{00-settings/settings_custom.tex}  % your custom packages etc
+
+\begin{document}
+
+% -----------------------------------------------------------------------------
+% Front matter
+% -----------------------------------------------------------------------------
+\frontmatter
+
+\dominitoc
+
+\input{01-head/titlepage.tex}
+
+\clearpage\thispagestyle{empty}\addtocounter{page}{-1}\null\newpage
+
+% Resumé
+\clearpage
+\input{01-head/resume}
+
+\input{01-head/thanks}
+
+% Table of contents
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Table des matières}
+\tableofcontents
+
+% List of figures
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Table des figures}
+\listoffigures
+
+% List of tables
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Liste des tableaux}
+\listoftables
+
+% List of listings
+\iffalse
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{List of Listings}
+\listoflistings
+\fi
+
+% Restore paragraphs
+\setlength{\parskip}{1em}
+
+% Bold fonts for sections in minitoc
+\renewcommand{\cftsecfont}{\sffamily\bfseries}
+\renewcommand{\cftsecleader}{\sffamily\bfseries\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecpagefont}{\sffamily\bfseries}
+
+
+% -----------------------------------------------------------------------------
+% Main matter
+% -----------------------------------------------------------------------------
+\mainmatter
+
+% Chapters
+\setcounter{mtc}{7} % Help minitoc skip the front matter chapters
+\include{02-main/ch1_introduction}
+\include{02-main/ch2_example}
+\include{02-main/ch3_conclusion}
+
+% Appendices
+\appendix
+% https://tex.stackexchange.com/questions/100479/label-appendix-as-appendix-i-ii-iii-rather-than-appendix-a-b-and-c
+\renewcommand{\thechapter}{\Roman{chapter}}
+\include{03-tail/01_appendix_example}
+
+% -----------------------------------------------------------------------------
+% Back matter
+% -----------------------------------------------------------------------------
+\backmatter
+
+% Bibliography
+\clearpage
+\printbibliography[title={Références}, heading=bibintoc]
+
+\clearpage
+% Glossary
+\printglossaries
+
+% Page for student info and signatures
+%\cleardoublepage
+\input{01-head/reportinfo}
+
+\end{document}

@@ -1,0 +1,115 @@
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.require_version ">= 1.6.0"
+
+ENV_NAME = "634-2-crowdsec"
+  
+# Crowdsec whitelisted ranges
+# 192.168.0.0/16
+# 10.0.0.0/8
+# 172.16.0.0/12
+ATTACKER_IP_ADDRESS = "11.11.11.2"
+TARGET_IP_ADDRESS = "11.11.11.10"
+GRAFANA_IP_ADDRESS = "11.11.11.3"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.define "attacker" do |subconfig|
+      subconfig.vm.box = "ubuntu/focal64"
+      subconfig.vm.hostname = ENV_NAME + '-attacker'
+      subconfig.vm.define ENV_NAME + '-attacker'
+
+      subconfig.vm.network :private_network, ip: ATTACKER_IP_ADDRESS, virtualbox__intnet: true
+
+      subconfig.vm.provider :virtualbox do |v|
+        v.name = ENV_NAME + '-attacker'
+        v.gui = false
+        v.memory = 2048
+        v.cpus = 2
+        v.customize ["modifyvm", :id, "--groups", "/Crowdsec"]
+        v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      end
+
+      # Install wapiti
+      subconfig.vm.provision "ansible_local" do |ansible|
+        ansible.playbook = "ansible/install_attacker_tools.yml"
+        ansible.install_mode = :default  
+      end
+    end
+    
+    config.vm.define "target" do |subconfig|
+      subconfig.vm.box = "ubuntu/focal64"
+      subconfig.vm.hostname = ENV_NAME + '-target'
+      subconfig.vm.define ENV_NAME + '-target'
+
+      subconfig.vm.network :private_network, ip: TARGET_IP_ADDRESS, virtualbox__intnet: true
+
+      # subconfig.vm.synced_folder "crowdsec_config/", "/etc/crowdsec"
+      subconfig.vm.synced_folder "www/", "/var/www"
+
+      # Web server port
+        subconfig.vm.network "forwarded_port", guest: 80, host: 8084
+
+      # Dashboard port
+      subconfig.vm.network "forwarded_port", guest: 3000, host: 3000
+
+      # Prometheus port
+      subconfig.vm.network "forwarded_port", guest: 6060, host: 6060
+
+      subconfig.vm.provider :virtualbox do |v|
+        v.name = ENV_NAME + '-target'
+        v.gui = false
+        v.memory = 2048
+        v.cpus = 2
+        v.customize ["modifyvm", :id, "--groups", "/Crowdsec"]
+        v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      end
+
+      # Install crowdsec using ansible local method
+      subconfig.vm.provision "ansible_local" do |ansible|
+        ansible.playbook = "ansible/install_crowdsec.yml"
+        ansible.install_mode = :default  
+      end
+
+      # Install docker used to run the dashbard container using ansible local method
+      subconfig.vm.provision "ansible_local" do |ansible|
+        ansible.playbook = "ansible/install_docker.yml"
+        ansible.install_mode = :default  
+      end
+
+      # Install docker used to run the dashbard container using ansible local method
+      subconfig.vm.provision "ansible_local" do |ansible|
+        ansible.playbook = "ansible/install_apache.yml"
+        ansible.install_mode = :default  
+      end
+    end
+
+    config.vm.define "grafana" do |subconfig|
+      subconfig.vm.box = "ubuntu/focal64"
+      subconfig.vm.provision "docker" do |d|
+        d.run "grafana/grafana",
+          args: "-p 3000:3000"
+      end
+
+      subconfig.vm.hostname = ENV_NAME + '-grafana'
+      subconfig.vm.define ENV_NAME + '-grafana'
+
+      subconfig.vm.network :private_network, ip: GRAFANA_IP_ADDRESS, virtualbox__intnet: true
+
+      # Grafana dashboard port
+      subconfig.vm.network "forwarded_port", guest: 3000, host: 3001
+
+      subconfig.vm.provider :virtualbox do |v|
+        v.name = ENV_NAME + '-grafana'
+        v.gui = false
+        v.memory = 1024
+        v.cpus = 1
+        v.customize ["modifyvm", :id, "--groups", "/Crowdsec"]
+        v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      end
+    end
+
+    config.trigger.after :up do |trigger|
+      trigger.name = "Finished Message"
+      trigger.info = "Machine is up!"
+      # trigger.run = {inline: "bash -c 'cat readme.md && open http://localhost:8080/auth/'"}
+    end
+end
