@@ -1,14 +1,76 @@
+% =============================================================
 \chapter{Introduction}
-%\thispagestyle{plain}
-\label{chap:introduction}
-\selectlanguage{french}
+\setlength{\parindent}{0pt}      % aucun alinéa dans l’intro (APA)
 
-% -----------------------------------------------------------------------------
+\minitoc                         % mini-table du chapitre
+% (assure-toi d’avoir \dominitoc juste après \begin{document})
+
+% -------------------------------------------------------------
 \section{Contexte}
 
-\lipsum[1]
+Depuis plusieurs années, les outils de Business Intelligence (BI) sont devenus indispensables aux organisations qui souhaitent baser leurs décisions sur des données fiables et facilement interprétables. \textbf{Power BI} de Microsoft s’est imposé comme l’une des plateformes de référence, grâce à sa prise en main intuitive, sa connectivité riche et son intégration étroite à l’écosystème Microsoft (Microsoft, 2024).  
+Malgré une bibliothèque déjà fournie de visuels standards, certains besoins métier demeurent inassouvis : diagrammes de Gantt avancés pour la gestion de projet, variances financières multi-niveaux, ou encore respect strict de chartes graphiques internes.  
+\textbf{ECRINS SA}, société suisse spécialisée dans le conseil BI, fait régulièrement face à ces demandes « hors catalogue » et souhaite internaliser la création de \emph{visuels personnalisés} afin de gagner en réactivité, en qualité et en gouvernance.
 
-% -----------------------------------------------------------------------------
+% -------------------------------------------------------------
+\section{Problématique}
+
+La société n’a encore jamais mis en place de processus complet pour concevoir, tester et déployer des visuels Power BI sur mesure ; chaque tentative ponctuelle a fait ressortir plusieurs points critiques :
+
+\begin{itemize}
+  \item \textbf{Incertitude technique} : absence de référentiel sur les performances, la scalabilité et la sécurité des composants personnalisés ;
+  \item \textbf{Manque de normes et de traçabilité} : code développé au cas par cas, difficile à maintenir et à auditer ;
+  \item \textbf{Planning imprévisible} : effort, coût et délai impossibles à estimer sans méthode éprouvée ;
+  \item \textbf{Risque fonctionnel} : sans cadre clair, le livrable peut ne pas répondre pleinement aux attentes métier ou se révéler difficile à faire évoluer.
+\end{itemize}
+
+\noindent
+La question centrale se formule ainsi :
+
+\begin{quote}
+\textbf{Comment concevoir et valider un cadre méthodologique complet permettant à ECRINS SA d’industrialiser, de manière fiable et pérenne, la création et la mise en production de visuels Power BI personnalisés ?}
+\end{quote}
+
+% -------------------------------------------------------------
 \section{Objectifs}
 
-\lipsum[1]
+\begin{enumerate}[label=\textbf{O\arabic*}]
+  \item \textbf{Élaborer un cadre méthodologique détaillé}, couvrant analyse du besoin, développement, tests, gouvernance et mise en production ;
+  \item \textbf{Réaliser un visuel pilote}, sélectionné avec la Product Owner, pour démontrer la faisabilité du cadre proposé ;
+  \item \textbf{Évaluer la solution}, à l’aide de critères techniques (maintenabilité, performances, sécurité) et fonctionnels (adéquation métier).
+\end{enumerate}
+
+% -------------------------------------------------------------
+\section{Portée et limites}
+
+\textbf{Inclus :}
+\begin{itemize}
+  \item développement d’un visuel pilote représentatif ;
+  \item environnements Power BI Desktop et Service internes ;
+  \item mise en place d’une chaîne CI/CD (GitHub Actions).
+\end{itemize}
+
+\textbf{Exclus :}
+\begin{itemize}
+  \item publication sur Microsoft AppSource ;
+  \item support mobile/tablette étendu ;
+  \item constitution d’une bibliothèque exhaustive de visuels.
+\end{itemize}
+
+% -------------------------------------------------------------
+\section{Structure du rapport}
+
+\begin{enumerate}
+  \item \textbf{Chapitre 2 – Cadre théorique et état de l’art} : principes des visuels Power BI, limites des visuels Python/R, justification du SDK ;
+  \item \textbf{Chapitre 3 – Analyse interne} : audit, benchmark, recueil des besoins et sélection du visuel pilote ;
+  \item \textbf{Chapitre 4 – Méthodologie de projet} : organisation Agile (Scrum-but), artefacts et planification ;
+  \item \textbf{Chapitre 5 – Conception et développement} : architecture, implémentation (TypeScript + D3) et tests ;
+  \item \textbf{Chapitre 6 – Industrialisation} : pipeline CI/CD, signature numérique et normes internes ;
+  \item \textbf{Chapitre 7 – Évaluation} : résultats techniques et validation fonctionnelle ;
+  \item \textbf{Chapitre 8 – Conclusion et perspectives}.
+\end{enumerate}
+
+\vspace{1em}
+Cette structure garantit la cohérence et la traçabilité de l’ensemble du travail, des besoins initiaux jusqu’aux recommandations finales.
+
+% =============================================================
