@@ -1,0 +1,87 @@
+\section{Visuels natifs : capacités et limites}
+\label{sec:natifs-powerbi}
+
+Avant d'envisager la création de visuels personnalisés via Python, R ou le SDK TypeScript, il convient de dresser un panorama complet des visuels dits \emph{natifs} disponibles dans Power BI. Ceux-ci sont préinstallés et activement maintenus par Microsoft, couvrant la majorité des besoins courants en analyse et restitution de données. Cette section propose non seulement une typologie complète, mais aussi une lecture critique de leur rôle et de leurs limites dans un contexte professionnel.
+
+\subsection{Typologie fonctionnelle des visuels standards}
+
+\subsubsection{Graphiques de comparaison}
+Barres et colonnes (groupées, empilées, 100~\%) permettent de visualiser des agrégations comparées entre catégories. Elles acceptent le tri dynamique et le forage hiérarchique (drill-down) jusqu'au niveau de granularité le plus fin. Leur usage est optimal pour des tableaux de bord orientés suivi de performance, mais reste limité par l'absence de sous-totaux intermédiaires et la rigidité des axes (un seul axe secondaire).
+
+\subsubsection{Graphiques de tendance}
+Les courbes et aires (simples, empilées, 100~\%) modélisent des séries temporelles ou continues. Idéales pour l'analyse temporelle de KPI, les courbes supportent l'affichage d'un axe secondaire, et les aires mettent en valeur les volumes cumulés. Leur capacité de drill-down et de filtrage croisé les rend adaptées à des rapports interactifs.
+
+\subsubsection{Graphiques combinés}
+Les visuels de type ``combo'' (barres + lignes) permettent de superposer par exemple un chiffre d'affaires mensuel et une marge en pourcentage. Ils sont recommandés lorsque deux échelles de mesure doivent coexister dans un même visuel, sans multiplier les graphiques.
+
+\subsubsection{Graphique de ruban}
+Spécifique à la représentation du \emph{rang}, le graphique de ruban est adapté à l'analyse de parts de marché dynamiques. Il est utile pour suivre les changements de position relative de catégories dans le temps (produits, régions, marques).
+
+\subsubsection{Graphiques de processus}
+\emph{Cascade} (waterfall) permet de visualiser des variations successives contribuant à un total, tandis que \emph{entonnoir} (funnel) illustre les déperditions d'un processus (par exemple ventes ou parcours client). Le waterfall accepte les sous-totaux intermédiaires, contrairement à l'entonnoir.
+
+\subsubsection{Nuages de points et bulles}
+Le scatter plot est utile pour explorer les corrélations entre deux variables quantitatives. L'ajout d'une dimension via la taille de la bulle permet des lectures croisées. Ces visuels sont pertinents pour des analyses exploratoires mais se heurtent à une limite de volume : au-delà de 30\,000 points, l’agrégation est imposée.
+
+\subsubsection{Graphiques circulaires}
+Secteurs (pie) et anneaux (donut) représentent les parts d'un total. Bien que fréquemment utilisés, ils sont à réserver à un nombre réduit de segments (idéalement $<6$) sous peine de perte de lisibilité. Leur usage reste plus esthétique que fonctionnel.
+
+\subsubsection{Treemaps et arborescences}
+Les treemaps permettent d'encapsuler plusieurs niveaux hiérarchiques dans une surface limitée. Leur lecture est efficace pour les structures catégorielles denses (portefeuilles produits, répartitions géographiques). Un clic fore dans la hiérarchie, avec mise en forme conditionnelle possible.
+
+\subsubsection{Cartographie}
+\begin{itemize}
+  \item \textbf{Carte Bing} : affiche des bulles proportionnelles sur fond routier ; recommandée pour des localisations simples.
+  \item \textbf{Carte remplie (choroplèthe)} : colore les régions selon une valeur agrégée ; utile pour les données administratives.
+  \item \textbf{Azure Maps} : propose une cartographie vectorielle moderne avec gestion de clusters et carte thermique.
+  \item \textbf{ArcGIS for Power BI} : permet des fonctions spatiales avancées (zones isochrones, couches socio-démographiques), avec certaines restrictions sans compte Esri.
+\end{itemize}
+
+\subsubsection{Cartes de KPI et jauges}
+\begin{itemize}
+  \item \textbf{Carte (single)} : affiche une métrique unique, très lisible sur petits écrans.
+  \item \textbf{Carte multi-lignes} : combine plusieurs KPIs dans un seul composant.
+  \item \textbf{KPI} : présente une valeur, une cible et une tendance ; bien adapté au suivi d’objectifs.
+  \item \textbf{Jauge} : visualisation qualitative d’une performance vs objectif ; limitée à un usage mono-métrique.
+\end{itemize}
+
+\subsubsection{Tableaux et matrices}
+Les tableaux affichent les données ligne à ligne ; les matrices pivotent les dimensions et permettent les totaux intermédiaires. Pour des rapports très formatés, Power BI propose \emph{le rapport paginé} (RDL), utile dans un contexte administratif.
+
+\subsubsection{Filtres interactifs}
+\textbf{Segments (slicers)} : composants filtrants par catégorie, plage ou date. Le segment bouton améliore l’ergonomie sur mobile et permet une navigation par clic visuel.
+
+\subsubsection{Visuels d'intelligence artificielle}
+\begin{itemize}
+  \item \textbf{Influenceurs clés} : détecte les dimensions explicatives d’une mesure cible.
+  \item \textbf{Arborescence de décomposition} : propose des détails successifs de manière semi-automatisée.
+  \item \textbf{Q\&A} : traduit une requête en langage naturel en visuel dynamique.
+  \item \textbf{Narratif intelligent} : génère du texte automatisé en fonction des filtres actifs.
+\end{itemize}
+
+\subsubsection{Intégrations actionnables}
+\begin{itemize}
+  \item \textbf{Power Apps visual} : intègre une app canvas interactive pour actions en base (formulaires, validation).
+  \item \textbf{Power Automate visual} : ajoute un bouton qui lance un processus automatisé (email, mise à jour CRM).
+\end{itemize}
+
+\subsection*{Analyse critique}
+
+\paragraph{Points forts}
+\begin{itemize}
+  \item Performance optimale : chargement rapide, compatibilité multi-plateforme.
+  \item Maintenance assurée : mise à jour automatique et fiabilité.
+  \item Accessibilité native : compatibilité avec les lecteurs d'écran et thèmes d'entreprise.
+  \item Intégration simple : aucun développement requis.
+\end{itemize}
+
+\paragraph{Limitations clés}
+\begin{itemize}
+  \item Faible personnalisation : interface de configuration figée.
+  \item Interactivité limitée à ce que prévoit Microsoft ; pas de logique conditionnelle.
+  \item Structure tabulaire obligatoire : peu adapté aux modèles de graphes, répétitions ou réseaux.
+  \item Pas d’accès au DOM, au code ou aux \texttt{event listeners}.
+\end{itemize}
+
+\subsection*{Conclusion intermédiaire}
+Les visuels natifs forment un socle de démarrage fiable, rapide et adapté à 80~\% des besoins analytiques en entreprise. Cependant, leur manque de souplesse les rend insuffisants pour des besoins de personnalisation graphique avancée, d’interactivité dynamique ou d’intégration à des architectures complexes. C’est précisément dans ces cas que les visuels personnalisés (Python, R, SDK) prennent toute leur valeur.

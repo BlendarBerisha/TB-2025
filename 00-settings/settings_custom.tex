@@ -26,6 +26,26 @@
 
 \usepackage{tabularx}
 
+\usepackage{tcolorbox}
+\tcbset{
+  myBox/.style={
+    colback=gray!5,
+    colframe=gray!60,
+    rounded corners,
+    sharp corners=south,
+    leftrule=1pt,
+    rightrule=1pt,
+    toprule=1pt,
+    bottomrule=1pt,
+    boxrule=0.5pt,
+    arc=2pt,
+    enlarge left by=0mm,
+    enlarge right by=0mm,
+    drop shadow=black!20
+  }
+}
+
+
 \captionsetup{justification=centering}
 
 \usepackage{enumitem}
@@ -43,3 +63,11 @@
 \usepackage{url}
 \usepackage{caption}
 \usepackage{listings}
+
+
+\DeclareUnicodeCharacter{2264}{\ensuremath{\leq}}  % ≤
+\DeclareUnicodeCharacter{2265}{\ensuremath{\geq}}  % ≥
+\DeclareUnicodeCharacter{2009}{\,}                 % fine-space U+2009
+\DeclareUnicodeCharacter{202F}{\,}                 % NNBSP   U+202F
+\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}   % ≈
+

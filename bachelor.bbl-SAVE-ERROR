@@ -1,0 +1,109 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{apa/global//global/global/global}
+    \entry{paper_millwheel}{inproceedings}{}{}
+      \name{author}{10}{}{%
+        {{un=0,uniquepart=base,hash=560867238a2b3dda80d4de568248774f}{%
+           family={Akidau},
+           familyi={A\bibinitperiod},
+           given={Tyler},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5f1e598ab28dbb7adeeac9903217bdd1}{%
+           family={Balikov},
+           familyi={B\bibinitperiod},
+           given={Alex},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=46930af471415dc69f844da5ed092bfd}{%
+           family={Bekiroglu},
+           familyi={B\bibinitperiod},
+           given={Kaya},
+           giveni={K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=319a1b212976c1767f9eea83f07ba9ea}{%
+           family={Chernyak},
+           familyi={C\bibinitperiod},
+           given={Slava},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d75f75cb6fe22f91a4f2bb53cb805dbd}{%
+           family={Haberman},
+           familyi={H\bibinitperiod},
+           given={Josh},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0834ecbd081c4ab0456956310502ec3b}{%
+           family={Lax},
+           familyi={L\bibinitperiod},
+           given={Reuven},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c6e45a19b0ed75487c1a7c5e95ee09bd}{%
+           family={McVeety},
+           familyi={M\bibinitperiod},
+           given={Sam},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=368dd2d4292b6444b88f71d2436265c1}{%
+           family={Mills},
+           familyi={M\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7a02f18300713dbe80f15b4c066d3e98}{%
+           family={Nordstrom},
+           familyi={N\bibinitperiod},
+           given={Paul},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=401b2c94b7b6c0124b337eb8baa76012}{%
+           family={Whittle},
+           familyi={W\bibinitperiod},
+           given={Sam},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{c23077986aad19e0af90e93190add2a9}
+      \strng{fullhash}{a881bde091c3d80a283344dc49f41e9d}
+      \strng{fullhashraw}{a881bde091c3d80a283344dc49f41e9d}
+      \strng{bibnamehash}{a49c679ab6cbf936d599a5dd46a89212}
+      \strng{authorbibnamehash}{a49c679ab6cbf936d599a5dd46a89212}
+      \strng{authornamehash}{c23077986aad19e0af90e93190add2a9}
+      \strng{authorfullhash}{a881bde091c3d80a283344dc49f41e9d}
+      \strng{authorfullhashraw}{a881bde091c3d80a283344dc49f41e9d}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Very Large Data Bases}
+      \field{title}{MillWheel: Fault-Tolerant Stream Processing at Internet Scale}
+      \field{year}{2013}
+      \field{pages}{734\bibrangedash 746}
+      \range{pages}{13}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
