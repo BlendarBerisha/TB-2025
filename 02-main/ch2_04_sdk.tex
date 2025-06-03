@@ -1,0 +1,63 @@
+
+\section{SDK Custom Visuals : principes, sécurité et pipeline}
+\label{sec:sdk-custom-visuals}
+
+Le Software Development Kit (SDK) pour visuels personnalisés de Power BI permet de créer des composants graphiques entièrement sur mesure en TypeScript, répondant précisément à des besoins analytiques, interactifs ou visuels très spécifiques. Cette section détaille les principes de développement, les aspects sécuritaires à respecter, ainsi que les bonnes pratiques pour gérer un pipeline d’intégration et de déploiement continu (CI/CD).
+
+\subsection{Principes généraux du développement via SDK}
+
+Le développement d’un visuel personnalisé avec le SDK Power BI implique les étapes suivantes :
+\begin{enumerate}
+  \item Initialisation du projet via l’outil \texttt{pbiviz} (ligne de commande).
+  \item Définition des capacités du visuel via le fichier \texttt{capabilities.json}.
+  \item Implémentation en TypeScript dans \texttt{src/visual.ts} en suivant l'interface \texttt{IVisual}.
+  \item Gestion du rendu graphique à l’aide de bibliothèques comme D3.js, React ou autres frameworks JavaScript.
+  \item Compilation et packaging du visuel en fichier \texttt{.pbiviz} prêt à être déployé.
+\end{enumerate}
+
+Le SDK impose une structure modulaire claire, facilitant la maintenance et l’évolution du composant au fil des besoins et des versions du rapport.
+
+\subsection{Sécurité et isolation des visuels custom}
+
+Power BI exécute chaque visuel personnalisé dans une sandbox HTML sécurisée (iframe). Ce mécanisme garantit l’isolation complète du code personnalisé par rapport au reste du rapport, protégeant ainsi :
+\begin{itemize}
+  \item Contre les conflits de bibliothèques JavaScript (versions incompatibles).
+  \item Contre les failles potentielles (accès non autorisé au DOM principal).
+  \item En limitant strictement les échanges à travers une API contrôlée (sélections, filtres croisés, thèmes).
+\end{itemize}
+
+Depuis la version 4.6 du SDK, il est obligatoire de déclarer explicitement les privilèges et autorisations nécessaires (fichiers externes, accès réseau) dans le fichier \texttt{capabilities.json}. Ces contraintes assurent une transparence complète en matière de sécurité et facilitent l'audit des visuels déployés dans un environnement de production.
+
+\subsection{Pipeline CI/CD pour les visuels custom}
+
+Pour industrialiser efficacement le développement et le déploiement des visuels personnalisés, la mise en place d’un pipeline d’intégration et de déploiement continu (CI/CD) est recommandée. Ce pipeline typique inclut les étapes suivantes :
+\begin{itemize}
+  \item \textbf{Intégration continue (CI)} :
+  \begin{itemize}
+    \item Validation automatique des changements via des tests unitaires et fonctionnels.
+    \item Compilation du projet TypeScript avec vérification des erreurs et des standards de codage.
+    \item Génération automatique du package \texttt{.pbiviz} pour chaque commit.
+  \end{itemize}
+  \item \textbf{Déploiement continu (CD)} :
+  \begin{itemize}
+    \item Déploiement automatique du visuel sur des environnements de test puis de production.
+    \item Automatisation des étapes de vérification de sécurité et d'intégration.
+    \item Gestion simplifiée des versions via le contrôle de source (Git, Azure DevOps, GitHub Actions).
+  \end{itemize}
+\end{itemize}
+
+Ce processus garantit une haute qualité logicielle, une traçabilité complète des modifications, et une réduction drastique des risques liés à des mises en production manuelles ou ponctuelles.
+
+\subsection{Bonnes pratiques et conseils de mise en œuvre}
+
+Pour réussir le développement de visuels personnalisés avec le SDK Power BI, il est essentiel de suivre quelques recommandations clés :
+\begin{itemize}
+  \item \textbf{Structure claire du code} : Séparer distinctement la logique métier (traitement de la dataView) de la logique d’affichage (D3.js, Canvas).
+  \item \textbf{Tests rigoureux} : Couvrir au maximum les méthodes critiques avec des tests unitaires et d’intégration (Jest, Mocha).\
+  \item \textbf{Documentation exhaustive} : Documenter clairement le fonctionnement du visuel, les options disponibles et les limites éventuelles pour faciliter l’intégration par les équipes de développement ou les utilisateurs finaux.
+  \item \textbf{Optimisation performance} : Privilégier un rendu différentiel (update incrémental), utiliser des méthodes efficaces pour la gestion des grands jeux de données.
+\end{itemize}
+
+\subsection*{Conclusion intermédiaire}
+
+Le SDK Custom Visuals de Power BI offre une solution optimale pour répondre à des besoins spécifiques dépassant les capacités natives ou les limites des visuels Python et R. Grâce à son cadre structurant, ses exigences de sécurité élevées, et son potentiel d’automatisation via CI/CD, il représente la meilleure option pour un usage professionnel à grande échelle. Ce choix technologique s’impose particulièrement lorsque la performance, l’interactivité dynamique, et la personnalisation graphique poussée sont des critères essentiels du projet BI.

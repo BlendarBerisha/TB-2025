@@ -1,0 +1,79 @@
+
+\section{Visuels Python / R : usages, atouts et limites}
+\label{sec:visuels-python-r}
+
+Power BI étend ses capacités analytiques en permettant l’intégration directe de scripts Python et R, répondant ainsi aux besoins spécifiques non couverts par ses visuels natifs. Ces langages offrent une palette de possibilités très avancées en matière d'analyse statistique, de visualisation spécialisée et de machine learning, répondant particulièrement aux attentes des utilisateurs experts et académiques.
+
+\subsection{Intérêt d’intégrer Python et R dans Power BI}
+
+L'utilisation des langages Python et R dans Power BI répond à plusieurs objectifs précis :
+\begin{itemize}
+\item Création de visuels avancés ou très spécifiques (heatmaps, boxplots, diagrammes radar, clustering visuel).
+\item Analyse statistique poussée : régressions, tests statistiques, analyses prédictives.
+\item Préparation et transformation complexe des données directement dans Power Query.
+\item Accès aux puissantes bibliothèques open source (\texttt{ggplot2}, \texttt{matplotlib}, \texttt{seaborn}, \texttt{scikit-learn}, etc.).
+\item Automatisation de processus analytiques au sein même du reporting.
+\end{itemize}
+
+\subsection{Mécanisme de fonctionnement des visuels Python et R}
+
+La mise en place d’un visuel Python ou R dans Power BI suit un workflow précis :
+\begin{enumerate}
+\item L’utilisateur sélectionne les champs pertinents depuis l’interface Power BI.
+\item Ces champs sont automatiquement transformés en un \texttt{DataFrame} nommé \texttt{dataset}.
+\item L’utilisateur rédige ou importe son script Python ou R directement dans l’éditeur intégré à Power BI Desktop.
+\item Le script est exécuté localement par le moteur installé sur l'ordinateur.
+\item Le résultat de l’exécution du script (une image PNG) est affiché dans le rapport.
+\end{enumerate}
+
+\subsection{Prérequis techniques}
+
+L’intégration de Python ou R dans Power BI nécessite :
+\begin{itemize}
+\item Une installation locale du moteur Python (via Anaconda ou python.org) ou R (via CRAN).
+\item Une configuration adéquate dans les options de Power BI Desktop pour pointer vers l’exécutable Python ou R.
+\item L’installation locale des bibliothèques spécifiques utilisées par les scripts.
+\item Vérification préalable de la compatibilité des packages avec Power BI Service si publication en ligne (restrictions de sécurité strictes).
+\end{itemize}
+
+\subsection{Forces majeures des visuels Python et R}
+
+Les principaux atouts de ces visuels sont :
+\begin{itemize}
+\item \textbf{Flexibilité graphique totale} : Chaque élément visuel est entièrement personnalisable grâce au code.
+\item \textbf{Puissance statistique intégrée} : Capacité à intégrer directement des analyses statistiques complexes et avancées.
+\item \textbf{Accès immédiat à la data science} : Intégration directe de modèles de prédiction, classification, clustering.
+\item \textbf{Réutilisation de scripts existants} : Gain de temps significatif pour les analystes utilisant déjà ces langages dans leur environnement.
+\end{itemize}
+
+\subsection{Limitations et contraintes à considérer}
+
+Cependant, ces visuels comportent des limites notables :
+\begin{itemize}
+\item \textbf{Absence d’interactivité dynamique} : Les visuels générés sont des images statiques, ce qui empêche les interactions dynamiques typiques des visuels natifs ou SDK.
+\item \textbf{Performance restreinte} : Traitement local uniquement avec des contraintes de volume de données (max 150 000 lignes, mémoire maximale 250 Mo).
+\item \textbf{Restriction des packages} : Tous les packages disponibles en Python ou R ne sont pas supportés par Power BI Service.
+\item \textbf{Non-compatibilité mobile} : Ces visuels ne sont pas disponibles sur les applications mobiles Power BI.
+\item \textbf{Maintenance complexe} : Le code doit être réédité en local puis republié pour toute modification, augmentant la complexité en production.
+\end{itemize}
+
+\subsection{Exemples d’usages pertinents en contexte académique et professionnel}
+
+Voici quelques scénarios où l’utilisation de Python ou R est particulièrement adaptée :
+\begin{itemize}
+\item \textbf{Analyse exploratoire approfondie} : Visualisation complexe comme des heatmaps de corrélations, boxplots détaillés ou graphes radar.
+\item \textbf{Analyses prédictives et ML} : Visualisation directe des résultats de modèles de clustering, régressions, séries temporelles avancées (ARIMA, Prophet).
+\item \textbf{Traitement du langage naturel (NLP)} : Nuages de mots interactifs et analyse textuelle qualitative (opinions clients, analyse sémantique).
+\end{itemize}
+
+\subsection{Comparaison Python vs R}
+
+La décision de choisir entre Python et R dépend des contextes spécifiques du projet :
+\begin{itemize}
+\item \textbf{Python} : Langage polyvalent et flexible, idéal pour des analyses ML ou la mise en production rapide de modèles prédictifs grâce à sa large gamme de bibliothèques avancées.
+\item \textbf{R} : Plus adapté aux analyses statistiques poussées, réputé pour sa visualisation riche et claire via \texttt{ggplot2}, particulièrement pertinent dans un cadre académique.
+\end{itemize}
+
+\subsection*{Conclusion intermédiaire}
+
+L’intégration de visuels Python et R dans Power BI constitue une avancée majeure pour les utilisateurs cherchant à dépasser les limites des visuels standards. Malgré leurs contraintes techniques et leur manque d’interactivité directe, ces outils apportent une réelle valeur ajoutée dans les contextes de recherche, de formation ou d'analyse spécialisée. Ils demeurent toutefois moins adaptés à une utilisation quotidienne en entreprise, où les visuels SDK avec interactivité avancée sont généralement plus appropriés pour l’utilisateur final.
