@@ -1,63 +1,48 @@
+%-----------------------------------------------------------
+\section{SDK Custom Visuals : principes, sécurité, pipeline}
+\label{sec:sdk}
+%-----------------------------------------------------------
 
-\section{SDK Custom Visuals : principes, sécurité et pipeline}
-\label{sec:sdk-custom-visuals}
+Lorsque les visuels natifs ne suffisent pas et qu’un script Python/R est trop limité, la solution la plus aboutie est de créer un visuel personnalisé complet en utilisant le Software Development Kit (SDK) de Power BI. Microsoft fournit un SDK officiel (sous forme de Node Package powerbi-visuals-tools) qui permet aux développeurs de coder, tester et empaqueter de nouveaux visuels sous forme d’un fichier .pbiviz\parencite{LearnMicrosoftSDK, PowerBIMicrosoftSDK}.
 
-Le Software Development Kit (SDK) pour visuels personnalisés de Power BI permet de créer des composants graphiques entièrement sur mesure en TypeScript, répondant précisément à des besoins analytiques, interactifs ou visuels très spécifiques. Cette section détaille les principes de développement, les aspects sécuritaires à respecter, ainsi que les bonnes pratiques pour gérer un pipeline d’intégration et de déploiement continu (CI/CD).
+Le principe fondamental est qu’un visuel Power BI n’est rien d’autre qu’une application web encapsulée : il contient du code HTML/JavaScript (plus précisément TypeScript, transcompilé en JavaScript) qui reçoit des données et génère du DOM (SVG, Canvas, etc.) pour afficher un graphique. Le SDK abstrait la communication avec Power BI : le développeur définit, via un fichier \texttt{capabilities.json}, quels champs et paramètres de formatage son visuel acceptera, puis implémente une classe TypeScript qui reprend l’interface \texttt{IVisual}. Cette classe comporte notamment une méthode clé \texttt{update(options)} qui est appelée par Power BI à chaque rafraîchissement des données ou interaction, fournissant les données filtrées à représenter. Le code du développeur doit alors traduire ces données en éléments visuels, en utilisant éventuellement des bibliothèques de visualisation comme D3.js (voir section~\ref{sec:techno}).
 
-\subsection{Principes généraux du développement via SDK}
-
-Le développement d’un visuel personnalisé avec le SDK Power BI implique les étapes suivantes :
+\subsection*{Cycle de développement (pipeline)}
+Le développement d’un custom visual suit généralement ce pipeline :
 \begin{enumerate}
-  \item Initialisation du projet via l’outil \texttt{pbiviz} (ligne de commande).
-  \item Définition des capacités du visuel via le fichier \texttt{capabilities.json}.
-  \item Implémentation en TypeScript dans \texttt{src/visual.ts} en suivant l'interface \texttt{IVisual}.
-  \item Gestion du rendu graphique à l’aide de bibliothèques comme D3.js, React ou autres frameworks JavaScript.
-  \item Compilation et packaging du visuel en fichier \texttt{.pbiviz} prêt à être déployé.
+  \item Initialisation du projet via l’outil en ligne de commande (CLI) du SDK – par ex. \texttt{pbiviz new MyVisual} génère une structure de projet avec les fichiers de base (manifest, capabilities, code TS, etc.)\parencite{LearnMicrosoftSDK2}.
+  \item Développement et test en local : le SDK permet de lancer un serveur local et d’attacher le visuel en développement à Power BI Desktop (en mode Developer). On peut ainsi tester le visuel dans un rapport en temps réel pendant qu’on code.
+  \item Compilation et packaging : une fois le développement achevé, la commande \texttt{pbiviz package} produit le fichier \texttt{.pbiviz} final, qui encapsule tout (code minifié, ressources, manifest).
+  \item Distribution : ce package peut être importé manuellement dans n’importe quel rapport Power BI (option \emph{Importer un visuel à partir d’un fichier}), ou déployé de façon plus gérée. Pour une utilisation interne à une organisation, l’administrateur tenant peut le publier dans le magasin organisationnel de Power BI\parencite{MediumSDK1}.
 \end{enumerate}
 
-Le SDK impose une structure modulaire claire, facilitant la maintenance et l’évolution du composant au fil des besoins et des versions du rapport.
+Pour une distribution publique à l’écosystème Power BI, le développeur peut soumettre son visuel à AppSource, la place de marché Microsoft. Une étape de certification est alors nécessaire (voir plus loin). Microsoft indique que «~n’importe quel développeur web peut créer un visuel personnalisé et le packager en un fichier .pbiviz unique à importer dans Power BI~»\parencite{LearnMicrosoftSDK3}, et propose même un concours et une galerie communautaire pour encourager ces contributions\parencite{PowerBIMicrosoftCommunity}.
 
-\subsection{Sécurité et isolation des visuels custom}
+Depuis l’introduction des custom visuals, le catalogue AppSource s’est ainsi énormément étoffé : on y recense aujourd’hui plusieurs centaines de visuels disponibles (gratuits ou commerciaux) couvrant des usages variés (graphes, chronologies, infographies, etc.).
 
-Power BI exécute chaque visuel personnalisé dans une sandbox HTML sécurisée (iframe). Ce mécanisme garantit l’isolation complète du code personnalisé par rapport au reste du rapport, protégeant ainsi :
+\subsection*{Capacités et restrictions}
+Un visuel personnalisé bien conçu permet d’aller au-delà des limitations des visuels natifs. On peut par exemple introduire de nouveaux types de graphiques, des interactions innovantes, ou des designs sur mesure. Cependant, il est important de souligner que les visuels custom opèrent dans un cadre réglementé par Microsoft pour assurer la sécurité et la performance. D’une part, comme mentionné, ils tournent dans un \textit{sandbox} isolé. Cela a plusieurs implications :
 \begin{itemize}
-  \item Contre les conflits de bibliothèques JavaScript (versions incompatibles).
-  \item Contre les failles potentielles (accès non autorisé au DOM principal).
-  \item En limitant strictement les échanges à travers une API contrôlée (sélections, filtres croisés, thèmes).
+  \item[(a)] le visuel ne peut pas accéder aux données du modèle qui ne lui ont pas été explicitement fournies via les champs liés par l’utilisateur\parencite{OkVizSandbox}.
+  \item[(b)] il ne peut pas non plus lire ou modifier l’état d’un autre visuel ou élément du rapport (pas d’accès au DOM global ou aux variables globales de l’hôte).
+  \item[(c)] le visuel ne peut dessiner qu’à l’intérieur de sa surface allouée : il lui est interdit, par exemple, de faire apparaître une fenêtre pop-up ou un élément HTML en dehors de son cadre \textit{bounding box}\parencite{OkVizDropdown}.
 \end{itemize}
 
-Depuis la version 4.6 du SDK, il est obligatoire de déclarer explicitement les privilèges et autorisations nécessaires (fichiers externes, accès réseau) dans le fichier \texttt{capabilities.json}. Ces contraintes assurent une transparence complète en matière de sécurité et facilitent l'audit des visuels déployés dans un environnement de production.
+Une illustration concrète est la suivante : un slicer natif de Power BI peut afficher une liste déroulante qui dépasse la taille du visuel pour lister de nombreux éléments, alors qu’un visuel custom ne pourrait afficher un tel menu déroulant qu’en étendant son propre conteneur (ce qui n’est pas dynamique).
 
-\subsection{Pipeline CI/CD pour les visuels custom}
+\paragraph*{Pas de communication externe non approuvée.}
+Par mesure de sécurité, les visuels custom n’ont pas le droit d’envoyer des données vers un service externe ou d’en charger, sauf éventuellement via des approbations explicites. Les règles de certification stipulent qu’un visuel certifié ne doit émettre aucune communication externe (pas d’appels web), sous peine de rejet\parencite{MediumSecurity1}. Même pour les visuels non certifiés, le sandbox implémente une politique de sécurité (Content Security Policy) très stricte qui bloque par défaut les requêtes sortantes non autorisées\parencite{MediumSecurity2, StackOverflowCSP}.
 
-Pour industrialiser efficacement le développement et le déploiement des visuels personnalisés, la mise en place d’un pipeline d’intégration et de déploiement continu (CI/CD) est recommandée. Ce pipeline typique inclut les étapes suivantes :
-\begin{itemize}
-  \item \textbf{Intégration continue (CI)} :
-  \begin{itemize}
-    \item Validation automatique des changements via des tests unitaires et fonctionnels.
-    \item Compilation du projet TypeScript avec vérification des erreurs et des standards de codage.
-    \item Génération automatique du package \texttt{.pbiviz} pour chaque commit.
-  \end{itemize}
-  \item \textbf{Déploiement continu (CD)} :
-  \begin{itemize}
-    \item Déploiement automatique du visuel sur des environnements de test puis de production.
-    \item Automatisation des étapes de vérification de sécurité et d'intégration.
-    \item Gestion simplifiée des versions via le contrôle de source (Git, Azure DevOps, GitHub Actions).
-  \end{itemize}
-\end{itemize}
+Par exemple, un développeur qui tenterait dans son code d’appeler une API web externe se verra généralement opposer un refus par le navigateur intégré de Power BI (CSP violée). Ces restrictions peuvent être contournées dans certains cas (certains visuels cartographiques chargent des tuiles externes, ce qui est précisément une raison pour laquelle ils ne peuvent pas être certifiés selon Microsoft\parencite{MediumTiles}).
 
-Ce processus garantit une haute qualité logicielle, une traçabilité complète des modifications, et une réduction drastique des risques liés à des mises en production manuelles ou ponctuelles.
+\subsection*{Certification et confiance}
+Microsoft a mis en place un programme de certification des visuels. Un visuel certifié est un visuel custom qui a passé avec succès un processus de validation par Microsoft, incluant des vérifications de sécurité (absence de code malveillant ou de fuite de données), de performance et de conformité aux bonnes pratiques\parencite{MediumCertification}.
 
-\subsection{Bonnes pratiques et conseils de mise en œuvre}
+Les visuels certifiés sont signalés par une icône spéciale et offrent des garanties accrues aux utilisateurs. Certaines fonctionnalités de Power BI n’acceptent que des visuels certifiés : par exemple, l’export PDF/PPT d’un rapport ou l’abonnement email ne rendront visuellement que les visuels certifiés\parencite{OkVizExport}.
 
-Pour réussir le développement de visuels personnalisés avec le SDK Power BI, il est essentiel de suivre quelques recommandations clés :
-\begin{itemize}
-  \item \textbf{Structure claire du code} : Séparer distinctement la logique métier (traitement de la dataView) de la logique d’affichage (D3.js, Canvas).
-  \item \textbf{Tests rigoureux} : Couvrir au maximum les méthodes critiques avec des tests unitaires et d’intégration (Jest, Mocha).\
-  \item \textbf{Documentation exhaustive} : Documenter clairement le fonctionnement du visuel, les options disponibles et les limites éventuelles pour faciliter l’intégration par les équipes de développement ou les utilisateurs finaux.
-  \item \textbf{Optimisation performance} : Privilégier un rendu différentiel (update incrémental), utiliser des méthodes efficaces pour la gestion des grands jeux de données.
-\end{itemize}
+Un visuel non certifié apparaîtra vide dans une exportation de rapport, à moins d’être explicitement autorisé par l’admin tenant. Ceci encourage fortement les développeurs à faire certifier leurs visuels s’ils sont destinés à un usage large. La certification impose notamment de supprimer toute dépendance externe ou communication réseau, comme mentionné. Chaque mise à jour d’un visuel certifié doit repasser le processus, garantissant qu’aucune modification introduite ne viole les règles de sécurité.
 
-\subsection*{Conclusion intermédiaire}
+Pour les organisations, Microsoft recommande de restreindre l’usage des visuels aux seuls visuels certifiés par configuration administrative, afin d’éviter l’insertion de visuels non vérifiés pouvant comporter des risques. Si un besoin métier nécessite un visuel non certifié (par ex. un visuel maison interne), il est possible de l’ajouter au store organisationnel après un examen interne du code par l’équipe sécurité, pour s’assurer qu’il ne comporte pas de comportements indésirables.
 
-Le SDK Custom Visuals de Power BI offre une solution optimale pour répondre à des besoins spécifiques dépassant les capacités natives ou les limites des visuels Python et R. Grâce à son cadre structurant, ses exigences de sécurité élevées, et son potentiel d’automatisation via CI/CD, il représente la meilleure option pour un usage professionnel à grande échelle. Ce choix technologique s’impose particulièrement lorsque la performance, l’interactivité dynamique, et la personnalisation graphique poussée sont des critères essentiels du projet BI.
+\subsection*{Synthèse}
+En résumé, le développement de visuels custom via le SDK offre une flexibilité maximale pour répondre à des besoins de visualisation spécifiques, au prix d’un effort de développement non négligeable et du respect de contraintes de sécurité. Il faut considérer le coût de maintenance (mettre à jour le visuel si l’API Power BI évolue, corriger les bugs, etc.) et l’importance de se conformer aux directives de Microsoft pour garantir la pérennité du composant. Dans la section suivante, nous discutons des choix technologiques concrets (langages, frameworks) pour implémenter un visuel custom, en justifiant l’usage de TypeScript, D3.js et éventuellement React dans ce contexte.

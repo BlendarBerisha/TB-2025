@@ -1,2 +1,37 @@
-\section{Test 2.4}
-Ceci est un test.
+\section{Choix technologiques : TypeScript, D3, (option React)}
+\label{sec:technos}
+
+Créer un visuel Power BI custom revient essentiellement à développer une application web monopage embarquée. À ce titre, le choix des technologies de développement est déterminant pour réussir à la fois l’implémentation technique et la maintenabilité du code. À l’heure actuelle (2023--2025), un consensus s’est formé autour du trio technologique suivant pour les visuels Power BI : TypeScript comme langage de développement, D3.js comme bibliothèque de visualisation de bas niveau, et éventuellement React (ou un autre framework UI) pour structurer l’interface si nécessaire. Ces choix ne sont pas exclusifs — en principe, le SDK permet l’usage de n’importe quel framework JavaScript du moment qu’il peut s’intégrer dans le bundle en module ES6 \cite{reddit-es6} — mais ils reflètent les recommandations et pratiques courantes dans la communauté.
+
+\subsection{TypeScript comme langage par défaut}
+
+Le SDK Power BI est conçu pour TypeScript, un sur-ensemble typé de JavaScript. Lorsqu’on initialise un projet de visuel, les fichiers générés (ex. \texttt{visual.ts}, \texttt{settings.ts}) sont en TypeScript \cite{ms-sdk-typescript}. L’adoption de TypeScript présente plusieurs avantages :
+\begin{itemize}
+  \item typage statique permettant d’attraper des erreurs à la compilation ;
+  \item meilleure productivité grâce à l’autocomplétion et à la documentation dans les IDE ;
+  \item interopérabilité totale avec JavaScript.
+\end{itemize}
+Microsoft fournit les définitions d’interfaces du Power BI Visuals API en TypeScript, ce qui facilite le développement. Un développeur purement JavaScript pourrait théoriquement coder un visuel, mais il perdrait les bénéfices du typage \cite{reddit-typescript-api}.
+
+\subsection{D3.js pour le rendu visuel}
+
+D3.js (Data-Driven Documents) est une bibliothèque JavaScript utilisée pour créer des visualisations en SVG/Canvas. Microsoft a misé sur D3 dès l’origine des custom visuals : « en s’appuyant sur des librairies open-source comme D3.js, nous avons rendu la création de nouveaux visuels incroyablement simple » \cite{powerbi-d3}. La majorité des visuels personnalisés utilisent D3, qui permet de relier les données au DOM. D3 est agnostique, léger, et déjà intégré dans l’environnement Power BI : « D3 est attaché au contexte global de la sandbox, ce qui le rend immédiatement disponible » \cite{fabric-d3-sandbox}.
+
+\subsection{React (optionnel) pour la structure UI}
+
+L’utilisation de React est possible mais non systématique. De nombreux visuels simples n’en ont pas besoin. Cependant, React devient pertinent pour :
+\begin{itemize}
+  \item les visuels complexes avec état interne (menus, boutons, événements) ;
+  \item la réutilisation de composants existants ;
+  \item les équipes déjà familières avec React.
+\end{itemize}
+Microsoft propose un tutoriel officiel sur l’usage de React dans les visuels custom \cite{ms-react-circlecard}. Toutefois, React n’est pas parfaitement intégré dans le sandbox Power BI, et nécessite des ajustements spécifiques. Des développeurs ont signalé des problèmes liés au \texttt{window} sandboxé, et Microsoft a confirmé que le contexte global est isolé pour des raisons de sécurité \cite{fabric-react-sandbox}.
+
+\subsection{Autres technologies et alternatives}
+
+D’autres bibliothèques peuvent être utilisées : Chart.js, Vega-Lite, Plotly.js, voire Three.js pour des besoins spécifiques (cartographie, 3D, etc.). Des solutions comme Deneb ou Charticulator permettent aussi de créer des visuels sans coder, tout en s’appuyant en interne sur D3.
+
+\subsection{Choix pour le projet}
+
+Dans le cadre du projet pour ECRINS SA, le choix de TypeScript et D3.js est privilégié pour leur robustesse, leur compatibilité et leur capacité à répondre à des besoins métier précis. React ne sera envisagé que si des interactions avancées sont nécessaires. Ce trio technologique permettra de produire des visuels performants, intégrables et conformes aux bonnes pratiques.
+
