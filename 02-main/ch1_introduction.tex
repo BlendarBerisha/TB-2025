@@ -1,76 +1,38 @@
 % =============================================================
 \chapter{Introduction}
-\setlength{\parindent}{0pt}      % aucun alinéa dans l’intro (APA)
 
-\minitoc                         % mini-table du chapitre
-% (assure-toi d’avoir \dominitoc juste après \begin{document})
-
-% -------------------------------------------------------------
 \section{Contexte}
 
-Depuis plusieurs années, les outils de Business Intelligence (BI) sont devenus indispensables aux organisations qui souhaitent baser leurs décisions sur des données fiables et facilement interprétables. \textbf{Power BI} de Microsoft s’est imposé comme l’une des plateformes de référence, grâce à sa prise en main intuitive, sa connectivité riche et son intégration étroite à l’écosystème Microsoft (Microsoft, 2024).  
-Malgré une bibliothèque déjà fournie de visuels standards, certains besoins métier demeurent inassouvis : diagrammes de Gantt avancés pour la gestion de projet, variances financières multi-niveaux, ou encore respect strict de chartes graphiques internes.  
-\textbf{ECRINS SA}, société suisse spécialisée dans le conseil BI, fait régulièrement face à ces demandes « hors catalogue » et souhaite internaliser la création de \emph{visuels personnalisés} afin de gagner en réactivité, en qualité et en gouvernance.
+Microsoft Power BI s’est imposé ces dernières années comme l’un des outils phares de la Business Intelligence (BI) en entreprise. Il a réussi à reléguer nombre de concurrents au second plan en offrant une solution de visualisation et d’analyse de données intégrée à un coût d’entrée très attractif. De fait, Power BI est devenu extrêmement populaire auprès des organisations et des utilisateurs, au point que près de 30\,\% des entreprises le plébiscitent déjà et que 60\,\% envisagent de l’adopter, selon la \emph{BI Survey 23} de BARC \parencite{Spies2023,Tirupati2023}.  
 
-% -------------------------------------------------------------
+L’un des atouts majeurs de Power BI réside dans la richesse de ses fonctionnalités natives, en particulier sa large gamme de visuels prédéfinis qui s’enrichit continuellement. Chaque mise à jour de l’outil apporte de nouveaux graphiques et tableaux de bord standards, couvrant un éventail important de besoins analytiques courants. Au-delà de ces visuels par défaut, Power BI offre également la possibilité d’étendre ses capacités en intégrant des composants personnalisés développés à l’aide de langages scripts tels que Python ou R. Cette ouverture permet aux analystes de réaliser des analyses avancées et de créer des visualisations sur mesure allant au-delà de l’offre standard de l’outil \parencite{Dossier2024}.  
+
+En d’autres termes, les utilisateurs bénéficient d’une liberté supplémentaire pour représenter leurs données de façon plus adaptée et innovante qu’avec les seuls graphiques fournis en standard. Cette tendance vers la personnalisation des tableaux de bord est largement documentée dans la littérature académique, qui y voit un facteur clé d’appropriation et de satisfaction utilisateur \parencite{Amyrotos2024}.  
+
+C’est dans ce contexte technologique et métier qu’intervient la société \textbf{ECRINS SA}, une entreprise de conseil en informatique de gestion basée en Valais. ECRINS compte parmi ses clients divers acteurs de premier plan — tels que le Service Industriel de Genève, Rolex, Genève Aéroport ou Tag Heuer — aux besoins décisionnels pointus. Ces clients sollicitent régulièrement des analyses et indicateurs « sur mesure » que les outils standards ne peuvent pas toujours fournir tels quels. Désireuse de maintenir un haut niveau de satisfaction client, l’entreprise cherche à exploiter la flexibilité de Power BI pour concevoir des composants BI \emph{custom}, c’est-à-dire des visuels personnalisés intégrés à des tableaux de bord Power BI. À travers ce travail de Bachelor, elle ambitionne de développer quelques exemples probants de tels visuels et de définir une méthodologie reproductible pour leur conception. Ce projet servira ainsi de base de référence pour implémenter à l’avenir de nouveaux composants BI \emph{custom} répondant aux demandes spécifiques de la clientèle, tout en assurant un standard de qualité et de gouvernance.  
+
 \section{Problématique}
 
-La société n’a encore jamais mis en place de processus complet pour concevoir, tester et déployer des visuels Power BI sur mesure ; chaque tentative ponctuelle a fait ressortir plusieurs points critiques :
+Bien que la perspective de visuels personnalisés soit attrayante, leur mise en place n’a encore jamais été testée par ECRINS. En l’absence d’expérience préalable et de cadres méthodologiques définis, l’entreprise ne dispose pas des repères nécessaires pour évaluer la faisabilité technique ni l’effort de développement qu’implique la création d’un visuel sur mesure dans Power BI. Les clients formulent parfois des demandes qualifiées en interne d’« impossibles », car visant des représentations graphiques ou des fonctionnalités inexistantes dans les visuels standards de Power BI. Jusqu’à présent, ces attentes spécifiques restent soit insatisfaites, soit très difficilement comblées par des solutions de contournement peu élégantes.  
 
-\begin{itemize}
-  \item \textbf{Incertitude technique} : absence de référentiel sur les performances, la scalabilité et la sécurité des composants personnalisés ;
-  \item \textbf{Manque de normes et de traçabilité} : code développé au cas par cas, difficile à maintenir et à auditer ;
-  \item \textbf{Planning imprévisible} : effort, coût et délai impossibles à estimer sans méthode éprouvée ;
-  \item \textbf{Risque fonctionnel} : sans cadre clair, le livrable peut ne pas répondre pleinement aux attentes métier ou se révéler difficile à faire évoluer.
-\end{itemize}
+La question qui se pose est donc la suivante : \textit{comment ECRINS peut-elle concevoir et intégrer de nouveaux composants BI \emph{custom} dans Power BI afin de répondre à des besoins métier non couverts par les visuels natifs, tout en définissant un cadre de développement fiable pour y parvenir ?}  
 
-\noindent
-La question centrale se formule ainsi :
+Il s’agit d’une problématique à la fois technique et organisationnelle. D’un point de vue technique, il faut déterminer les outils et approches de réalisation les plus appropriés (scripts R/Python intégrés, développement d’un \emph{visual custom} via le SDK Power BI, etc.), en tenant compte des avantages et limitations de chaque solution. D’un point de vue organisationnel, la littérature montre que la réussite d’un projet BI dépend d’un alignement entre facteurs technologiques, organisationnels et environnementaux \parencite{AlKharusi2023}. Il est donc nécessaire d’établir des normes de développement et de déploiement pour garantir que les composants créés soient pérennes, maintenables et aisément déployables dans l’environnement Power BI de l’entreprise.  
 
-\begin{quote}
-\textbf{Comment concevoir et valider un cadre méthodologique complet permettant à ECRINS SA d’industrialiser, de manière fiable et pérenne, la création et la mise en production de visuels Power BI personnalisés ?}
-\end{quote}
+En somme, ECRINS cherche à élargir le champ des possibilités de Power BI de manière maîtrisée, afin de répondre favorablement, à l’avenir, aux demandes de visuels spécifiques de ses clients. Ce défi s’inscrit plus largement dans la problématique de pousser les limites des visuels BI par défaut — enjeu rencontré par de nombreuses organisations — en recourant à la personnalisation \parencite{Uttam2025}. La résolution de cette problématique passera par l’exploration du processus de développement d’un composant BI \emph{custom} de bout en bout, depuis l’identification du besoin jusqu’à la validation du composant final en situation réelle.  
 
-% -------------------------------------------------------------
 \section{Objectifs}
 
-\begin{enumerate}[label=\textbf{O\arabic*}]
-  \item \textbf{Élaborer un cadre méthodologique détaillé}, couvrant analyse du besoin, développement, tests, gouvernance et mise en production ;
-  \item \textbf{Réaliser un visuel pilote}, sélectionné avec la Product Owner, pour démontrer la faisabilité du cadre proposé ;
-  \item \textbf{Évaluer la solution}, à l’aide de critères techniques (maintenabilité, performances, sécurité) et fonctionnels (adéquation métier).
-\end{enumerate}
+Ce projet de Bachelor poursuit un objectif principal : démontrer la faisabilité et l’intérêt de la création de visuels personnalisés dans Power BI, puis formaliser une méthode de développement reproductible. Il s’agit d’analyser l’existant afin de recenser les lacunes, de sélectionner un visuel prioritaire à forte valeur ajoutée, de déterminer l’approche technique (scripts ou SDK), d’implémenter le composant dans un tableau de bord de démonstration et de le tester, puis de documenter une procédure standard réutilisable par ECRINS.  
 
-% -------------------------------------------------------------
 \section{Portée et limites}
 
-\textbf{Inclus :}
-\begin{itemize}
-  \item développement d’un visuel pilote représentatif ;
-  \item environnements Power BI Desktop et Service internes ;
-  \item mise en place d’une chaîne CI/CD (GitHub Actions).
-\end{itemize}
+Le travail se concentre sur la réalisation d’un prototype unique de composant BI \emph{custom} et sur l’élaboration de recommandations générales, sans prétendre couvrir l’ensemble des possibilités de personnalisation de Power BI ni constituer une bibliothèque exhaustive. Le composant est testé dans un scénario de démonstration reposant sur des données fictives ou publiques et l’environnement Power BI Desktop, éventuellement complété par le service en ligne.  
 
-\textbf{Exclus :}
-\begin{itemize}
-  \item publication sur Microsoft AppSource ;
-  \item support mobile/tablette étendu ;
-  \item constitution d’une bibliothèque exhaustive de visuels.
-\end{itemize}
+Certaines limites techniques sont reconnues. Lorsqu’un visuel repose sur un script Python ou R, le rendu se présente sous forme d’image statique, excluant les interactions utilisateur avancées ; cette approche peut également entraîner des rafraîchissements plus lents lors des mises à jour de données \parencite{RealPython2023}. Pour répondre aux exigences d’interactivité de la clientèle, le présent travail retient donc l’approche SDK TypeScript pour le prototype, malgré la complexité supplémentaire. La certification et la publication éventuelle sur AppSource restent toutefois hors périmètre.
 
-% -------------------------------------------------------------
 \section{Structure du rapport}
 
-\begin{enumerate}
-  \item \textbf{Chapitre 2 – Cadre théorique et état de l’art} : principes des visuels Power BI, limites des visuels Python/R, justification du SDK ;
-  \item \textbf{Chapitre 3 – Analyse interne} : audit, benchmark, recueil des besoins et sélection du visuel pilote ;
-  \item \textbf{Chapitre 4 – Méthodologie de projet} : organisation Agile (Scrum-but), artefacts et planification ;
-  \item \textbf{Chapitre 5 – Conception et développement} : architecture, implémentation (TypeScript + D3) et tests ;
-  \item \textbf{Chapitre 6 – Industrialisation} : pipeline CI/CD, signature numérique et normes internes ;
-  \item \textbf{Chapitre 7 – Évaluation} : résultats techniques et validation fonctionnelle ;
-  \item \textbf{Chapitre 8 – Conclusion et perspectives}.
-\end{enumerate}
-
-\vspace{1em}
-Cette structure garantit la cohérence et la traçabilité de l’ensemble du travail, des besoins initiaux jusqu’aux recommandations finales.
+Outre la présente introduction, le mémoire s’articule en six chapitres complémentaires. Le chapitre 2 dresse d’abord un état de l’art des visuels Power BI et des solutions concurrentes, afin de situer la problématique dans son contexte technologique. Le chapitre 3 précise ensuite l’origine du besoin, les critères de réussite retenus et l’organisation du travail, ce qui constitue la méthodologie du projet. Le chapitre 4 décrit la conception et la réalisation du visuel personnalisé sélectionné, en détaillant les décisions techniques majeures. Le chapitre 5 formalise la procédure d’industrialisation : pipeline CI/CD, signature numérique et exigences de gouvernance. Le chapitre 6 présente l’évaluation des résultats tant sur le plan technique que fonctionnel, tandis que le chapitre 7 conclut en synthétisant les apports du travail, en discutant ses limites et en ouvrant des perspectives pour ECRINS SA.
 
 % =============================================================

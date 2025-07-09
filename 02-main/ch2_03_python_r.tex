@@ -1,55 +1,87 @@
 %-----------------------------------------------------------
-\section{Visuels Python/R : usages, atouts, limites}
+\section{Visuels Python / R : usages, atouts, limites}
 \label{sec:python-r-visuals}
 %-----------------------------------------------------------
 
-En plus des visuels préfabriqués, Power~BI permet d’incorporer des scripts Python ou R pour générer des visuels sur mesure.  
-Concrètement, l’utilisateur peut ajouter un élément de type ``Python Visual'' ou ``R Visual'' dans un rapport, puis fournir un script dans l’éditeur associé.  
-Le moteur Power~BI va alors exécuter ce script en coulisse, en lui transmettant les données du modèle (colonnes et mesures sélectionnées) sous forme de \textit{dataframe}, et récupérer en résultat un graphique statique produit par le code Python ou R.
+Outre les visuels préfabriqués, Power BI autorise l’exécution de scripts
+Python ou R pour produire des visuels sur mesure.  
+L’utilisateur place un composant \enquote{Python visual} (ou \enquote{R visual})
+dans le rapport, saisit son code dans l’éditeur, puis Power BI exécute ce
+script en tâche de fond : les données liées sont transmises sous forme de
+\textit{dataframe} et le résultat retourné est une image statique (PNG)
+affichée dans le canevas.
 
-Cette fonctionnalité vise à tirer parti de l’écosystème analytique de ces langages~: il devient possible d’utiliser des bibliothèques populaires comme \textit{Matplotlib}, \textit{Seaborn} ou \textit{Plotly} en Python, ou \textit{ggplot2}, \textit{plotly R} en R, afin de créer des visualisations avancées non disponibles nativement.  
-Par exemple, un data scientist peut réaliser dans Power~BI un nuage de points avec une régression LOESS en R, ou un diagramme de réseau en Python, en quelques lignes de code utilisant des packages spécialisés — des visuels difficiles à obtenir autrement.
+Cette fonctionnalité exploite l’écosystème analytique des deux langages :
+bibliothèques \textit{Matplotlib}, \textit{Seaborn} ou \textit{Plotly} côté
+Python ; \textit{ggplot2} ou \textit{plotly R} côté R.  
+Un data-scientist peut ainsi tracer dans Power BI un nuage de points avec
+régression \textsc{Loess} (R) ou un diagramme de réseau (Python) en quelques
+lignes, visuels impossibles à obtenir via les graphes natifs.
 
-Les atouts de cette approche sont liés à la puissance et à la flexibilité des langages R et Python en matière de visualisation et de calculs statistiques.  
-On bénéficie de l’énorme bibliothèque de packages open-source~: analyses statistiques poussées, machine learning, visualisations scientifiques (heatmaps, dendrogrammes, etc.), tout peut théoriquement être intégré dans un rapport.  
-De plus, ces visuels scriptés permettent d’automatiser des traitements de données directement avant l’affichage.  
-Par exemple, on peut programmer un script Python qui agrège des données, calcule des indicateurs personnalisés ou entraîne un modèle prédictif, puis affiche un graphique du résultat — le tout s’exécutant dynamiquement lors du rafraîchissement du visuel.  
-Cela étend les capacités de Power~BI au-delà du seul langage DAX, en offrant la richesse de Python/R pour des besoins spécifiques (analyses de texte, séries temporelles avancées, etc.).
 
-Cependant, les visuels Python/R présentent des limitations importantes dues à leur nature même de scripts externes.  
-D’abord, le rendu produit est une image statique (format PNG) intégrée dans le rapport.  
-Ainsi, «~les visualisations Python dans Power BI ne sont que des images statiques (résolution 72 DPI), sans aucune interactivité~»\parencite{RealPythonPowerBI2023}.  
-Concrètement, l’utilisateur ne peut pas cliquer sur un élément du graphique Python/R pour filtrer d’autres visuels — toute la surface du visuel est une image plane.  
-Il y a bien une interaction partielle~: si l’on applique un filtre ou sélectionne un élément sur un autre visuel du rapport, Power~BI ré-exécute le script Python/R avec les données filtrées, ce qui met à jour l’image correspondante\parencite{RealPythonPowerBI2023}.  
-Mais cela reste plus lent et moins fluide que les visuels natifs, car il faut relancer le calcul du script à chaque changement.
+\textbf{Atouts.}  
+La puissance réside dans la bibliothèque de packages open-source :
+statistiques avancées, machine learning, heatmaps, dendrogrammes, etc.
+Les scripts peuvent en outre pré-traiter les données (agrégation, calcul
+d’indicateurs, entraînement d’un modèle) avant de dessiner le graphique ;
+l’opération se relance automatiquement lorsque le visuel est rafraîchi,
+offrant au passage des capacités qu’un simple DAX ne couvre pas (analyse de
+texte, séries temporelles complexes).
 
-Microsoft documente que ces visuels scriptés «~se rafraîchissent lors des mises à jour ou filtrages des données, mais l’image en elle-même n’est pas interactive~»\parencite{MicrosoftPythonRVisualsDocs2024}.  
-Ils répondent aux \textit{highlightings} provenant d’autres visuels, «~mais on ne peut pas sélectionner des éléments du visuel Python/R pour croiser le filtre~»\parencite{MicrosoftPythonRVisualsDocs2024}.  
-Cette absence d’interactivité locale est un frein dans un tableau de bord où l’on attend généralement de pouvoir explorer les données de façon interactive.
 
-Une autre contrainte forte est la taille des données transmises aux scripts.  
-Pour éviter des temps d’exécution excessifs, Power~BI limite à 150\,000 lignes le volume de données qu’un visuel Python ou R peut traiter.  
-«~Si plus de 150\,000 lignes sont sélectionnées, seules les 150\,000 premières sont utilisées~», et un message d’avertissement s’affiche sur l’image\parencite{MicrosoftPythonRVisualsDocs2024}.  
-De plus, l’ensemble des données en entrée du script ne doit pas excéder 250~MB en mémoire\parencite{MicrosoftPythonRVisualsDocs2024}.  
-Ces seuils signifient que les visuels Python/R sont adaptés à des échantillons de données ou des agrégats, mais pas au traitement de données massives brutes.  
-Au-delà, il faut compter sur le modèle tabulaire de Power~BI pour pré-agréger ou filtrer avant d’envoyer au script.
+\textbf{Limites techniques et fonctionnelles.}  
+Le rendu reste une image statique : \enquote{les visualisations Python dans
+Power BI sont des bitmaps 72 DPI, sans interactivité directe}
+\parencite{MicrosoftPythonRVisualsDocs2024}.  
+L’utilisateur ne peut donc pas cliquer dans le graphique pour filtrer les
+autres visuels ; seul un nouveau filtrage externe provoque la ré-exécution
+du script, qui demeure plus lente qu’un visuel natif.
 
-En termes de performance, il existe également un \textit{timeout} de 5~minutes~: si le script met plus de 5~minutes à s’exécuter, il sera interrompu et le visuel affichera une erreur\parencite{MicrosoftPythonRVisualsDocs2024}.  
-Cela empêche l’utilisation de calculs trop longs.  
-Par exemple, entraîner un modèle complexe de machine learning sur un jeu de données volumineux dépasserait ce temps imparti.
+Power BI encadre par ailleurs la quantité de données :  
+\emph{(i)} 150 000 lignes et 100 colonnes au maximum sont transmises au
+script ; au-delà, seules les premières 150 000 lignes sont prises en compte,
+un avertissement s’affichant sur l’image ;  
+\emph{(ii)} la taille totale ne doit pas excéder 250 MB en mémoire ;  
+\emph{(iii)} un \textit{timeout} de cinq minutes interrompt tout script trop
+long\parencite{MicrosoftPythonRVisualsDocs2024}\emph{, mais ce délai est ramené à
+une minute lorsque l’exécution se fait dans le service Power BI}
+\parencite{MicrosoftRPackagesService2025} ;
+\emph{(iv)} pour les \textit{R visuals}, la taille du PNG de sortie est
+désormais plafonnée à 2 MB\parencite{MicrosoftRVisualsDocs2025}.   
+Ces garde-fous rendent les visuels Python/R adaptés à des échantillons ou à
+des agrégats, mais inadaptés à un traitement massif ou à un apprentissage
+profond.
 
-Il convient aussi de noter des limitations techniques supplémentaires~: les chaînes de caractères de plus de 32\,766 caractères sont tronquées lors de la transmission au \textit{dataframe}\parencite{MicrosoftPythonRVisualsDocs2024} ;  
-certains appareils ou environnements cloud ne supportent pas ces visuels (par exemple, les rapports publiés via \textit{publish to web} ne peuvent pas afficher de visuels Python/R pour des raisons de sécurité)\parencite{MicrosoftPythonRVisualsDocs2024}.  
-De plus, pour utiliser un visuel Python ou R en Power~BI Desktop, il faut que l’utilisateur ait installé localement l’interpréteur Python ou R, ainsi que les packages nécessaires.  
-Sur le service Power~BI en ligne, l’exécution des scripts est prise en charge côté serveur, mais seulement pour les tenants disposant de capacités Premium ou pour les utilisateurs Pro — ce qui signifie qu’un utilisateur Free ne pourra pas voir un visuel Python/R dans un rapport à moins que celui-ci soit hébergé sur un \textit{workspace Premium}\parencite{MicrosoftPythonRVisualsDocs2024}.
+D’autres restrictions s’appliquent : les chaînes de plus de 32 766 caractères
+sont tronquées ; les visuels ne s’affichent ni dans \textit{Publish to Web}
+ni dans certains environnements mobiles pour raisons de sécurité ;
+\textbf{le runtime R 4.3.3 dans le service limite en outre le payload
+compressé à 30 MB}\parencite{MicrosoftRPackagesService2025} ; enfin,
+l’interpréteur Python ou R et les packages requis doivent être installés
+localement pour Power BI Desktop, tandis que le service en ligne n’exécute
+les scripts que sur un workspace Premium ou pour des comptes Pro,  
+\textbf;{ce qui signifie qu’un compte Free n’affichera pas ces visuels}
+\parencite{MicrosoftPythonRVisualsDocs2024}. % ← précision licence
 
-Enfin, du point de vue sécurité, Power~BI traite les visuels Python/R comme du code potentiellement risqué.  
-Lorsqu’on ajoute pour la première fois un tel visuel, un avertissement de sécurité apparaît, invitant l’utilisateur à n’exécuter que des scripts de source fiable\parencite{MicrosoftPythonRVisualsDocs2024}.  
-En entreprise, l’utilisation de ces visuels peut soulever des enjeux de validation du code et de maintenance (le script étant incorporé dans le rapport, il doit être maintenu manuellement en cas de mise à jour de librairie, etc.).
+
+\textbf{Sécurité et maintenance.}  
+Lors de l’insertion d’un premier visuel Python / R, Power BI émet un
+avertissement invitant à exécuter uniquement un code de source fiable
+\parencite{MicrosoftPythonRVisualsDocs2024}.  
+Dans un contexte d’entreprise, la gouvernance du code devient critique :
+le script est embarqué dans le fichier \texttt{.pbix}, hors de tout
+versionnage Git natif ; il faut donc organiser une validation et un cycle de
+mise à jour des dépendances.
+
 
 \textbf{Bilan.}  
-Les visuels Python et R offrent donc une solution d’appoint puissante pour réaliser des visualisations avancées ou des analyses spécifiques au sein de Power~BI, sans avoir à développer un visuel \textit{custom} complet.  
-Ils comblent certaines lacunes des visuels natifs en ouvrant la porte à la riche panoplie des bibliothèques \textit{data science}.  
-Cependant, ils doivent être utilisés en connaissance de leurs limites~: performances réduites, absence d’interactivité directe, et restrictions d’usage dans l’environnement de service Power~BI.  
-Pour un besoin de visualisation récurrent, à destination d’un large public, ou nécessitant une expérience utilisateur interactive, il peut être préférable de développer un visuel personnalisé via le SDK (ou d’utiliser un visuel custom existant sur AppSource) plutôt que de s’appuyer sur un script Python/R intégré.  
-C’est ce que nous examinons dans la section suivante.
+Les visuels Python et R constituent une solution d’appoint puissante pour
+des analyses ad hoc ou spécialisées, en comblant certaines lacunes des
+visuels natifs grâce à l’arsenal \textit{data-science}.  
+Ils doivent toutefois être utilisés en connaissance de leurs limites :
+image statique, performance conditionnée par les seuils de lignes et
+colonne, exigences Premium dans le service, et effort de maintenance du
+code.  
+Dès qu’un visuel doit être interactif, largement partagé ou intégré au
+catalogue interne, le développement d’un visuel personnalisé via le SDK —
+thème de la section \ref{sec:sdk} — devient souvent la voie la plus pérenne.
