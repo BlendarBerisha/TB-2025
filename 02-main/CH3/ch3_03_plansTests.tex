@@ -1,0 +1,28 @@
+%-----------------------------------------------------------
+\section{Plan de tests (datasets démo, scénarios tableau de bord)}
+\label{sec:test-plan}
+%-----------------------------------------------------------
+
+La phase de tests s’appuie sur des jeux de données de démonstration destinés à valider les fonctionnalités attendues. Ces jeux de données, bien qu’évolutifs, sont conçus pour couvrir l’ensemble des cas d’usage clés. Les paragraphes suivants détaillent pour chacun des deux visuels (Carte de flux de passagers et Sunburst hiérarchique) la structure du dataset démo, les scénarios d’usage simulés et la manière dont ces scénarios valident la faisabilité fonctionnelle du visuel.
+
+%-----------------------------------------------------------
+\subsection{Carte de flux de passagers (Passenger - Flow Map)}
+\label{subsec:test-flowmap}
+%-----------------------------------------------------------
+
+\textbf{Structure du jeu de données :} Le dataset contient notamment, pour chaque segment de flux, l’identifiant du flux (EdgeId) reliant un point de départ à un point d’arrivée, les coordonnées de ces deux points (X1, Y1 pour le point d’origine et X2, Y2 pour la destination) en pixels, ainsi que le nombre de passagers (Passages), l’heure du passage (Heure) et le type de flux (par exemple « Départ » ou « Arrivée »). Ces champs permettent de cartographier spatialement les mouvements de passagers au sein de l’aéroport.
+
+\textbf{Cas d’usage simulés :} Les cas d’utilisation incluent notamment la sélection par tranches horaires (filtrage sur le champ Heure), la distinction du type de flux (Départ/Arrivée) et l’activation d’un mode d’affichage en « heatmap » pour repérer les zones de forte affluence. Les interactions croisées sont également testées : par exemple, la sélection d’une tranche horaire ou d’une porte d’embarquement dans un autre graphique doit filtrer dynamiquement la carte de flux (et inversement). Par ailleurs, la visualisation affiche des info-bulles présentant les valeurs agrégées (par ex. nombre de passagers), qui se mettent à jour en fonction des filtres appliqués.
+
+\textbf{Validation de la faisabilité fonctionnelle :} Ces scénarios confirment que le visuel réagit aux besoins métiers et techniques. Par exemple, l’application d’un filtre temporel permet de vérifier que le nombre de passagers représentés s’ajuste et que les info-bulles correspondent aux données filtrées \textit{learn.microsoft.com}. L’activation du mode heatmap démontre la capacité du visuel à convertir les flux en zones d’intensité. Enfin, les tests d’interaction croisées valident que la carte de flux répond correctement aux sélections dans d’autres visuels, en filtrant les données selon les sélections effectuées, comme attendu \textit{learn.microsoft.com}.
+
+%-----------------------------------------------------------
+\subsection{Sunburst hiérarchique (Analyse multi-niveaux)}
+\label{subsec:test-sunburst}
+%-----------------------------------------------------------
+
+\textbf{Structure du jeu de données :} Ce jeu de données de démonstration représente une hiérarchie multi-niveaux typique (p. ex. structure organisationnelle ou répartition budgétaire). Il contient en général plusieurs colonnes de catégories hiérarchiques (au moins deux niveaux, par ex. Département puis Sous-département), ainsi qu’une colonne de mesure (par exemple un montant). Chaque ligne associe ainsi un compte (p. ex. Marketing > Digital > SEO) à sa valeur numérique correspondante. Cette structure multi-niveaux est adaptée à un diagramme en rayons de soleil, chaque anneau correspondant à un niveau de la hiérarchie \textit{datavizcatalogue.com}.
+
+\textbf{Cas d’usage simulés :} Les tests incluent la sélection de différents niveaux hiérarchiques (par exemple filtrer un département), ainsi que des opérations de forage (drill-down et drill-up) pour naviguer entre niveaux généraux et détaillés. La mise en évidence de branches (sous-ensembles de catégories) est également simulée, ainsi que l’application de filtres numériques (pour ne conserver que les valeurs supérieures à un seuil). De plus, l’interaction croisée est vérifiée : sélectionner un segment du sunburst (par ex. un département particulier) filtre en conséquence les autres visuels du rapport, et inversement.
+
+\textbf{Validation de la faisabilité fonctionnelle :} La réussite de ces tests confirme que le Sunburst peut représenter fidèlement la hiérarchie et ses agrégations. Le test de forage garantit que le passage d’un niveau à l’autre s’effectue correctement et que les proportions sont mises à jour. Les filtres appliqués (catégoriels ou numériques) vérifient que le visuel réagit comme prévu, en ajustant les segments affichés. Enfin, les tests d’interaction croisées montrent que la communication entre le Sunburst et les autres éléments du rapport est opérationnelle, conformément aux pratiques standards de filtrage Power BI \textit{learn.microsoft.com}.

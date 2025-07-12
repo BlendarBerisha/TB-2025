@@ -1,0 +1,60 @@
+%-----------------------------------------------------------
+\section{Critères de réussite}
+\label{sec:success-criteria}
+%-----------------------------------------------------------
+
+Les critères de réussite du prototype servent d’indicateurs de \textit{faisabilité
+technique} et de \textit{rigueur méthodologique}, plutôt que d’objectifs
+fonctionnels exhaustifs.
+Ils visent à vérifier que la preuve de concept respecte un socle minimal en
+matière de performance, d’ergonomie et de qualité.
+
+\begin{enumerate}[noitemsep,topsep=0pt,label=\arabic*)]
+    \item \textbf{Performance} : le temps de rendu et de mise à jour doit rester
+          inférieur à 300~ms, garantissant une interaction fluide pour
+          l’utilisateur.
+    \item \textbf{Accessibilité (WCAG 2.2)} : le visuel doit se conformer aux
+          recommandations WCAG 2.2 (contraste suffisant, navigation clavier,
+          attributs \texttt{aria} pertinents) afin d’être utilisable par le
+          plus grand nombre.
+    \item \textbf{Couverture fonctionnelle} : toutes les fonctionnalités
+          attendues (détails au survol, sélection et filtrage, zoom, etc.) sont
+          implémentées, assurant la pertinence métier du prototype.
+    \item \textbf{Intégration Power BI (cross-highlighting)} : le visuel prend
+          en charge le filtrage et le surlignement croisés avec les autres
+          visualisations du rapport, conformément au comportement natif de la
+          plateforme.
+    \item \textbf{Qualité du code} : le code source est modulaire, documenté et
+          couvert par des tests unitaires (≥ 75 \%), facilitant la maintenance.
+    \item \textbf{Sécurité (sandbox pbiviz)} : le prototype s’exécute dans
+          l’\emph{iframe} sandbox sans appel réseau externe ni usage d’API non
+          autorisées, passant l’audit
+          \texttt{pbiviz package --certification-audit}.
+    \item \textbf{Documentation} : un guide utilisateur et un guide technique
+          détaillent l’installation, l’usage et l’architecture interne du
+          visuel.
+\end{enumerate}
+
+\begin{table}[H]
+    \centering
+    \caption{Synthèse des critères de réussite}
+    \label{tab:success-criteria}
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+        \toprule
+        \textbf{Axe} & \textbf{Critère cible} \\
+        \midrule
+        Performance            & Temps de réponse du visuel < 300 ms \\
+        Accessibilité          & Conformité complète aux WCAG 2.2 \\
+        Couverture fonctionnelle & Fonctionnalités attendues implémentées \\
+        Intégration Power BI   & Cross-highlighting pleinement opérationnel \\
+        Qualité du code        & Code modulaire, tests ≥ 75 \%, commentaires \\
+        Sécurité               & Exécution conforme aux règles du sandbox \\
+        Documentation          & Guides utilisateur et développeur fournis \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+Chaque critère énuméré ci-dessus constituera un point de contrôle lors de
+l’évaluation finale : leur satisfaction attestera de la faisabilité technique
+et de la qualité du travail réalisé dans le cadre de ce
+\textit{proof of concept}.
