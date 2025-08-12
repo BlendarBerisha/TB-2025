@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+<rect width="100%" height="100%" fill="white"/>
+<polygon points="50.4,308.8 104.4,308.8 104.4,524.8 50.4,524.8" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="54.4" y="304.8" font-size="10" font-family="Arial" fill="#1f4e79">CHECKIN_DESK_1</text>
+<polygon points="115.2,307.2 204.0,307.2 204.0,343.2 115.2,343.2" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="119.2" y="303.2" font-size="10" font-family="Arial" fill="#1f4e79">CHECKIN_DESK_2</text>
+<polygon points="222.0,307.2 625.2,307.2 625.2,364.8 222.0,364.8" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="226.0" y="303.2" font-size="10" font-family="Arial" fill="#1f4e79">SHOPS_SNACK_TOILETS</text>
+<polygon points="626.4,306.4 675.6,306.4 675.6,397.6 626.4,397.6" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="630.4" y="302.4" font-size="10" font-family="Arial" fill="#1f4e79">TAX_REFUND</text>
+<polygon points="216.0,567.2 564.0,567.2 564.0,601.6 216.0,601.6" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="220.0" y="563.2" font-size="10" font-family="Arial" fill="#1f4e79">INFO_DESK_SALES</text>
+<polygon points="51.6,578.4 116.4,578.4 116.4,607.2 51.6,607.2" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="55.6" y="574.4" font-size="10" font-family="Arial" fill="#1f4e79">WELCOME_DESK</text>
+<polygon points="466.8,200.8 520.8,200.8 520.8,291.2 466.8,291.2" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="470.8" y="196.8" font-size="10" font-family="Arial" fill="#1f4e79">DUTY_FREE_SHOP</text>
+<polygon points="466.8,152.8 528.0,152.8 528.0,188.8 466.8,188.8" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="470.8" y="148.8" font-size="10" font-family="Arial" fill="#1f4e79">SNACK_BAR_UPPER</text>
+<polygon points="289.2,211.2 350.4,211.2 350.4,256.8 289.2,256.8" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="293.2" y="207.2" font-size="10" font-family="Arial" fill="#1f4e79">TOILETS_DL_1</text>
+<polygon points="206.4,245.6 267.6,245.6 267.6,291.2 206.4,291.2" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="210.4" y="241.6" font-size="10" font-family="Arial" fill="#1f4e79">TOILETS_DL_2</text>
+<polygon points="734.4,231.2 880.8,231.2 880.8,264.8 734.4,264.8" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="738.4" y="227.2" font-size="10" font-family="Arial" fill="#1f4e79">SKI_DELIVERY_BELT</text>
+<polygon points="734.4,292.8 880.8,292.8 880.8,327.2 734.4,327.2" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="738.4" y="288.8" font-size="10" font-family="Arial" fill="#1f4e79">BELT_1</text>
+<polygon points="734.4,472.8 880.8,472.8 880.8,507.2 734.4,507.2" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="738.4" y="468.8" font-size="10" font-family="Arial" fill="#1f4e79">BELT_2</text>
+<polygon points="734.4,528.0 880.8,528.0 880.8,562.4 734.4,562.4" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="738.4" y="524.0" font-size="10" font-family="Arial" fill="#1f4e79">BELT_3</text>
+<polygon points="734.4,352.8 796.8,352.8 796.8,464.0 734.4,464.0" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="738.4" y="348.8" font-size="10" font-family="Arial" fill="#1f4e79">ARRIVAL_TOILETS</text>
+<polygon points="970.8,231.2 1033.2,231.2 1033.2,292.0 970.8,292.0" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="974.8" y="227.2" font-size="10" font-family="Arial" fill="#1f4e79">BAGGAGE_CLAIM</text>
+<polygon points="931.2,352.8 1033.2,352.8 1033.2,387.2 931.2,387.2" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="935.2" y="348.8" font-size="10" font-family="Arial" fill="#1f4e79">TOUR_OPERATOR_DESK</text>
+<polygon points="904.8,431.2 966.0,431.2 966.0,464.0 904.8,464.0" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="908.8" y="427.2" font-size="10" font-family="Arial" fill="#1f4e79">SNACK_BAR_ARRIVAL</text>
+<polygon points="52.8,607.2 156.0,607.2 156.0,614.4 52.8,614.4" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="56.8" y="603.2" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DT_SUD_1</text>
+<polygon points="205.2,607.2 580.8,607.2 580.8,614.4 205.2,614.4" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="209.2" y="603.2" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DT_SUD_2</text>
+<polygon points="630.0,607.2 729.6,607.2 729.6,614.4 630.0,614.4" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="634.0" y="603.2" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DT_SUD_3</text>
+<polygon points="732.0,461.6 884.4,461.6 884.4,468.8 732.0,468.8" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="736.0" y="457.6" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DT_EST_1</text>
+<polygon points="716.4,461.6 732.0,461.6 732.0,468.8 716.4,468.8" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="720.4" y="457.6" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DT_EST_2</text>
+<polygon points="674.4,461.6 690.0,461.6 690.0,468.8 674.4,468.8" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="678.4" y="457.6" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DT_EST_3</text>
+<polygon points="674.4,308.8 685.2,308.8 685.2,461.6 674.4,461.6" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="678.4" y="304.8" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DT_EST_4</text>
+<polygon points="52.8,308.8 675.6,308.8 675.6,316.0 52.8,316.0" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="56.8" y="304.8" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DT_NORD</text>
+<polygon points="51.6,308.8 62.4,308.8 62.4,607.2 51.6,607.2" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="55.6" y="304.8" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DT_OUEST</text>
+<polygon points="687.6,291.2 698.4,291.2 698.4,461.6 687.6,461.6" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="691.6" y="287.2" font-size="10" font-family="Arial" fill="#1f4e79">WALL_COULOIR_GAUCHE</text>
+<polygon points="716.4,244.8 727.2,244.8 727.2,461.6 716.4,461.6" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="720.4" y="240.8" font-size="10" font-family="Arial" fill="#1f4e79">WALL_COULOIR_DROIT</text>
+<polygon points="159.6,292.8 688.8,292.8 688.8,300.0 159.6,300.0" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="163.6" y="288.8" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DL_SUD</text>
+<polygon points="159.6,128.0 170.4,128.0 170.4,292.8 159.6,292.8" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="163.6" y="124.0" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DL_OUEST</text>
+<polygon points="159.6,127.2 642.0,127.2 642.0,134.4 159.6,134.4" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="163.6" y="123.2" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DL_NORD</text>
+<polygon points="642.0,127.2 652.8,127.2 652.8,245.6 642.0,245.6" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="646.0" y="123.2" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DL_EST_1</text>
+<polygon points="643.2,245.6 716.4,245.6 716.4,252.8 643.2,252.8" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="647.2" y="241.6" font-size="10" font-family="Arial" fill="#1f4e79">WALL_DL_EST_2</text>
+<polygon points="734.4,232.0 745.2,232.0 745.2,581.6 734.4,581.6" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="738.4" y="228.0" font-size="10" font-family="Arial" fill="#1f4e79">WALL_AT_OUEST</text>
+<polygon points="734.4,232.0 1032.0,232.0 1032.0,239.2 734.4,239.2" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="738.4" y="228.0" font-size="10" font-family="Arial" fill="#1f4e79">WALL_AT_NORD</text>
+<polygon points="735.6,581.6 1033.2,581.6 1033.2,588.8 735.6,588.8" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="739.6" y="577.6" font-size="10" font-family="Arial" fill="#1f4e79">WALL_AT_SUD</text>
+<polygon points="1033.2,232.0 1044.0,232.0 1044.0,392.8 1033.2,392.8" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="1037.2" y="228.0" font-size="10" font-family="Arial" fill="#1f4e79">WALL_AT_EST_1</text>
+<polygon points="1033.2,427.2 1044.0,427.2 1044.0,581.6 1033.2,581.6" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="1037.2" y="423.2" font-size="10" font-family="Arial" fill="#1f4e79">WALL_AT_EST_2</text>
+<polygon points="729.6,461.6 740.4,461.6 740.4,607.2 729.6,607.2" fill="#8db3e2" fill-opacity="0.35" stroke="#1f4e79" stroke-width="1"/>
+<text x="733.6" y="457.6" font-size="10" font-family="Arial" fill="#1f4e79">WALL_MISSING_VERTICAL</text>
+</svg>

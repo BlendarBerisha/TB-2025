@@ -1,0 +1,42 @@
+% CH4.tex ----------------------------------------------------------
+\chapter{Développement des visuels Power BI personnalisés}
+\label{chap:dev-visuels}
+
+% ------ Numérotation A/B locale au chapitre 4 ------
+\makeatletter
+\newcommand{\ActivateFourLettering}{%
+  \renewcommand{\thesection}{\thechapter\@Alph\c@section}% 4A, 4B
+  \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}% 4A.1
+  \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}}% 4A.1.1
+\newcommand{\DeactivateFourLettering}{%
+  \renewcommand{\thesection}{\thechapter.\arabic{section}}%
+  \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}%
+  \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}}
+\makeatother
+\ActivateFourLettering
+% ----------------------------------------------------
+
+% ------------ Section 5A et son contenu -------------
+\section{Passenger-Flow Map}       % ⇒ 5A
+\input{02-main/CH5/ch5_5A_01_intro}        % <== renomme ton fichier si besoin
+\input{02-main/CH5/ch5_5A_02_architecture}
+\input{02-main/CH5/ch5_5A_03_initialisation}
+\input{02-main/CH5/ch5_5A_04_pipeline}
+\input{02-main/CH5/ch5_5A_05_dataview}
+\input{02-main/CH5/ch5_5A_06_interactions}
+\input{02-main/CH5/ch5_5A_07_synthese.tex}
+
+
+% ------------ Section 5B et son contenu -------------
+\section{Decomposition-Tree / Sunburst} % ⇒ 5B
+\input{02-main/CH5/ch5_5B_01_intro}
+\input{02-main/CH5/ch5_5B_02_architecture}
+\input{02-main/CH5/ch5_5B_03_initialisation}
+\input{02-main/CH5/ch5_5B_04_pipeline}
+\input{02-main/CH5/ch5_5B_05_dataview}
+\input{02-main/CH5/ch5_5B_06_interactions}
+\input{02-main/CH5/ch5_5B_07_synthese}
+
+% ------ Restauration de la numérotation par défaut --
+\DeactivateFourLettering
+% CH4.tex ----------------------------------------------------------

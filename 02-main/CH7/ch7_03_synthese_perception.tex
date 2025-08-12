@@ -1,0 +1,39 @@
+% -----------------------------------------------------------------
+% CH7_03_synthese_perception.tex
+% Section 7.3 — Synthèse métier et perception
+% -----------------------------------------------------------------
+
+\section{Synthèse métier et perception globale}
+\label{sec:synthese-metier}
+
+Les résultats obtenus permettent de tirer un bilan à la fois technique et métier. Sur le plan technologique, les deux prototypes — Passenger-Flow Map et Radial Sunburst Decomposition Tree — ont démontré leur faisabilité, leur stabilité et leur conformité aux contraintes posées en amont (performance, sécurité, accessibilité dans le périmètre défini).
+
+Du point de vue métier, les retours recueillis indiquent une valeur ajoutée concrète : la Passenger-Flow Map facilite l’exploration de flux complexes dans un espace physique, tandis que le Sunburst clarifie des structures hiérarchiques et la comparaison des contributions relatives. Les personnes sollicitées ont souligné la lisibilité, l’impact visuel et l’apport par rapport aux visuels natifs.
+
+Le tableau~\ref{tab:perception-visuels} synthétise la perception selon cinq axes : performance, poids, accessibilité, utilité métier et perspective de réutilisation.
+
+
+
+\begin{table}[H]
+  \centering
+  \caption{Perception croisée des deux visuels}
+  \label{tab:perception-visuels}
+  \small
+  \setlength{\tabcolsep}{4pt} % réduit les marges internes
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabularx}{\textwidth}{@{}lYYY@{}}
+    \toprule
+    \textbf{Critère} & \textbf{Passenger-Flow Map} & \textbf{Sunburst} & \textbf{Remarques} \\
+    \midrule
+    Temps de rendu (initial) & 180–220 ms (pointes < 300 ms) & 260–290 ms & Conforme à l’objectif < 300 ms \\
+    Poids du bundle & 120 KiB (minifié) & 82 KiB (minifié) & Bien sous la limite 2.5 MiB \\
+    Accessibilité & Socle minimal & Étendue & Clavier/ARIA : minimal vs complet \\
+    Utilité métier & Spécialisée (flux spatiaux) & Transversale (hiérarchies) & Positionnements complémentaires \\
+    Réutilisation & Modérée & Élevée & Sunburst adaptable à d’autres modèles \\
+    Intégration PBI & Cross-filter, slicers & Cross-filter, slicers & Mobile non optimisé \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+
+Ces éléments orientent naturellement les recommandations (chapitre~\ref{chap:conclusion}) vers une industrialisation prioritaire de modèles modulaires et réutilisables de type Sunburst, tout en conservant la Passenger-Flow Map comme preuve de faisabilité ciblée pour des besoins d’analyse spatiale. Cette double posture — innovation ciblée d’un côté, généralisation pragmatique de l’autre — fournit un cadre d’évolution cohérent pour de futurs visuels Power BI personnalisés.

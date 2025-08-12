@@ -1,0 +1,27 @@
+% -----------------------------------------------------------------
+% 4.7 – Erreurs courantes et contournements
+% Fichier : ch4_07_troubleshoot.tex
+% -----------------------------------------------------------------
+
+\section{Erreurs courantes et contournements}\label{sec:ch4_troubleshoot}
+
+Malgré l’application rigoureuse du playbook, plusieurs incidents récurrents peuvent survenir au cours du développement d’un visuel Power BI. Les paragraphes suivants recensent les plus fréquents, accompagnés de leur diagnostic et du correctif validé chez ECRINS SA. Cette capitalisation d’expérience vise à réduire le temps de résolution et à homogénéiser les pratiques de support interne.
+
+\subsection{pbiviz introuvable après installation.} La commande renvoie « not recognised ». Dans la quasi‑totalité des cas, le paquet n’a pas été ajouté au \textsc{PATH} global ou l’installation a été lancée sans privilège suffisant. La vérification commence par node -v, puis par une réinstallation en mode administrateur : npm install -g powerbi-visuals-tools@latest. En environnement verrouillé, il est toléré d’utiliser npx pbiviz localement, mais la résolution définitive passe par la correction du \textsc{PATH} système.
+
+\subsection{Échec de connexion HTTPS : « Can’t contact visual server ».} Power BI ne parvient pas à joindre https://localhost:8080. Les motifs les plus fréquents sont : certificat non installé ou non approuvé, serveur pbiviz start arrêté, port 8080 occupé, pare‑feu bloquant le trafic. La procédure standard consiste à : i) relancer pbiviz --install-cert, ii) ouvrir https://localhost:8080/assets dans le navigateur pour accepter le certificat, iii) vérifier la disponibilité du port via netstat ou Get-NetTCPConnection.
+
+\subsection{Icône développeur absente dans le volet des visuels.} L’option mode développeur n’est pas activée ou l’utilisateur n’a pas de licence adéquate. La solution est d’ouvrir Settings → User settings → Developer et de basculer l’interrupteur, puis de rafraîchir la page du rapport. Si l’icône demeure invisible, il faut confirmer la présence d’une licence Pro ou PPU et l’absence de restrictions administratives au niveau tenant.
+
+\subsection{DataView vide ou partiel malgré la sélection de champs.} Lorsque options.dataViews est undefined, le plus souvent les champs glissés ne correspondent pas aux rôles déclarés dans capabilities.json. Le correctif réside dans la vérification du mapping et, au besoin, l’ajout de l’attribut "required": false pour les rôles optionnels. Côté code, la méthode update() doit toujours vérifier la présence de dataViews[0] et afficher un message d’invite si les données sont insuffisantes.
+
+\subsection{Erreur PowerShell lors de pbiviz --install-cert.} Sur certains postes verrouillés, la politique d’exécution bloque le script interne. Le message typique mentionne « execution of scripts is disabled ». Deux solutions : modifier temporairement la politique pour l’utilisateur courant (Set-ExecutionPolicy RemoteSigned -Scope CurrentUser) ou générer manuellement un certificat avec New-SelfSignedCertificate puis placer les fichiers dans le répertoire attendu par pbiviz.
+
+\subsection{Visuel fonctionnel en mode développeur mais défectueux après empaquetage.} Le fichier .pbiviz importé n’affiche rien ou déclenche une erreur générique. Dans la majorité des cas, le problème provient d’une incohérence de version API ou d’un GUID en doublon. Avant la commande pbiviz package, il est recommandé de mettre à jour pbiviz.json ("apiVersion") et d’exécuter un test d’import dans un nouveau rapport vierge.
+
+\subsection{Avertissements TypeScript et incompatibilités de types.} Lors du lancement de pbiviz start, des erreurs de compilation bloquent la chaîne. La démarche consiste à : i) identifier l’origine (généralement une mise à jour de powerbi-visuals-api), ii) aligner la version cible dans package.json et dans pbiviz.json, iii) corriger les signatures des méthodes concernées. Un npm ci suivi d’un pbiviz start garantit la cohérence du lockfile.
+
+\subsection{Taille de package anormalement faible.} Un .pbiviz de quelques kilo‑octets révèle souvent l’exclusion involontaire d’une bibliothèque externe. Depuis la version 3 du SDK, l’attribut externalJS n’est plus supporté ; les dépendances doivent être intégrées via Webpack. La vérification s’effectue en inspectant le dossier dist/ après empaquetage et en contrôlant la présence d’un fichier JavaScript consolidé de plusieurs centaines de kilo‑octets.
+
+
+La consolidation de cette liste dans un référentiel interne — baptisé cookbook des erreurs — permet aux développeurs de gagner en autonomie et d’écourter les échanges avec le support. Chaque nouvelle occurrence doit être consignée selon le modèle « symptôme – diagnostic – résolution », afin d’alimenter en continu la base de connaissances d’ECRINS SA.

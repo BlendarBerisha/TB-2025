@@ -1,0 +1,18 @@
+\subsection{Panneau de contrôle et interactions utilisateur}
+\label{subsec:4A-interactions}
+
+Pour faciliter l’exploration, un panneau flottant (ControlPanel) est intégré au visuel. Déplaçable et réductible, il permet de filtrer les flux et d’afficher des indicateurs de synthèse, sans perturber le filtrage croisé natif de Power BI.
+
+\paragraph{Filtres temporels et catégoriels.}
+Deux listes déroulantes limitent à la volée les données affichées : créneau horaire (0–23 h ou « Toutes les heures ») et type de flux (Arrivées, Départs). À chaque changement, les flux non correspondants sont masqués et le visuel se met à jour immédiatement.
+
+\paragraph{Carte de chaleur.}
+Un interrupteur active showHeatmap. La couche de densité peut s’afficher seule ou en superposition. En superposition, les arcs restent visibles avec une opacité réduite ; en substitution, ils sont masqués. Le basculement est instantané, sans recréer les éléments SVG.
+
+\paragraph{Statistiques en temps réel.}
+Le panneau affiche trois valeurs : Flux actifs, Passagers totaux et Moyenne par flux. Elles se recalculent après chaque interaction. Quand la carte de chaleur est active, ces chiffres restent fondés sur la liste de flux (et non sur la densité), afin d’éviter toute ambiguïté.
+
+\paragraph{Accessibilité.}
+Tous les contrôles sont utilisables au clavier (rôles listbox et checkbox, navigation par Tab). Les contrastes respectent WCAG 2.2 niveau AA et les libellés sont disponibles en fr/en via un fichier i18n.json.
+
+Intégré comme simple <div> en surcouche, le ControlPanel n’altère ni le schéma des données ni les filtres croisés, et apporte une couche ergonomique dédiée à la lecture des flux.

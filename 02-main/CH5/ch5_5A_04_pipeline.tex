@@ -1,0 +1,23 @@
+% ---------------------------------------------------------------------------
+%  ch4_4A_04_rendering.tex
+%  Section 4A.4 — Rendu graphique et animation des flux
+% ---------------------------------------------------------------------------
+\subsection{Rendu graphique et animation des flux}
+\label{subsec:4A-rendering}
+
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+Le module FlowRenderer transforme chaque flux (chemin déjà simplifié) en formes \textsc{svg}. Ce format s’affiche nativement dans les navigateurs et se prête bien aux styles et animations avec D3. Lorsque le tracé comporte plusieurs segments, il est lissé pour obtenir une courbe fluide. Le réglage curvature contrôle ce lissage : faible valeur = segments anguleux, valeur élevée = courbe arrondie. Les coordonnées X1,Y1,X2,Y2 sont exprimées en pixels et alignées sur l’overlay de référence ; le format des obstacles et la figure de superposition sont documentés en annexe~A2 (\autoref{ann:a2-fond}).
+
+\paragraph{Encodage visuel.}
+L’épaisseur du trait représente le volume de passagers. Elle est automatiquement ramenée dans une plage lisible (en pratique, de quelques pixels à un maximum fixé) pour éviter les saturations. La couleur suit une échelle continue du « faible » au « fort » trafic (lowTraffic $\rightarrow$ highTraffic), modifiable dans le Format Pane. L’opacité initiale (0{,}7 par défaut) est également réglable.
+
+\paragraph{Interactions.}
+Au survol, le flux est mis en avant : opacité portée à 1 et trait légèrement élargi. Le service d’info-bulle natif de Power BI (TooltipServiceWrapper) affiche les détails utiles : identifiant, volume, heure et catégorie, ce qui garantit une cohérence visuelle avec le reste du rapport.
+
+\paragraph{Animation du sens.}
+Pour indiquer la direction, une petite particule se déplace le long du tracé en boucle. Sa vitesse dépend de la longueur du chemin et d’un paramètre animationSpeed (valeur par défaut : 2~s pour un trajet moyen), de façon à rendre l’effet perceptible sans surcharger la lecture \parencite{meulemans2017}.
+
+\paragraph{Carte de chaleur (option).}
+Si showHeatmap est activé, HeatmapRenderer découpe la surface en une grille, additionne les volumes par cellule puis applique un flou pour produire une représentation continue de la densité. Les cellules en dessous d’un seuil (percentile réglable) restent transparentes afin de laisser le fond cartographique visible.

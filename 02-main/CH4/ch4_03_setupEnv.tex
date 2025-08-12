@@ -1,0 +1,34 @@
+% -----------------------------------------------------------------
+% 4.3 – Mise en place de l’environnement de développement
+% Fichier : ch4_03_setupEnv.tex
+% -----------------------------------------------------------------
+
+\section{Mise en place de l’environnement de développement}\label{sec:ch4_setup_env}
+
+Une fois les prérequis matériels et logiciels réunis, la préparation effective du poste de travail s’effectue en quatre étapes séquentielles : l’installation de Node.js, l’ajout de l’outil pbiviz, la création du certificat SSL local et l’activation du mode développeur sur Power BI Service. Bien que la procédure ne doive être exécutée qu’une seule fois par machine, son respect intégral conditionne la réussite des itérations ultérieures.
+
+La première étape consiste à installer Node.js en version Long Term Support. Le programme d’installation se télécharge depuis le site officiel de Node (« LTS 18.x » au moment de la rédaction). Sous Windows, l’assistant ajoute également npm et met à jour la variable d’environnement \textsc{path}. Un redémarrage peut être nécessaire pour que la commande
+\begin{lstlisting}[language=bash]
+node -v
+\end{lstlisting}
+affiche la version installée.
+
+Dès que Node est opérationnel, l’utilitaire Power BI Visuals Tools s’ajoute globalement au moyen de :
+\begin{lstlisting}[language=bash]
+npm install -g powerbi-visuals-tools@latest
+\end{lstlisting}
+La présence de l’exécutable se vérifie par
+\begin{lstlisting}[language=bash]
+pbiviz --help
+\end{lstlisting}
+qui doit retourner la liste des sous‑commandes disponibles. L’absence de résultat indique soit un problème de droits d’installation, soit une configuration incorrecte du \textsc{path}. Dans un contexte d’entreprise, l’exécution de la commande avec des privilèges élevés – ou son inscription dans le registre système – peut s’avérer nécessaire.
+
+La troisième opération vise à autoriser la communication sécurisée entre le service Power BI et le serveur local pbiviz. L’outil fournit son propre script :
+\begin{lstlisting}[language=bash]
+pbiviz --install-cert
+\end{lstlisting}
+Sous Windows 10/11, la commande exploite l’API New‑SelfSignedCertificate pour générer un certificat intitulé PowerBIVisualTest et l’importer dans le magasin « Autorités de certification racines de confiance ». Un dialogue peut apparaître pour demander la confirmation de l’ajout. Sur macOS et Linux, pbiviz s’appuie sur openssl; il est donc impératif que cette dépendance figure dans le \textsc{path}. Un échec silencieux demeure le symptôme le plus courant en environnement verrouillé ; la solution implique généralement la modification temporaire de la politique d’exécution PowerShell ou l’installation manuelle du certificat généré.
+
+La dernière étape se déroule dans le portail en ligne <app.powerbi.com>. Après authentification avec une licence Pro ou Premium Per User, l’utilisateur ouvre Settings \(\rightarrow\) User settings \(\rightarrow\) Developer et active l’option Power BI mode développeur. Dès validation, un pictogramme \textless{}\textgreater{} supplémentaire apparaît dans le volet Visualizations de tout rapport ouvert en mode Édition. Cette icône constitue l’unique porte d’entrée pour charger un visuel non publié.
+
+À ce stade, le poste de développement est pleinement configuré : un certificat SSL approuvé sécurise la connexion sur https://localhost:8080, pbiviz est disponible globalement et le mode développeur est actif côté service. Les sections suivantes décrivent la génération du squelette de visuel minimal et les premières vérifications fonctionnelles.

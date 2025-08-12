@@ -1,0 +1,34 @@
+% =============================================================
+\chapter{État de l'art}
+\label{chap:state-of-the-art}
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+
+
+Le développement de visuels personnalisés dans Power BI s’appuie sur un écosystème technologique dense qui combine l’offre native de la plateforme et des extensions construites par code. 
+Afin de situer précisément le cadre de ce travail, ce chapitre commence par décrire l'architecture interne des visuels Power BI et distingue les trois grandes familles actuellement accessibles aux concepteurs : les visuels livrés par Microsoft, les visuels générés par scripts Python/R et les visuels personnalisés réalisés au moyen du SDK officiel. 
+Chaque famille est examinée tour à tour, en s’appuyant sur la documentation Microsoft (2025) et les travaux de référence en datavisualisation \parencite{Ware2019, MicrosoftPBISDKTS2025}. L’analyse porte autant sur les capacités offertes que sur les limitations fonctionnelles, de performance ou d’accessibilité que les praticiens doivent anticiper.
+
+Dans un second temps, nous explicitons les choix technologiques retenus pour ce projet : le langage TypeScript, le moteur de rendu SVG de D3.js et, le cas échéant, l’emploi de React pour la gestion du DOM. Chaque choix est justifié au regard des exigences identifiées précédemment (maintenabilité, interactivité et conformité WCAG 2.2).
+
+Enfin, la dernière section opère une analyse critique des écarts entre les besoins métier relevés chez ECRINS SA et l’état actuel de l’art. Ce bilan établit la légitimité d’un développement custom et prépare les décisions techniques détaillées au chapitre 5.
+
+
+% -----------------------------------------------------------------
+% 2.1 Concepts BI et datavisualisation
+\input{02-main/ch2_01_conceptBI}
+% 2.2 Architecture des visuels Power BI
+\input{02-main/ch2_02_architecture}
+% 2.3 Visuels scriptés Python / R
+\input{02-main/ch2_03_python_r}
+% 2.4 SDK Power BI : structure, sécurité, pipeline
+\input{02-main/ch2_04_sdk}
+% 2.5 Choix technologiques (TypeScript, D3, React optionnel)
+\input{02-main/ch2_05_choix.tex}
+% 2.6 Solutions concurrentes (Tableau, Qlik, Looker)
+\input{02-main/ch2_06_concurrence.tex}
+% 2.7 Analyse des gaps et opportunités
+\input{02-main/ch2_07_analyse.tex}
+
+% =============================================================

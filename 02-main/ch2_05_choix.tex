@@ -1,0 +1,64 @@
+%-----------------------------------------------------------
+\section{Choix technologiques (TypeScript, D3, React optionnel)}
+\label{sec:techno}
+%-----------------------------------------------------------
+
+Le développement d’un visuel personnalisé Power BI repose sur un stack
+web moderne articulé autour de trois briques : TypeScript pour le langage,
+D3.js pour le rendu vectoriel et, à titre optionnel, React pour la
+structuration de l’interface. Ce choix résulte d’une analyse des
+alternatives en termes de maintenabilité, performance, sécurité et
+accessibilité.
+
+\subsection{TypeScript vs JavaScript.}
+Le SDK Power BI est conçu nativement pour TypeScript, sur-ensemble typé de
+JavaScript que Microsoft recommande pour les visuels personnalisés
+\parencite{MicrosoftPBISDKTS2025}. Le typage statique détecte précocement
+les incohérences et réduit les bogues en production : une étude
+empirique portant sur plus de 400 projets GitHub montre une diminution
+moyenne de 15 \% des défauts après migration vers TypeScript
+\parencite{BeyerEtAl2023}. Les annotations rendent le code plus explicite,
+facilitant lecture, revue et refactorisation. Par ailleurs, TypeScript
+apporte des abstractions modernes — interfaces, classes, generics —
+qui encouragent une architecture modulaire et extensible. Le code est
+ensuite transcompilé en JavaScript ES 2019, sans impact mesurable sur les
+performances d’exécution \parencite{EcmaBenchmark2024}. Ne pas passer par
+cette couche (écrire directement en JavaScript ES6+) aurait simplifié la
+phase de build, mais au prix d’une dette technique accrue et d’un risque de
+régression plus élevé, notamment pour un composant destiné à évoluer avec
+l’API Power BI (version 6.1.2 stable, 26 mai 2025 \parencite{MicrosoftDocsSDK2025}).
+
+\subsection{D3.js pour le rendu SVG}
+
+D3 — «\,Data-Driven Documents\,» — est la librairie de référence pour manipuler le DOM SVG et créer des visualisations « sur mesure ». 
+Elle établit un lien direct entre données et éléments graphiques, autorisant des transformations déclaratives efficientes \parencite{Bostock2019}. 
+Cette approche bas niveau confère un contrôle complet sur chaque attribut visuel (couleur, position, animation), condition nécessaire à la réalisation de graphiques non standards répondant à des exigences métier spécifiques. 
+D3 propose en outre un vaste ensemble de modules (générateurs de formes, projections cartographiques, échelles, layouts hiérarchiques) et s’appuie sur un écosystème mature d’exemples réutilisables. 
+Les bibliothèques « haut niveau » telles que Chart.js ou Plotly raccourcissent le prototypage, mais leurs abstractions atteignent rapidement leurs limites pour des designs originaux ; de leur côté, les rendus basés sur canvas ou WebGL complexifient l’accessibilité et la netteté en cas de zoom. Le choix d’un SVG produit par D3 facilite enfin la mise à l’échelle et l’ajout d’attributs ARIA ou de balises \verb|<title>|, conformément aux recommandations WCAG 2.2 applicables aux rapports Power BI \parencite{W3CAccessibility2023}.
+
+
+\subsection{React (optionnel) pour l’UI.}
+React n’est pas requis par le SDK, mais devient pertinent dès lors que le
+visuel embarque une interface utilisateur complexe : sélecteurs, menus
+contextuels, légende cliquable. Sa philosophie component-based et
+son virtual DOM optimisent les mises à jour d’interface en
+réduisant les re-rendus coûteux \parencite{ReactDocs2024}. L’association
+« React pilote la structure, D3 gère les calculs et applique les
+transformations » est désormais un pattern reconnu ; plusieurs
+visuels open-source l’utilisent déjà dans AppSource
+\parencite{PowerBIReactD3Sample2024}. L’empreinte ajoutée (≈ 40 kB
+minifiés) reste compatible avec la limite de 2,5 MiB du package .pbiviz.
+Pour les projets très légers, on peut encore préférer Preact, clone
+allégé compatible avec l’API React. Le coût cognitif — JSX, gestion d’état —
+est maîtrisé par l’équipe et amorti par la facilité de test unitaire des
+composants, réalisée ici sous Jest avec le preset officiel
+jest-pbi-visuals-preset. Si le visuel n’exige qu’un rendu statique
+ou des animations D3 simples, il est cohérent de se passer de React ; c’est
+pourquoi l’usage reste qualifié d’« optionnel ».
+
+\subsection{Synthèse.}
+Le triptyque TypeScript + D3 (+ React) offre un compromis robuste :
+rigueur logicielle, expressivité graphique, performances maîtrisées et
+accessibilité native. Il s’inscrit dans les standards de l’écosystème
+Power BI, maximise la réutilisabilité du savoir-faire front-end de l’équipe
+et minimise la dette technique à long terme.

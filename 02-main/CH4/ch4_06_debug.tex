@@ -1,0 +1,51 @@
+% -----------------------------------------------------------------
+% 4.6 – Débogage et hot‑reload dans Power BI Service
+% Fichier : ch4_06_debug.tex
+% -----------------------------------------------------------------
+
+\section{Débogage et hot‑reload dans Power BI Service}\label{sec:ch4_debug}
+
+Depuis 2024, Microsoft a entièrement transféré le mode développeur vers la plateforme en ligne ; Power BI Desktop ne prend plus en charge le chargement dynamique d’un visuel en cours de développement. La présente sous‑section décrit la procédure opérationnelle à suivre pour tester un composant en conditions quasi réelles, détecter les anomalies et réduire le temps d’itération entre deux modifications de code.
+
+\subsection{Insertion du visuel développeur}
+
+Une fois le serveur local lancé via :\vspace{-1ex}
+\begin{lstlisting}[language=bash]
+pbiviz start
+\end{lstlisting}
+le développeur se connecte à l’adresse <app.powerbi.com> avec un compte disposant de la licence requise et ouvre un rapport de test en mode « Édition ». Dans le volet Visualizations, l’icône <> devient visible à condition d’avoir activé le Developer mode dans les paramètres utilisateur. Un simple clic insère sur la page un conteneur blanc relié à https://localhost:8080. Si la connexion SSL s’établit correctement, Power BI télécharge le bundle JavaScript du visuel et exécute immédiatement la méthode update().
+
+\subsection{Premier affichage et état d’attente}
+
+Le squelette généré par pbiviz new affiche, par défaut, un compteur du nombre d’appels à update(). Tant qu’aucun champ de données n’est associé, le visuel fonctionne en « mode attente » : il se contente d’occuper son rectangle et d’incrémenter le compteur lors des évènements resize ou refresh. Cette phase est un marqueur précieux : elle confirme que le pipeline de chargement fonctionne et que l’environnement a reconnu le certificat.
+
+\subsection{Association de données et contrôles de base}
+
+Le développeur peut ensuite glisser‑déposer un ou plusieurs champs depuis le panneau Fields vers le visuel. Chaque interaction déclenche un nouvel appel à update(), dont les paramètres contiennent désormais un objet DataView. L’exploration de cette structure dans la console du navigateur permet de vérifier :
+\begin{enumerate}
+  \item la présence des rôles de données attendus ;
+  \item l’exactitude des types (catégorie, valeur, hiérarchie) ;
+  \item la cohérence des index, notamment lorsque plusieurs tables sont en jeu.
+\end{enumerate}
+Une pratique courante consiste à loguer la taille des tableaux categorical.values et categorical.categories afin d’anticiper les surcharges mémoire dans le cas de jeux de données volumineux.
+
+\subsection{Hot‑reload automatique}
+
+Tant que le processus pbiviz start reste actif, toute modification du fichier visual.ts, de la feuille de style ou d’un template HTML déclenche une recompilation suivie d’un rechargement silencieux du visuel dans Power BI. Aucun refresh manuel n’est requis, à condition que le développeur demeure sur l’onglet où le rapport est ouvert. Si la modification touche pbiviz.json ou capabilities.json, Power BI exige toutefois un rechargement complet de la page, car ces métadonnées sont chargées au démarrage du conteneur.
+
+\subsection{Diagnostic des erreurs fréquentes}
+
+Deux catégories de messages d’erreur apparaissent régulièrement :
+\begin{description}
+  \item[« Can’t contact visual server »] indique l’échec de la connexion HTTPS. Les causes probables sont : certificat non approuvé, serveur stoppé ou port 8080 occupé par un autre processus.
+  \item[Exceptions JavaScript] relèvent d’un bug dans le code du visuel. Le stack trace est affiché dans la console et se complète d’une mention « onUpdate » si l’erreur survient durant le rendu.
+\end{description}
+La meilleure approche consiste à garder la console (F12) ouverte, à activer le filtre « Errors » et à insérer temporairement des console.time() / console.timeEnd() autour des blocs de calcul gourmand afin de détecter les goulots d’étranglement.
+
+\subsection{Nettoyage de la session et reprise}
+
+Lorsque les tests sont terminés, l’arrêt du serveur local par Ctrl + C libère le port et met fin à la session SSL. Il est recommandé de supprimer le conteneur développeur du rapport de test afin d’éviter toute tentative de connexion ultérieure à un serveur inexistant. Un nouveau cycle peut commencer en relançant pbiviz start puis en réinsérant l’icône <>. Cette discipline pre‑prod limite les confusions, notamment lorsque plusieurs développeurs travaillent sur des visuels distincts.
+
+
+
+À l’issue de cette phase de débogage interactif, le visuel peut être considéré comme stabilisé. L’étape suivante consiste à répertorier les erreurs courantes observées et à documenter systématiquement leurs correctifs, démarche présentée dans la section 4.7.

@@ -94,15 +94,20 @@
 % Chapters
 \setcounter{mtc}{7} % Help minitoc skip the front matter chapters
 \include{02-main/ch1_introduction}
-\include{02-main/CH2/ch2_StateOfArt}
+\include{02-main/ch2_StateOfArt}
 \include{02-main/CH3/ch3_context}
-\include{02-main/ch3_conclusion}
+\include{02-main/CH4/ch4_playbook}
+\include{02-main/CH5/ch5_visuels}
+\include{02-main/CH6/ch6_industrialisation}
+\include{02-main/CH7/ch7_resultats}
+\include{02-main/CH8/ch8_conclusion}
 
-% Appendices
+
 \appendix
 % https://tex.stackexchange.com/questions/100479/label-appendix-as-appendix-i-ii-iii-rather-than-appendix-a-b-and-c
 \renewcommand{\thechapter}{\Roman{chapter}}
-\include{03-tail/01_appendix_example}
+\include{03-tail/01_appendix}
+
 
 % -----------------------------------------------------------------------------
 % Back matter
@@ -112,6 +117,9 @@
 % Bibliography
 \clearpage
 \printbibliography[title={Références}, heading=bibintoc]
+
+% Ensure your .bib file does not contain invalid characters in the 'howpublished' field.
+% If the issue persists, try using a different bibliography style or remove problematic entries.
 
 \clearpage
 % Glossary

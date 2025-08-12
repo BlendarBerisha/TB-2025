@@ -1,0 +1,22 @@
+% ---------------------------------------------------------------------------
+%  ch4_4B_05_interactions.tex
+%  Section 4B.5 — Interactions utilisateur : drill‑down, fil d'Ariane, cross‑highlight
+% ---------------------------------------------------------------------------
+\subsection{Interactions utilisateur : drill‑down, fil d'Ariane et cross‑highlight}
+\label{subsec:4B-interactions}
+
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+L’expérience interactive du Radial Sunburst Decomposition Tree  a été conçue pour conjuguer intuitivité et conformité aux standards Power BI. Trois axes principaux structurent cette ergonomie : l’exploration hiérarchique par drill‑down / drill‑up, la synchronisation avec le filtrage croisé natif, et l’accessibilité clavier / lecteur d’écran.
+
+\paragraph{Drill‑down et fil d'Ariane.} Un clic sur un segment déclenche un drill‑down : l’arc sélectionné devient le nouveau centre de la rosace, ses sous‑catégories se déployant dans les anneaux extérieurs. Inversement, un clic sur le centre ou sur un élément du fil d’Ariane provoque un drill‑up. La barre de fil d'Ariane, rendue dans un élément nav, liste la hiérarchie complète depuis la racine jusqu’au nœud courant ; chaque libellé est cliquable et focalisable pour permettre un retour direct à un niveau intermédiaire. Les transitions radiales fluides décrites au \S\ref{subsec:4B-rendering} garantissent la continuité visuelle au cours de ces navigations.
+
+\paragraph{Cross‑highlight et écosystème Power BI.} À chaque sélection, le module Interaction Manager émet une identité via l’ISelectionManager. Les autres visuels du rapport reçoivent alors un filtre croisé, tandis que le sunburst lui‑même modifie l’opacité des arcs non sélectionnés pour mettre en évidence la branche concernée. Réciproquement, lorsqu’un autre visuel applique un filtre, le sunburst réagit en surlignant les segments correspondants et en ajustant la barre KPI centrale si nécessaire.
+
+\paragraph{Survol et info‑bulle.} Le passage du pointeur déclenche une mise en relief légère du segment (augmentation d’opacité et halo), accompagnée d’une info‑bulle native Power BI indiquant chemin hiérarchique complet et valeur formatée. Ce retour immédiat permet une lecture rapide sans action de clic.
+
+\paragraph{Navigation clavier et accessibilité.} L’ensemble des interactions est accessible sans souris. La touche Tab fait circuler le focus sur les segments significatifs, la barre KPI et les éléments du fil d'Ariane. Les flèches gauche / droite parcourent les segments d’un même anneau, tandis que flèche bas réalise un drill‑down sur le nœud focalisé, flèche haut ou Esc effectue un drill‑up. La touche Entrée confirme la sélection. Chaque changement de contexte est annoncé par un attribut aria‑live="polite", et chaque arc possède un aria‑label décrivant son chemin et sa valeur, assurant ainsi la conformité WCAG 2.2 AA.
+
+Cette orchestration d’événements garantit une exploration hiérarchique fluide, une intégration transparente au filtrage croisé de Power BI et une accessibilité complète, répondant ainsi aux objectifs fixés pour le visuel Sunburst.
+% ---------------------------------------------------------------------------

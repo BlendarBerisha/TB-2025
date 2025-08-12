@@ -1,0 +1,49 @@
+% -----------------------------------------------------------------
+% 4.5 – Structure des fichiers générés par pbiviz
+% Fichier : ch4_05_filesStructure.tex
+% -----------------------------------------------------------------
+
+\section{Structure des fichiers générés par pbiviz}\label{sec:ch4_files_structure}
+
+L’invocation de pbiviz new crée automatiquement une arborescence normalisée, conçue pour séparer les métadonnées du visuel, son code source et ses ressources statiques. Cette organisation reflète le cycle de vie imposé par le host Power BI et facilite la maintenance future.
+
+\subsection{Arborescence racine}
+
+Le projet se présente immédiatement sous la forme suivante :
+\begin{lstlisting}[language=bash]
+SampleVisual/
+|-- src/                # code TypeScript du visuel
+|   |-- visual.ts
+|   `-- settings.ts
+|-- assets/             # icones et images integrees
+|   `-- icon.png
+|-- style/              # feuilles de style LESS ou CSS
+|   `-- visual.less
+|-- capabilities.json   # contrat de donnees et format
+|-- pbiviz.json         # manifeste et metadonnees
+|-- package.json        # dependances npm
+|-- tsconfig.json       # compilation TypeScript
+`-- ...
+\end{lstlisting}
+Cette disposition garantit qu’un clean build -- lors d’un déploiement automatisé, par exemple -- peut s’effectuer en isolant sans ambiguïté le source code des artefacts binaires produits.
+
+\subsection{capabilities.json}
+
+Le fichier capabilities.json formalise le contrat qu’énonce le visuel à Power BI. D’une part, il décrit les rôles de données attendus : dimensions catégorielles, mesures numériques, hiérarchies ou tables. D’autre part, il définit l’ensemble des objets de formatage qui apparaîtront dans le volet « Format » de l’interface. Chaque propriété est typée, accompagnée d’un identifiant interne et d’une étiquette traduisible. Le DataView remis au code du visuel se conforme strictement à cette déclaration ; toute incohérence se traduit par un DataView vide ou partiel, d’où l’importance de conserver ce fichier comme source de vérité.
+
+\subsection{visual.ts}
+
+visual.ts contient la classe principale Visual qui implémente l’interface IVisual. La méthode update(\dots) orchestre le rendu : récupération des données, transformation, puis construction ou mise à jour du DOM -- généralement via \textsc{d3.js}. Le fichier accueille aussi les méthodes de cycle de vie (enumerateObjectInstances, destroy) et les gestionnaires d’événements.
+
+\subsection{settings.ts}
+
+Le rôle de settings.ts est de typer les options exposées dans capabilities.json. En héritant de DataViewObjectsParser, le développeur déclare des classes qui regroupent les propriétés de formatage : couleurs, booléens, tailles, limites, etc. Toute modification du schéma de format requiert donc un ajustement symétrique dans ce fichier, faute de quoi des valeurs undefined risquent de perturber le rendu.
+
+\subsection{pbiviz.json}
+
+pbiviz.json joue le rôle de manifeste. Il regroupe : le nom interne du visuel, son display name, le GUID unique, la version de l’API ciblée, les informations d’auteur, l’icône, la référence au fichier capabilities.json et à la feuille de style, ainsi que les ressources additionnelles éventuelles. Lors du package build, ce fichier pilote l’inclusion des fichiers et la signature numérique.
+
+\subsection{Interdépendance et bonnes pratiques}
+
+La configuration tripartite formée par capabilities.json, settings.ts et visual.ts impose un principe fondamental : toute modification dans l’un doit se refléter dans les autres. Il est établi une règle de revue de code qui exige que tout pull request modifiant le contrat de données ou le panneau de format inclue systématiquement l’adaptation correspondante dans les classes TypeScript et les tests unitaires. Ce couplage strict constitue le premier rempart contre les régressions fonctionnelles.
+

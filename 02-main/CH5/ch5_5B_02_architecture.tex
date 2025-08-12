@@ -1,0 +1,92 @@
+% ---------------------------------------------------------------------------
+%  ch4_4B_02_pipeline.tex
+%  Section 4B.2 — Pipeline de traitement des données (update() → DOM)
+% ---------------------------------------------------------------------------
+\subsection{Pipeline de traitement des données : de update() au DOM}
+\label{subsec:4B-pipeline}
+
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+À chaque appel de update(options) déclenché par Power BI (changement de filtres ou de données), le visuel exécute un flux unidirectionnel en cinq étapes. Ce pipeline reconstruit de manière déterministe le rendu \textsc{svg} à partir des données, conformément aux recommandations du SDK Power BI.
+
+% --- Figure : Sunburst pipeline (final) ---
+\begin{figure}[h]
+  \centering
+  \resizebox{\linewidth}{!}{%
+  \begin{tikzpicture}[>=Latex, node distance=32mm]
+    % Styles (noms sûrs, pas de conflit avec TikZ)
+    \tikzset{
+      stage/.style={draw,rounded corners,align=center,inner sep=6pt,fill=gray!10},
+      infobox/.style={draw,rounded corners,align=left,inner sep=6pt},
+      flowarrow/.style={->,line width=1pt}
+    }
+
+    % Étapes principales
+    \node[infobox] (tbl)  {\textbf{Table (extrait)}\\
+      \scriptsize\ttfamily
+      L1\quad L2\quad L3\quad |\quad Value\\
+      Marketing\quad Digital\quad SEO\quad |\quad 120\\
+      Marketing\quad Paid\quad SEA\quad |\quad 80\\
+      Finance\quad Controle\quad Opex\quad |\quad 150
+    };
+
+    \node[stage, right=of tbl] (hier) {Hiérarchie\\(stratify)};
+    \node[stage, right=of hier] (part) {Partition radiale\\(angles, rayons)};
+    \node[stage, right=of part] (svg)  {Arcs SVG\\(paths)};
+
+    \draw[flowarrow] (tbl) -- (hier);
+    \draw[flowarrow] (hier) -- (part);
+    \draw[flowarrow] (part) -- (svg);
+
+    % Mini-illustration : Hiérarchie
+    \begin{scope}[shift={($(hier.south)+(0,-12mm)$)}]
+      \scriptsize
+      \node (r) at (0,0) {Total};
+      \node (m) at (-1.7,-0.9) {Marketing};
+      \node (f) at ( 1.7,-0.9) {Finance};
+      \node (d) at (-2.6,-1.8) {Digital};
+      \node (p) at (-0.8,-1.8) {Paid};
+      \draw (r)--(m) (r)--(f) (m)--(d) (m)--(p);
+    \end{scope}
+
+    % Mini-illustration : Partition radiale
+    \begin{scope}[shift={($(part.south)+(0,-12mm)$)}]
+      \scriptsize
+      \draw[gray!50] (0,0) circle (0.9);
+      \draw[gray!50] (0,0) circle (1.5);
+      \draw (0,0) -- (60:1.5);
+      \draw (0,0) -- (150:1.5);
+      \draw (0,0) -- (250:1.5);
+    \end{scope}
+
+    % Mini-illustration : Arcs SVG (gris éclaircis pour N&B)
+    \begin{scope}[shift={($(svg.south)+(0,-12mm)$)}]
+      \scriptsize
+      \filldraw[gray!25] (0,0) -- (20:0.9) arc (20:80:0.9) -- (80:1.5) arc (80:20:1.5) -- cycle;
+      \filldraw[gray!12] (0,0) -- (120:0.9) arc (120:180:0.9) -- (180:1.5) arc (180:120:1.5) -- cycle;
+    \end{scope}
+  \end{tikzpicture}}
+  \caption[Chaîne de rendu du Sunburst]
+  {Chaîne de rendu du Sunburst : table \(\rightarrow\) hiérarchie \(\rightarrow\) partition radiale \(\rightarrow\) arcs SVG.}
+  \label{fig:sunburst-pipeline}
+\end{figure}
+
+
+
+
+Pour fixer les idées, la~Figure~\ref{fig:sunburst-pipeline} montre la~transformation progressive des données~: table tabulaire → Hiérarchie → Partition radiale → Arcs SVG\@.
+
+Les fichiers capabilities.json et pbiviz.json du visuel Radial Sunburst Decomposition Tree sont disponibles dans le dépôt source ; cette sous-section décrit uniquement le mapping hiérarchique (Category → Value) et les objets clés du volet Format.
+
+\paragraph{Analyse des données et paramètres.} DataConverter lit le DataView, reconstitue la hiérarchie parent–enfant en agrégeant les feuilles, et RadialSunburstSettings charge les préférences utilisateur (palette, profondeur maximale, KPI central).
+
+\paragraph{Construction du modèle de vue.} ViewModel calcule la contribution de chaque nœud et peut regrouper les branches les plus petites au-delà d’un seuil pour préserver lisibilité et latence. Il expose ensuite une structure à plat (SunburstData) utilisée par l’étape de mise en page.
+
+\paragraph{Mise en page radiale.} PartitionLayout applique un partitionnement radial : chaque nœud reçoit un angle proportionnel à sa valeur agrégée et chaque niveau hiérarchique occupe un anneau dédié. Cette étape fixe la géométrie des segments à dessiner.
+
+\paragraph{Rendu.} RingRenderer trace les arcs et applique les styles (couleurs, opacité, traits). Les transitions de drill-down et drill-up sont animées sur \SI{300}{\milli\second} afin d’assurer une navigation fluide.
+
+\paragraph{Interactions et finalisation.} Interaction Manager attache les gestionnaires de clic, survol et clavier, met à jour le fil d’Ariane et émet les sélections via l’ISelectionManager pour le filtrage croisé. Visual Shell clôt le cycle et journalise les temps par étape.
+
+Ce pipeline, reconstruit à chaque rafraîchissement, facilite le hot-reload, les tests et le suivi de performance, points clés pour la gouvernance des visuels internes.

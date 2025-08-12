@@ -1,0 +1,36 @@
+% ---------------------------------------------------------------------------
+%  ch4_4B_04_rendering.tex
+%  Section 4B.4 — Rendu SVG, transitions et KPI visuel
+% ---------------------------------------------------------------------------
+\subsection{Rendu SVG, transitions et KPI visuel}
+\label{subsec:4B-rendering}
+
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+Le rendu du Radial Sunburst Decomposition Tree  s’appuie sur du SVG : 
+chaque segment hiérarchique est un <path> dont l’attribut d encode la courbe polaire calculée par le layout. 
+Les arcs sont peints des anneaux internes vers les anneaux externes pour préserver les superpositions lors des effets de halo ou de flou.
+
+Par défaut, une palette qualitative différencie clairement les catégories; 
+une palette perceptuellement uniforme peut être activée pour l’accessibilité daltonienne. 
+Les contrastes respectent le seuil WCAG 2.2 AA (ratio \(\geq 4.5{:}1\)). 
+Chaque arc reçoit role="listitem" et un aria-label décrivant le chemin hiérarchique et la valeur formatée, 
+afin d’assurer la compatibilité avec les technologies d’assistance.
+
+\paragraph{Transitions animées.}
+Les opérations de drill-down / drill-up déclenchent une interpolation des angles et rayons (d3.transition, 
+durée \SI{300}{\milli\second}, courbe ease cubic-out), ce qui guide le regard. 
+Même pour des chemins profonds, la transition demeure dans la cible de latence.
+
+\paragraph{Effets graphiques.}
+RingRenderer peut appliquer des dégradés linéaires ou radiaux et un flou gaussien léger sur le segment actif; 
+les arcs non sélectionnés voient leur opacité réduite pour renforcer la hiérarchie visuelle.
+
+\paragraph{KPI central et étiquettes adaptatives.}
+Un KPI central optionnel présente un total ou un pourcentage, avec coloration dynamique en cas de dépassement. 
+Les libellés de catégories apparaissent au-delà d’un angle minimal \(\theta_{\min}\) et se révèlent progressivement lors d’un drill-down.
+
+\paragraph{Info-bulles et survol.}
+Au survol, un arc est souligné (opacité/halo). 
+Les info-bulles natives affichent le libellé hiérarchique complet et la valeur numérique exacte.

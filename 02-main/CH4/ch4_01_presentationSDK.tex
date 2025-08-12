@@ -1,0 +1,18 @@
+% -----------------------------------------------------------------
+% 4.1 – Présentation du SDK Power BI Custom Visuals et de pbiviz
+% Fichier : ch4_01_presentationSDK.tex
+% -----------------------------------------------------------------
+
+\section{Présentation du SDK Power~BI Custom Visuals et de pbiviz}\label{sec:ch4_sdk_pbiviz}
+
+Le Software Development Kit (SDK) Power BI Custom Visuals publié par Microsoft fournit l’infrastructure nécessaire à la conception, à l’empaquetage et à la distribution de visuels additionnels au format .pbiviz. Au cœur de cet écosystème se trouve l’outil en ligne de commande pbiviz, lequel agit comme point d’entrée unique pour l’ensemble des opérations de scaffolding, de compilation et de débogage.
+
+Concrètement, le SDK s’appuie sur l’écosystème Web standard : le code métier est écrit en TypeScript et manipulé à l’exécution comme du JavaScript transpilé ; la couche de présentation repose sur HTML, CSS / LESS et SVG, avec un recours fréquent à \textsc{d3.js} pour la construction de scènes vectorielles. Cette architecture garantit une intégration transparente avec les navigateurs modernes tout en respectant le modèle de sandboxing imposé par Power BI : chaque visuel s’exécute dans un contexte isolé, sans accès direct aux données au-delà de celles explicitement fournies par le host.
+
+L’outil pbiviz simplifie plusieurs étapes clés. D’abord, la génération d’un squelette de projet complet grâce à la commande pbiviz new évite la configuration manuelle d’un environnement Web ; le développeur obtient immédiatement une arborescence contenant le manifeste pbiviz.json, le fichier de capacités capabilities.json, les sources TypeScript ainsi que les ressources statiques. Ensuite, la phase de compilation est orchestrée par un serveur local déclenché via pbiviz start, lequel assure à la fois la transpilation du code, l’injection à chaud des modifications (hot-reload) et l’exposition du visuel sur https://localhost:8080. Enfin, la commande pbiviz package produit le fichier .pbiviz final, prêt à être importé dans un rapport ou diffusé sur AppSource.
+
+En 2025, l’évolution du service Power BI a déplacé la totalité du cycle de débogage vers la plateforme en ligne ; la prise en charge native du mode développeur dans Power BI Desktop a été abandonnée. Cette décision renforce la cohérence de l’expérience développeur, mais impose l’utilisation d’un compte Pro ou Premium Per User ainsi que l’installation d’un certificat SSL local pour sécuriser la communication entre le navigateur et le serveur pbiviz. Ces contraintes techniques seront examinées en détail dans les sous-sections suivantes.
+
+Au-delà de la simplification opérationnelle, le SDK apporte un cadre de gouvernance : la présence d’un fichier manifeste prescrit la version de l’API, centralise les métadonnées auteur, référence les ressources externes et établit la signature numérique requise pour le déploiement en environnement contrôlé. En conséquence, l’adoption de ce kit constitue un premier levier d’industrialisation, puisqu’elle aligne tous les développements internes sur un standard unique, compatible avec les processus CI/CD abordés au chapitre 5.
+
+À la lumière de ces éléments, la section 4.3 précisera les prérequis matériels et logiciels indispensables à l’installation de pbiviz, tandis que la section 4.4 décrira pas à pas la mise en place de l’environnement de développement.

@@ -1,0 +1,4 @@
+base_groupe,groupe_valeur,conserver,remplacer,titre,doi/url,note
+URL,learn.microsoft.com/power-bi/developer/visuals/certification-overview,MicrosoftCertificationGuide2025,MicrosoftCertGuide2025,Certification requirements for custom visuals,https://learn.microsoft.com/power-bi/developer/visuals/certification-overview,"Remplacer la clé dans les \parencite{}, \cite{}, \textcite{}, etc."
+URL,okviz.com/blog/power-bi-visual-sandbox,OkVizSandbox2022,OkVizSandbox,Understanding the Power BI Visual Sandbox,https://okviz.com/blog/power-bi-visual-sandbox,"Remplacer la clé dans les \parencite{}, \cite{}, \textcite{}, etc."
+TITRE,understanding the power bi visual sandbox,OkVizSandbox2022,OkVizSandbox,Understanding the Power BI Visual Sandbox,https://okviz.com/blog/power-bi-visual-sandbox,"Remplacer la clé dans les \parencite{}, \cite{}, \textcite{}, etc."

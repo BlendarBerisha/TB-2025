@@ -1,0 +1,22 @@
+% -----------------------------------------------------------------
+% 4.2 – Pré-requis techniques
+% Fichier : ch4_02_prerequis.tex
+% -----------------------------------------------------------------
+
+\section{Pré-requis techniques du développeur}\label{sec:ch4_prerequis}
+
+Avant toute écriture de code, le poste du développeur doit satisfaire un ensemble de conditions incontournables. Leur conformité garantit la compatibilité avec la version 2025 du SDK Power BI Custom Visuals et élimine les blocages techniques susceptibles d’interrompre le cycle de développement.
+
+Le premier composant à installer est Node.js, en version Long Term Support 18.x ou supérieure. Le runtime JavaScript est indispensable : l’outil pbiviz s’appuie sur l’écosystème Node pour exécuter ses commandes, télécharger les dépendances \textsc{npm} et lancer le serveur local. Une version obsolète entraînerait des erreurs de compilation ou d’incompatibilité avec les bibliothèques récentes.
+
+Une fois Node opérationnel, l’utilitaire en ligne de commande pbiviz doit être installé globalement. L’opération s’effectue par la commande : npm install -g powerbi-visuals-tools@latest. L’exécutable est alors ajouté au \textsc{PATH} ; son bon fonctionnement se vérifie en saisissant simplement pbiviz, ce qui affiche l’écran d’aide. Si la commande n’est pas reconnue, il convient de contrôler la variable d’environnement ou de réinstaller le paquet avec des droits élevés.
+
+Le développement et surtout le débogage d’un visuel exigent un compte Power BI Pro ou Premium Per User. Seuls ces niveaux de licence ouvrent l’accès au mode développeur du service en ligne et autorisent le chargement d’un visuel non publié. Il est par ailleurs recommandé de créer un espace de travail dédié aux tests, de manière à isoler les prototypes des rapports de production.
+
+Côté environnement intégré de développement, Microsoft préconise Visual Studio Code, qui conjugue légèreté, intellisense TypeScript, gestion Git intégrée et terminal embarqué. Les exemples et captures d’écran du présent playbook s’appuient sur VS Code, mais tout IDE disposant d’un support TypeScript (WebStorm, Visual Studio, etc.) demeure acceptable.
+
+Durant la phase de débogage, Power BI charge le visuel via HTTPS, même lorsqu’il s’exécute en local. Il est donc nécessaire de générer un certificat SSL auto-signé et de l’approuver sur la machine. La commande pbiviz --install-cert crée et installe ce certificat ; sous Windows, elle ajoute l’entrée correspondante dans le magasin « Autorités de certification racines de confiance ». En environnement verrouillé, l’exécution de scripts PowerShell peut être bloquée ; il faudra alors solliciter l’administrateur ou importer manuellement le certificat généré.
+
+Enfin, depuis 2024, Microsoft a centralisé le mode développeur sur la plateforme en ligne : la fonction de débogage local auparavant disponible dans Power BI Desktop a été supprimée. L’utilisateur doit activer le mode développeur dans les paramètres du service (<app.powerbi.com>) avant de pouvoir insérer le conteneur spécial « Developer Visual ». Cette activation demeure personnelle et persistante, mais reste tributaire de la présence du certificat SSL et du serveur pbiviz en écoute sur localhost:8080. Une inobservation de l’un de ces prérequis se traduit immanquablement par un message d’erreur « Can’t contact visual server ».
+
+La satisfaction de ces exigences constitue la première étape vers un processus d’industrialisation fiable ; les sections suivantes décrivent la mise en place détaillée de l’environnement et la création du composant minimal.

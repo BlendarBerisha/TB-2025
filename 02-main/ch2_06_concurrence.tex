@@ -1,0 +1,74 @@
+%-----------------------------------------------------------
+\section{Solutions concurrentes (Tableau, Qlik, Looker)}
+\label{sec:concurrence}
+%-----------------------------------------------------------
+
+Les principales plateformes BI concurrentes — Tableau, Qlik Sense et
+Looker — proposent chacune des mécanismes de personnalisation de visuels
+différents de ceux de Power BI, tant sur le plan technique que dans leurs
+implications métier. Examiner ces modèles permet de situer les « visuels
+custom » Power BI dans un paysage concurrentiel plus large.
+
+\subsection{Tableau.}  
+Tableau étend ses capacités à l’aide des Tableau Extensions, des
+applications Web encapsulées dans le tableau de bord par l’Extension API
+\parencite{TableauExtGuide2024}. Le composant, écrit en JavaScript et
+logé dans une iframe, peut introduire un graphique inédit, du
+write-back ou l’intégration d’un service tiers
+\parencite{TableauBlogExt2024}. Depuis la version 2019.4, les extensions
+s’exécutent par défaut en sandbox : aucun accès réseau n’est permis
+sans liste blanche explicite dans l’interface d’administration
+\parencite{TableauAdmin2025}. Tableau délègue le support de ces briques à
+leurs éditeurs, si bien que chaque entreprise doit auditer la fiabilité de
+la source avant déploiement. Sur le plan financier, le coût d’entrée reste
+sensiblement supérieur à celui de Power BI : l’abonnement Creator est passé
+à 75 USD par utilisateur et par mois en juillet 2025
+\parencite{TableauPricing2025}. La personnalisation n’est donc rentable que
+si l’organisation dispose déjà d’une base installée Tableau ou d’un budget
+élargi.
+
+\subsection{Qlik Sense.}  
+Qlik propose les Visualization Extensions : objets écrits
+en HTML/JavaScript/CSS et déclarés par un manifeste .qext
+\parencite{QlikDevHub2024}. L’extension, quand elle respecte l’API Qlik,
+s’intègre comme un objet natif, profite du moteur associatif et réagit aux
+sélections \parencite{QlikExtAPI2024}. Qlik mise sur une dynamique
+communautaire : de nombreux composants sont partagés via Qlik Branch
+sans validation officielle, la gouvernance incombant à l’administrateur
+qui doit installer manuellement l’archive sur le tenant SaaS.
+Commercialement, la déclinaison « Qlik Cloud Starter » débute à
+200 USD/mois pour dix utilisateurs, la formule Standard à 825 USD et la
+Premium à 2 750 USD, chaque palier incluant un volume de données et un
+nombre maximal de créateurs \parencite{QlikPricing2025}. Le modèle reste
+avantageux quand l’entreprise possède une équipe front-end JavaScript
+capable de maintenir ces extensions.
+
+\subsection{Looker.}  
+Looker, désormais composante de Google Cloud, autorise des visuels
+spécifiques via le Looker Custom Visualization SDK. Le développeur
+implémente la fonction updateAsync qui reçoit les données
+d’une explore Looker et restitue un rendu SVG ou Canvas
+\parencite{LookerVizSDK2025}. Pour diffusion publique, Google impose une
+revue Marketplace : le code doit être hébergé sur GitHub et passer un
+contrôle de conformité avant publication
+\parencite{LookerMarketplace2024}. Il reste toutefois possible de limiter
+l’usage à un tenant interne via l’interface Admin. La logique de Looker
+demeure plus centralisée : la personnalisation est permise, mais soumise à
+un contrôle étroit et, surtout, à une tarification négociée au cas par cas
+qui dépasse largement les paliers Tableau ou Qlik ; les clients visent
+donc des gains élevés sur un périmètre de visuels custom restreint.
+
+\subsection{Lecture comparative.}  
+Tableau et Qlik accordent à l’utilisateur avancé la liberté de charger
+localement une extension, tout en transférant la gouvernance de sécurité à
+l’entreprise ; Power BI et Looker exigent au contraire une validation
+centralisée — certification AppSource ou revue Marketplace — avant tout
+déploiement massif. Techniquement, les trois concurrents s’appuient, comme
+Power BI, sur le triptyque HTML/JS/CSS, mais Power BI se démarque par un
+SDK TypeScript/D3 structuré, une CLI d’audit intégrée et un vivier
+AppSource de presque 600 visuels au 1\textsuperscript{er}
+août 2025 \parencite{AppSourceCount2025}. Sur le plan économique, Power BI
+reste l’option la plus abordable pour industrialiser des visuels custom à
+grande échelle, tandis que Tableau, Qlik et surtout Looker réservent la
+personnalisation intensive aux environnements dont le budget justifie
+l’investissement initial et la maintenance continue.

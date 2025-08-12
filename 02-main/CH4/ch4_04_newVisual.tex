@@ -1,0 +1,48 @@
+% -----------------------------------------------------------------
+% 4.4 – Création d’un composant minimal avec pbiviz new
+% Fichier : ch4_04_newVisual.tex
+% -----------------------------------------------------------------
+
+\section{Création d’un composant minimal avec pbiviz new}\label{sec:ch4_new_visual}
+
+La première activité concrète du développeur consiste à générer la base du projet en recourant à la commande pbiviz new. Cette opération automatise la création de l’arborescence standard, du manifeste et des fichiers sources, évitant ainsi toute configuration manuelle d’un environnement Web complété par Webpack.
+
+\subsection{Génération du squelette de projet}
+
+Depuis un terminal positionné dans le répertoire de travail, on invoque :
+\begin{lstlisting}[language=bash]
+pbiviz new SampleVisual
+\end{lstlisting}
+Le paramètre SampleVisual définit le nom interne du composant ; il doit respecter la casse Pascal et rester unique au sein du tenant Power BI afin d’éviter les collisions de GUID. L’outil crée alors un dossier homonyme contenant l’arborescence complète ; le terminal affiche la réussite de chaque étape (création de pbiviz.json, capabilities.json, visual.ts, etc.). Le développeur ouvre aussitôt ce dossier dans Visual Studio Code pour explorer la structure générée.
+
+\subsection{Installation des dépendances \textsc{npm}}
+
+À l’intérieur du répertoire du projet, l’exécution de :
+\begin{lstlisting}[language=bash]
+npm install
+\end{lstlisting}
+télécharge et installe l’ensemble des bibliothèques requises : l’API Power BI Visuals, TypeScript, \textsc{d3.js} le cas échéant, ainsi que les définitions de types. La présence d’un dossier node\_modules confirme le succès de l’opération. Il est recommandé de contrôler la version du paquet powerbi-visuals-api dans package.json pour s’assurer qu’elle correspond à la version cible de l’environnement Power BI.
+
+\subsection{Premier lancement en mode développeur}
+
+Le projet minimal peut désormais être compilé et servi localement. La commande suivante :
+\begin{lstlisting}[language=bash]
+pbiviz start
+\end{lstlisting}
+construit le bundle JavaScript, démarre un serveur HTTPS sur https://localhost:8080 et active le rechargement dynamique. La console affiche le port d’écoute et le chemin du certificat utilisé ; tant que le processus demeure actif, il publie les mises à jour à chaque sauvegarde de fichier.
+
+\subsection{Vérification dans Power BI Service}
+
+Le développeur se rend ensuite sur le service Power BI, ouvre un rapport de test en mode Édition, puis insère le conteneur «~Developer Visual~» à l’aide de l’icône \textless{}\textgreater{}. Power BI établit une connexion sécurisée vers localhost:8080, télécharge le visuel et instancie la classe Visual. Le composant s’affiche immédiatement avec son contenu par défaut (un compteur d’appels à update() dans le squelette). L’absence de message d’erreur confirme la bonne configuration de l’environnement.
+
+\subsection{Cycle itératif de modification}
+
+À partir de ce point, toute modification du code visual.ts ou des styles visual.less suivie d’une sauvegarde déclenche une recompilation automatique ; le visuel se rafraîchit alors dans le rapport sans qu’il soit nécessaire de recharger la page. Cette boucle courte – écrire, sauvegarder, observer – constitue la pierre angulaire de la productivité et du débogage. Il est toutefois conseillé de surveiller la console du navigateur (F12) afin de détecter rapidement les exceptions JavaScript ou les avertissements de performance.
+
+\subsection{Arrêt propre du serveur}
+
+Le serveur local se termine par la combinaison Ctrl + C. L’outil demande une confirmation éventuelle ; accepter libère le port 8080 et clôt la session SSL. Le développeur veillera à interrompre proprement le processus avant de changer de branche Git ou de mettre à jour les dépendances, faute de quoi un conflit de port ou de certificat pourrait survenir lors du redémarrage.
+
+
+
+Une fois cette étape validée, l’équipe dispose d’un composant minimal fonctionnel, prêt à accueillir la logique métier, le mapping des données et les options de formatage décrits dans les sous-sections suivantes.

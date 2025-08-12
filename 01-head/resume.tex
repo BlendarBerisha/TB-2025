@@ -6,16 +6,11 @@
 \markboth{Résumé}{Résumé}
 \addcontentsline{toc}{chapter}{Résumé}
 
-\noindent
-Les visuels standard de Power BI ne couvrant plus l’ensemble des besoins analytiques des clients d’ECRINS SA, l’entreprise souhaite internaliser la création de \textbf{visuels personnalisés} (\emph{custom visuals}).  
-Ce travail de Bachelor poursuit deux finalités : \textit{(1)} élaborer un \textbf{cadre méthodologique complet} — de l’analyse fonctionnelle jusqu’au déploiement automatisé — pour développer ces composants, et \textit{(2)} en démontrer la faisabilité au moyen d’un \textbf{prototype de visuel pilote}.
+Les visuels natifs de Power BI ne couvrant pas certains besoins analytiques d’ECRINS SA, l’entreprise souhaite internaliser la conception de visuels personnalisés. Ce travail poursuit deux objectifs : (1) établir un cadre méthodologique complet — de l’analyse à la mise en production — et (2) démontrer la faisabilité à travers deux prototypes : une Passenger-Flow Map (marketing aéroportuaire) et un Radial Sunburst Decomposition Tree  (analyse budgétaire).
 
-La démarche s’appuie sur une étude critique des visuels natifs, un benchmark d’autres plateformes BI et une collaboration étroite avec la responsable produit afin de cibler un besoin prioritaire.  
-Le développement adopte un processus itératif inspiré des méthodes Agiles : configuration de l’environnement \texttt{pbiviz}, implémentation en TypeScript / D3, tests et intégration continue via GitHub Actions, puis documentation et bonnes pratiques de gouvernance.
+La démarche combine revue de littérature, cadrage avec le métier et développement structuré en phases, appuyé par un outillage de build et d’automatisation. Les visuels sont réalisés en TypeScript et D3, intégrés à Power BI via pbiviz, puis évalués sur des jeux de données de démonstration selon des critères de performance, d’ergonomie et de maintenabilité. Une chaîne de livraison outillée (tests, packaging, distribution interne) soutient l’industrialisation.
 
-L’évaluation combine des tests techniques, une revue de code et une validation fonctionnelle auprès du client interne.  
-Les livrables — code source, pipeline CI/CD opérationnel et guide d’intégration — constituent une base réutilisable pour accélérer la livraison future de visuels sur mesure tout en renforçant la gouvernance BI d’ECRINS SA.
+L’évaluation technique et fonctionnelle confirme la validité des deux prototypes et la reproductibilité du processus proposé. Les livrables — code, pipeline d’automatisation, guides et annexes — fournissent à ECRINS SA une base réutilisable pour futurs développements de visuels personnalisés et pour renforcer la gouvernance BI.
 
 \vspace{0.8em}
-\noindent\textbf{Mots clés :} Business Intelligence ; Power BI ; visuels personnalisés ; CI/CD ; gouvernance
-
+Mots-clés : Business Intelligence ; Power BI ; visuels personnalisés ; TypeScript/D3 ; performance ; ergonomie ; industrialisation.

@@ -1,0 +1,23 @@
+%-----------------------------------------------------------
+\section{SDK Custom Visuals : principes, sécurité, pipeline}
+\label{sec:sdk}
+%-----------------------------------------------------------
+
+Lorsque les visuels natifs ne suffisent plus et qu’un script Python ou R se révèle trop limité, la solution la plus aboutie consiste à créer un visuel complet à l’aide du Software Development Kit (SDK) de Power BI. Microsoft distribue ce SDK sous la forme du package npm powerbi-visuals-tools, dont la version stable 6.1.2 publiée le 26 mai 2025 sert de référence pour ce travail \parencite{MicrosoftSDKNpm2025}.  
+
+\subsection{Principe général.} Un visuel Power BI est, en substance, une mini-application web encapsulée. Le développeur décrit, dans un fichier capabilities.json, les champs de données et les options de format qu’il souhaite exposer, puis implémente en TypeScript une classe qui respecte l’interface IVisual. Power BI invoque la méthode update(options) à chaque changement de filtre ou de données ; le code traduit alors les informations reçues en éléments DOM (SVG ou Canvas) à l’aide, par exemple, de D3.js.  
+
+\subsection{Pipeline de développement}\label{sec:pipeline-ref}
+
+Le Power BI Custom Visuals SDK prescrit un flux de travail de référence :  
+pbiviz new <NomDuVisuel> crée le squelette (manifeste, capabilities.json, fichiers TypeScript),  
+puis pbiviz package --certification-audit génère l’archive .pbiviz tout en exécutant les contrôles réseau et mémoire recommandés \parencite{MicrosoftAuditCLI2025}.  
+Depuis la dépréciation du serveur de développement intégré (2024), les tests interactifs s’effectuent dans un workspace développeur Power BI Service, avant qu’un package conforme ne soit importé dans un rapport ou soumis à AppSource pour certification \parencite{MicrosoftCertificationGuide2025}.
+
+\subsection{Cadre de sécurité.} Le code exécuté l’est toujours dans une iframe sandbox dont la politique de contenu interdit tout appel réseau non approuvé et toute évaluation dynamique de code (eval, new Function) ; le SDK force également le dessin à l’intérieur de la bounding box du visuel et n’expose au script que les champs explicitement liés par l’utilisateur \parencite{OkVizSandbox2022}. Les règles de certification 2025 précisent qu’un composant destiné à AppSource doit renoncer à tout flux sortant \parencite{MicrosoftAPIv6CSP2025}.  
+
+\subsection{Certification et limitations associées}\label{sec:certification}
+
+La certification « Power BI Certified », réservée aux visuels publiés sur AppSource, conditionne l’inclusion du composant dans les exports PDF/PowerPoint, son rendu dans les rapports distribués par courriel et l’accès aux privileged APIs telles que FileDownload ou Licensing \parencite{MicrosoftCustomVisualsCertified2025, MicrosoftFileDownloadAPI2024}. Un visuel non certifié est exclu de ces scénarios et peut être bloqué si l’administrateur active l’option locataire « Add and use certified visuals only » \parencite{MicrosoftTenantSettings2024}.
+
+\subsection{Synthèse.} Le SDK ouvre la voie à des composants strictement sur mesure qui héritent de la totalité des interactions offertes par Power BI ; l’effort de développement et la discipline de gouvernance qu’il requiert constituent la contrepartie logique de cette flexibilité. La section \ref{sec:techno} précise les choix d’outillage — TypeScript, D3.js et React optionnel — retenus pour réaliser les preuves de concept développées dans ce mémoire.

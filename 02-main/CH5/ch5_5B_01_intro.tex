@@ -1,0 +1,50 @@
+% ---------------------------------------------------------------------------
+%  ch4_4B_01_architecture.tex
+%  Section 4B.1 — Principes architecturaux et structure modulaire du visuel Sunburst
+% ---------------------------------------------------------------------------
+\subsection{Principes architecturaux et structure modulaire}
+\label{subsec:4B-architecture}
+
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+À l’instar du Passenger\nobreakdash-Flow Map, le visuel Radial Sunburst Decomposition Tree  s’appuie sur une architecture hexagonale inspirée du modèle ports \& adapters de \parencite{cockburn2008}. Le principe directeur est d’isoler la logique métier des périphériques (DataView Power~BI, rendu SVG, interactions) afin d’obtenir un composant maintenable, testable et extensible, tout en garantissant une intégration nette avec l’écosystème Power~BI (panneau Format, sélection/cross-filtering, internationalisation).
+
+% ---------------- Schéma TikZ ------------------------------------------------
+\begin{figure}[H]
+  \centering
+  \usetikzlibrary{arrows.meta,calc}
+  \tikzset{>=Stealth}
+  \begin{tikzpicture}[
+      font=\small,
+      hex/.style ={draw,dashed,thick,fill=gray!5},
+      mod/.style ={draw,rounded corners=2pt,fill=green!15,minimum width=3.1cm,minimum height=1.05cm,align=center},
+      util/.style={draw,rounded corners=2pt,fill=orange!20,minimum width=3.1cm,minimum height=1.05cm,align=center}]
+      % Hexagon vertices
+      \def\r{1.8}
+      \def\off{2.25} % distance des modules par rapport aux sommets
+      \foreach \ang [count=\idx] in {90,30,-30,-90,-150,150}{\coordinate (H\idx) at (\ang:\r cm);}
+      % Hexagon outline
+      \draw[hex] (H1)--(H2)--(H3)--(H4)--(H5)--(H6)--cycle;
+      % Core
+      \node[font=\bfseries,align=center] at (0,0) {Cœur\\logique};
+      % Helper macro
+      \newcommand{\placem}[4]{%
+        \path (#1) ++(#2:\off cm) node[#3] (#1m) {#4};
+        \draw[->,thick,shorten <=2pt] (#1m) -- (#1);
+      }
+      % Modules
+      \placem{H1}{90}{mod}{DataConverter}
+      \placem{H2}{30}{mod}{ViewModel}
+      \placem{H3}{-30}{mod}{Partition\\Layout}
+      \placem{H4}{-90}{mod}{RingRenderer}
+      \placem{H5}{-150}{mod}{Interaction\\Manager}
+      \placem{H6}{150}{mod}{Visual Shell\\Settings}
+  \end{tikzpicture}
+  \caption{Architecture hexagonale du visuel Radial Sunburst Decomposition Tree .}
+  \label{fig:5B-hexagonal}
+\end{figure}
+
+La Figure~\ref{fig:5B-hexagonal} présente six modules clés : (1) DataConverter transforme le DataView en hiérarchie D3 ; (2) ViewModel calcule les contributions et prépare les données pour le rendu ; (3) PartitionLayout attribue angles et rayons selon le partitionnement radial ; (4) RingRenderer trace les arcs et gère les transitions ; (5) Interaction Manager orchestre le drill-down, le survol et le cross-highlight ; (6) Visual Shell coordonne l’ensemble et gère le cycle de vie du visuel. Le module RadialSunburstSettings charge et propage les préférences (palette, KPI central, profondeur maximale).
+
+\paragraph{} L’architecture hexagonale retenue, fondée sur le modèle ports \& adapters, renforce la maintenabilité : chaque couche peut être vérifiée isolément par des tests ciblés et évoluer sans effet domino. Elle se conforme en outre aux exigences du §\,3.2 : i) performant sur trois niveaux ; ii) accessibilité WCAG~2.2 avec contrastes AA et navigation au clavier ; iii) internationalisation fr-CH et en-US ; iv) qualité du code avec une couverture de tests ; v) CI/CD produisant un build pbiviz.

@@ -6,9 +6,50 @@
 % \usepackage{cmbright}       % Sans serif
 \usepackage{sourcecodepro}  % Monospace
 
+\usepackage{amssymb}
+\usepackage{pifont}
+\usepackage{flafter}
 % Change default font
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
+\AtEveryCite{\normalfont}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,shapes.geometric,shapes.misc,backgrounds}
+\usepackage[table,xcdraw,dvipsnames]{xcolor}
+\usepackage{listings}
+\lstset{
+  inputencoding=utf8,
+  extendedchars=true,
+  literate=
+    {é}{{\'e}}1 {è}{{\`e}}1 {ê}{{\^e}}1
+    {à}{{\`a}}1 {ù}{{\`u}}1
+    {É}{{\'E}}1 {À}{{\`A}}1 {È}{{\`E}}1
+    {ç}{{\c{c}}}1 {Ç}{{\c{C}}}1
+}
+\usepackage{ragged2e} % Fix for \RaggedRight undefined control sequence
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[T1]{fontenc}
+ 
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{tabularx}
+\usepackage{tabularx,booktabs,makecell}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  breakatwhitespace=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false
+}
+
+
+
 
 %\usepackage[francais]{babel}
 %\usepackage[french]{babel}
@@ -47,11 +88,108 @@
   
 }
 
+\usepackage{listings}
+\usepackage{xcolor}   
+
+% couleurs facultatives
+
+\usepackage{listings} % --- définition minimale JSON -----------------------
+\lstdefinelanguage{json}{
+  basicstyle=\ttfamily\small,
+  showstringspaces=false,
+  morestring=[b]",
+  stringstyle=\color{orange},
+  comment=[l]{:\ },           % pour colorer les deux-points
+  commentstyle=\color{black},
+  moredelim=[s][\color{gray}]{\{}{\}},
+  moredelim=[s][\color{gray}]{[}{]},
+}
+\lstdefinelanguage{TypeScript}{
+  keywords={class, export, implements, import, interface, let, new, null, public, private, protected, static, super, this, typeof, var, void, while, with, yield, async, await, constructor, enum, extends, false, true, from, as},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={@Component, @Injectable, @NgModule},
+  ndkeywordstyle=\color{orange}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{gray}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, class, const, continue, debugger, default, delete, do, else, export, extends, finally, for, function, if, import, in, instanceof, let, new, return, super, switch, this, throw, try, typeof, var, void, while, with},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={async, await},
+  ndkeywordstyle=\color{orange}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{gray}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstdefinelanguage{bash}{
+  keywords={if, then, else, elif, fi, for, in, do, done, while, until, case, esac, function, select, break, continue, return},
+  keywordstyle=\color{blue}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=true,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{gray}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+} 
+
+% définition de CSS
+\lstdefinelanguage{CSS}{
+  keywords={@charset, @import, @media, @namespace, @page, @supports, @font-face, @keyframes, @viewport},
+  keywordstyle=\color{blue}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{gray}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstdefinelanguage{PowerShell}{
+  morekeywords={New-SelfSignedCertificate, Export-PfxCertificate, ConvertTo-SecureString},
+  sensitive=true,
+  morecomment=[l]{\#}, % Properly escaped hash symbol
+  morestring=[b]"
+}
+
+\lstdefinelanguage{yaml}{
+  keywords={true,false,null,y,n},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  stringstyle=\color{red},
+  commentstyle=\color{gray}\ttfamily,
+  keywordstyle=\color{blue}\bfseries,
+}
 
 \captionsetup{justification=centering}
 
 \usepackage{enumitem}
 \usepackage{fontawesome5}
+\usepackage{rotating}   % sidewaystable
+\usepackage{tabularx}   % colonne X
+\usepackage{booktabs}   % top/mid/bottomrule
+\usepackage{siunitx} % For \SI command
+\usetikzlibrary{calc}
+\usepackage[utf8]{inputenc} % Ensure UTF-8 encoding
 
 % https://blog.chapagain.com.np/latex-numbering-subsubsection-and-showing-it-in-table-of-contents/
 \setcounter{tocdepth}{3}

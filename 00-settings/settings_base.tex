@@ -115,9 +115,27 @@
 % -------------------
 
 % Use APA style
-\usepackage[backend=biber, style=apa6]{biblatex}
+% Bibliography — APA7, noms en casse normale, année seule
+\usepackage[backend=biber,style=apa]{biblatex}
 \DeclareLanguageMapping{french}{french-apa}
+
+\ExecuteBibliographyOptions{date=year} % n’affiche que l’année
+
+\AtEveryBibitem{\clearfield{day}\clearfield{month}}
+\AtEveryCitekey{\clearfield{day}\clearfield{month}}
+
+\DeclareFieldFormat{labelday}{}
+\DeclareFieldFormat{elabelday}{}
+\DeclareFieldFormat{labelmonth}{}
+\DeclareFieldFormat{elabelmonth}{}
+
+\renewcommand*{\mkbibnamefamily}[1]{#1}
+\renewcommand*{\mkbibnamegiven}[1]{#1}
+\renewcommand*{\mkbibnameprefix}[1]{#1}
+\renewcommand*{\mkbibnamesuffix}[1]{#1}
+
 \addbibresource{03-tail/bibliography.bib}
+
 \DefineBibliographyStrings{french}{
   nodate    = {{}s.\adddot\addspace d\adddot},
 }
@@ -222,7 +240,7 @@
 
 % Allow email typesetting
 \newcommand{\email}[1]{%
-	\href{mailto:#1}{\textit{#1}}%
+	\href{mailto:#1}{#1}%
 }
 
 % References

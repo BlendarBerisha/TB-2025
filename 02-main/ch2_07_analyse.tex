@@ -1,0 +1,98 @@
+%-----------------------------------------------------------
+\section{Synthèse des écarts \& opportunités}
+\label{sec:synthese}
+%-----------------------------------------------------------
+
+Après avoir étudié chacune des approches disponibles à l’intérieur même de Power BI, il est possible de dresser un panorama clair de leurs forces et de leurs limites, puis d’en déduire les cas d’usage qui conviennent le mieux à ECRINS SA. Quatre familles de solutions se distinguent : les visuels natifs, les scripts Python / R, les composants certifiés AppSource et les visuels développés avec le SDK.
+
+
+\subsection{Visuels natifs Power BI.}  
+Fournis d’office, ces graphiques constituent le socle de la majorité des rapports ; ils sont maintenus par Microsoft, optimisés pour la performance et immédiatement compatibles avec l’ensemble des interactions (sélections croisées, filtres, export PDF / PPT, affichage mobile). Leur fiabilité et leur sécurité sont maximales, aucun code externe n’étant exécuté. Leur rigidité demeure cependant le principal frein : dès qu’un scénario exige un diagramme alluvial, une cartographie indoor ou un bullet chart spécifique, l’utilisateur doit composer avec les limites de paramétrage ou se tourner vers une autre voie.
+
+
+\subsection{Visuels Python / R.}  
+L’exécution d’un script Python ou R ouvre la porte à l’immense écosystème de ces deux langages ; tout graphique réalisable dans Matplotlib, Seaborn, ggplot2 ou Plotly peut, en théorie, être intégré. La contrepartie tient dans la nature strictement statique du rendu : Power BI génère un PNG 72 DPI dépourvu d’interactivité et relance le script à chaque rafraîchissement, allongeant sensiblement le temps de calcul. Au-delà de 150 000 lignes transmises, la plateforme tronque les données, tandis que le service Cloud limite l’image à 2 Mio et impose un runtime R 4.3.3 / Python 3.11 contrôlé par Microsoft. La démarche convient donc surtout au prototypage analytique rapide — rarement à un déploiement massif.
+
+
+\subsection{Visuels AppSource (certifiés).}  
+AppSource, la galerie officielle de Microsoft, répertorie un peu plus de 540 visuels au 1\textsuperscript{er} août 2025 \parencite{AppSourceCount2025}. Chaque composant apparaît après une revue de sécurité et de performance ; il se comporte, pour l’utilisateur final, comme un visuel natif tout en couvrant des besoins de niche (Gantt, Waterfall amélioré, radar avancé). L’éditeur demeure toutefois responsable des mises à jour ; certains modules reposent sur un abonnement SaaS payant. L’approche constitue donc un juste milieu entre « prêt à l’emploi » et flexibilité.
+
+
+\subsection{Visuels SDK Power BI.}  
+Le SDK — TypeScript, D3 et, au besoin, React — autorise la création d’un composant exactement aligné sur les spécifications métier : intégration complète avec les filtres, compatibilité mobile, export, diffusion via AppSource ou magasin organisationnel. Le revers est un effort de développement plus élevé et l’obligation d’une gouvernance logicielle continue : veille des versions, correctifs de sécurité, tests unitaires Jest et gestion du certificat X.509.
+
+\subsection{Vue d’ensemble comparative.}
+
+\begin{sidewaystable}[p]
+\footnotesize
+\centering
+\caption{Comparaison factuelle des voies de personnalisation Power BI (état : août 2025)}
+\label{tab:comparaison-approches}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash\bfseries}p{2.9cm}XXXX}
+\toprule
+\textbf{Critère} &
+\textbf{Visuels natifs} &
+\textbf{Scripts Python / R} &
+\textbf{Visuels AppSource (certifiés)} &
+\textbf{Visuels SDK internes (.pbiviz)} \\
+\midrule
+Cas d’usage typique &
+Tableaux de bord courants ; graphiques standards interactifs. &
+Analyses statistiques ou graphiques scientifiques spécifiques issus de code R/Python. &
+Graphiques spécialisés prêts à l’emploi (financiers, Gantt, KPI, etc.). &
+Visuels sur-mesure répondant à des exigences métiers uniques ou branding interne.\\[0.4em]
+
+Limitations principales &
+Borné à la bibliothèque Microsoft ; pas de nouveau type sans extension. &
+Image statique ; 150 k lignes / 100 colonnes ; pas de sélection croisée ; timeout 5 min. &
+Pas d’appel réseau externe ; mises à jour soumises à re-certification ; version freemium possible. &
+Pas d’export PDF/PPT ni d’e-mailing ; optimisation et sécurité 100 \% à charge du dev.\\[0.4em]
+
+Situation d’utilisation recommandée &
+Choix par défaut tant que le visuel existe en natif. &
+POC data-science, prototypes analytiques ponctuels. &
+Quand un visuel AppSource couvre exactement le besoin et qu’une diffusion large est visée. &
+Quand aucune solution existante ne convient et qu’on dispose des ressources de développement.\\[0.4em]
+
+Accessibilité (WCAG 2.2) &
+Conformité assurée par Microsoft. &
+Faible : rendu bitmap non lisible par lecteur d’écran. &
+Variable : dépend de chaque éditeur ; à tester avant adoption. &
+Dépend entièrement du développeur ; nécessite implémentation ARIA, focus clavier, contraste.\\[0.4em]
+
+Difficulté d’utilisation &
+Très faible ; glisser-déposer. &
+Élevée ; compétences R/Python requises. &
+Moyenne ; configuration similaire aux visuels natifs. &
+Très élevée ; maîtrise TypeScript + D3 et API Power BI.\\[0.4em]
+
+Performance (rendu / volumétrie) &
+Optimisée ; jusqu’à ~30 M points selon le type. &
+Plus lente ; recalcul complet du PNG à chaque interaction. &
+Dépend du visuel ; généralement satisfaisant < 30 k points. &
+Variable ; plafonné à ~30 k points, dépend de l’optimisation réalisée.\\[0.4em]
+
+Coût (licence / dev) &
+Inclus dans Power BI. &
+Inclus ; demande temps de codage et maintien packages. &
+Souvent gratuit ; licence possible pour fonctionnalités avancées. &
+Frais de développement internes importants ; maintenance continue.\\[0.4em]
+
+Réutilisabilité / industrialisation &
+Automatique ; présent partout. &
+Faible ; script encapsulé dans chaque rapport. &
+Élevée ; déploiement via AppSource ou store orga ; mises à jour automatiques. &
+Bonne en interne via store orga ; mises à jour manuelles ; partage externe impossible sans certification.\\
+\bottomrule
+\end{tabularx}
+\end{sidewaystable}
+
+
+% Ensure the sidewaystable environment is properly closed before the document ends.
+
+
+\subsection{Conclusion.}  
+Chaque approche comble un manque laissé par les autres : les visuels natifs offrent robustesse et simplicité, les scripts Python / R autorisent un prototypage statistique rapide au prix d’un rendu non interactif, AppSource fournit une solution plug-and-play pour des besoins spécialisés courants, et le SDK ouvre la voie aux composants entièrement sur mesure, moyennant un investissement en développement et en gouvernance. Pour ECRINS SA, la maîtrise du SDK constitue la clé méthodologique afin de répondre, à terme, aux demandes hors norme — un enjeu approfondi dans le chapitre 3.
+
+
+

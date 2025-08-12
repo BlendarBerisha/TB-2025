@@ -1,0 +1,25 @@
+% ---------------------------------------------------------------------------
+%  ch4_4A_02_pipeline.tex
+%  Section 4A.2 — Chaîne de traitement des données (Data → DOM)
+% ---------------------------------------------------------------------------
+\subsection{Chaîne de traitement des données — du DataView au DOM}
+\label{subsec:4A-pipeline}
+
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+Le fonctionnement interne du visuel Passenger\nobreakdash-Flow Map repose sur un pipeline unidirectionnel qui transforme le DataView fourni par Power BI en éléments \textsc{svg} rendus dans le navigateur. À chaque invocation de la méthode \verb|update(options)| par le host Power~BI, six étapes séquentielles sont exécutées sans rétroaction directe du \textsc{dom} vers la logique métier, conformément aux meilleures pratiques de Microsoft pour les custom visuals \parencite{microsoft2024}.
+
+Le format des obstacles (extrait abrégé) et la figure d’alignement du fond sont centralisés en annexe~A2 (\autoref{ann:a2-fond}). Les fichiers capabilities.json et pbiviz.json du visuel Passenger-Flow Map sont fournis dans le dépôt source ; cette sous-section se limite aux principes de mapping (rôles, agrégations) et aux options exposées dans le volet Format.
+
+Dans un premier temps, DataLoader interprète le schéma tabulaire du DataView et instancie pour chaque ligne un objet Flow contenant l’identifiant unique, les coordonnées d’origine et de destination, le volume de passagers et, le cas échéant, les attributs temporels et catégoriels. Cette étape garantit que toutes les transformations ultérieures s’appuient sur un format strictement typé, réduisant ainsi le risque d’erreur à l’exécution.
+
+La seconde étape mobilise PathGrid, qui élabore une grille de navigation couvrant la zone de l’aéroport, marque les cellules occupées par des obstacles comme non franchissables et applique l’algorithme A* pour déterminer l’itinéraire optimal entre chaque couple \mbox{source–cible}. Le résultat est une polyligne potentiellement dense que PathSimplifier vient aussitôt épurer en supprimant les sommets angulaires inférieurs.
+
+Lors de la quatrième étape, FlowRenderer convertit chaque chemin simplifié en un tracé \textsc{svg}. Si la polyligne comporte plus de deux points, une interpolation Catmull–Rom est appliquée afin de lisser visuellement la trajectoire, tandis que l’épaisseur du trait est déterminée par une fonction linéaire basée sur le volume de passagers (bornes par défaut : 2~px–8~px). Une échelle de couleur continue, paramétrable dans le groupe Colors du Format Pane, encode simultanément l’intensité du trafic.
+
+Ensuite, la classe Visual orchestre l’insertion des éléments \textsc{svg} au sein du conteneur attaché au visuel. Elle veille à détruire le canevas précédent avant chaque rendu pour éviter l’accumulation d’éléments, pratique essentielle à la prévention des fuites de mémoire dans le cycle de hot-reload. Elle déclenche également la cinquième étape : la mise à jour du ControlPanel, lequel ajuste son état interne et rafraîchit les statistiques agrégées (nombre de flux actifs, total passagers et moyenne par flux) à partir de la collection actuellement visible.
+
+Enfin, une sixième étape facultative intervient lorsque l’utilisateur active l’option showHeatmap. HeatmapRenderer agrège alors les volumes dans une matrice régulière, applique un flou gaussien pour produire une représentation continue de la densité et insère cette couche dans un groupe <g> superposé aux tracés individuels. L’alternance entre mode détaillé et carte de chaleur s’effectue sans rechargement complet grâce à la stratégie de rendu conditionnel implémentée dans Visual, qui conserve les éléments inutilisés dans le \textsc{dom} mais les masque via des attributs visibility afin de réduire le coût de ré-affichage.
+
+L’unidirectionnalité de ce pipeline simplifie le raisonnement sur l’état de l’application : chaque cycle \verb|update()| débute avec un canevas propre et se termine dans un état entièrement déterminé par les données et les paramètres courants. Cette propriété est déterminante pour la fiabilité du visuel, tout particulièrement lorsque ECRINS~SA devra assurer le dépannage ou l’évolution de composants déjà déployés en production.

@@ -1,0 +1,17 @@
+% ---------------------------------------------------------------------------
+%  ch4_4A_07_synthese.tex
+%  Section 4A.7 — Synthèse et positionnement pour ECRINS SA
+% ---------------------------------------------------------------------------
+\subsection{Synthèse et positionnement pour ECRINS SA}
+\label{subsec:4A-synthese}
+
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+Le Passenger-Flow Map constitue avant tout une démonstration technologique qui met en scène, dans un même artefact, les capacités avancées du Power BI Custom Visuals SDK, de D3 v7 et d’une architecture hexagonale strictement appliquée. L’empilement DataLoader → PathGrid → PathSimplifier → FlowRenderer, orchestré par le contrôleur Visual, atteste qu’il est possible, pour un seul visuel, de combiner calcul algorithmique non trivial (A* sur grille contrainte), gestion d’états interactifs et rendu vectoriel animé tout en maintenant un temps de composition inférieur à la contrainte perf < 300 ms. Cette performance illustre la viabilité d’une approche qui privilégie la clarté pédagogique : chaque module joue un rôle aisément identifiable et la chaîne unidirectionnelle renforce l’intelligibilité du code.
+
+En contre‑partie de cette dimension démonstrative, le composant n’a pas été optimisé pour une réutilisation immédiate dans d’autres contextes. Les rôles de données codifient un schéma rigide (huit champs obligatoires), la logique A* suppose une description d’obstacles conforme au format obstacles.json interne, et certaines constantes visuelles — telles que la palette de couleurs bicolore ou la granularité de la grille de heat‑map — restent fixées dans le code source. Le visuel se présente donc moins comme un « produit bibliothèque » que comme un « proof‑of‑concept » complet, destiné à démontrer la faisabilité d’analyses spatiales complexes directement dans Power BI.
+
+Cette orientation n’annule pas l’effort de modularisation : le pattern ports et adapters, la centralisation systématique des paramètres dans Settings et l’exposition d’un VisualSettings typé offrent déjà le socle nécessaire à une éventuelle généralisation. Toutefois, toute adaptation future — changement de topologie, ajout d’un rôle de données, évolution vers des flux multimodaux — exigerait la création d’adaptateurs supplémentaires et une extension de capabilities.json. En ce sens, le visuel demeure extensible, mais sa déclinaison industrielle réclamerait un cycle d’ingénierie complémentaire.
+
+Enfin, l’apport principal de cette section tient donc dans la preuve qu’une représentation dynamique et opérationnelle des parcours passagers peut être embarquée au sein même d’un tableau de bord Power BI sans compromettre ni la performance ni l’ergonomie de la plateforme. Cette démonstration fonde la réflexion sur les besoins futurs : soit pérenniser le Passenger‑Flow Map tel quel comme composant vedette des rapports marketing, soit capitaliser sur son architecture pour dériver un visuel plus léger mais réellement générique — stratégie qui sera explorée, par contraste, avec le visuel Decomposition-Tree / Sunburst du chapitre suivant.

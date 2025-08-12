@@ -1,0 +1,26 @@
+% ---------------------------------------------------------------------------
+%  ch4_4B_06_config.tex
+%  Section 4B.6 — Configuration des données et des paramètres
+% ---------------------------------------------------------------------------
+\subsection{Configuration des données et des paramètres}
+\label{subsec:4B-config}
+
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+Le visuel Radial Sunburst Decomposition Tree  repose sur un schéma de données hiérarchique explicite : chaque niveau est matérialisé par une colonne distincte du modèle Power BI, tandis qu’une colonne numérique agrégée fournit la mesure. Ainsi, pour une analyse budgétaire, les champs Département, Sous-département, Compte et Montant représentent respectivement les niveaux Level1, Level2, Level3 et la mesure Value. Cette organisation « niveaux en colonnes » est déclarée dans capabilities.json. Les rôles Level1..N acceptent une cardinalité illimitée, rendant la profondeur théorique extensible ; le rôle Value est, lui, restreint à une unique mesure numérique.
+
+Lors de l’exécution, DataConverter lit le DataView formaté par Power BI en mode table, reconstruit la hiérarchie parent–enfant et cumule les valeurs dans un objet d3.hierarchy. Le module RadialSunburstSettings, dérivé de DataViewObjectsParser, récupère simultanément les préférences utilisateur. Celles-ci sont regroupées en quatre sections principales : la configuration chromatique, l’anneau central KPI, la politique d’étiquetage et les paramètres d’interaction.
+
+La section couleurs permet de basculer entre la palette Tableau 10 et la palette perceptuellement uniforme Cividis, tout en autorisant la personnalisation manuelle des teintes de premier niveau. La couleur du KPI central peut changer automatiquement selon un seuil défini par l’utilisateur afin de signaler un dépassement budgétaire.
+
+La section KPI contrôle l’affichage du cercle central, le choix de la mesure synthétique à afficher et les seuils associés à sa coloration dynamique ou à l’apparition d’une icône d’alerte. Elle permet également de régler la taille relative de ce disque, typiquement comprise entre dix et quinze pour cent du rayon total.
+
+La politique d’étiquetage régit l’apparition conditionnelle des libellés : un paramètre d’angle minimal, exprimé en degrés, définit le seuil sous lequel un arc demeure sans texte afin d’éviter l’encombrement visuel. L’utilisateur peut forcer l’affichage de tous les libellés ou, inversement, les masquer intégralement. Des réglages complémentaires portent sur la taille typographique et l’algorithme de contraste automatique du texte par rapport à la couleur d’arrière-plan.
+
+Enfin, la section interactions réunit la profondeur maximale affichée, la durée des transitions radiales et la visibilité de la barre de fil d’Ariane (breadcrumb). Réduire la profondeur à trois niveaux, par exemple, permet de dégager l’espace visuel tout en concentrant l’analyse sur des catégories macro. 
+
+Toutes ces propriétés, décrites de manière déclarative dans capabilities.json, sont fusionnées au moment de update() avec les valeurs de defaultSettings. Le résultat, un objet VisualSettings typé, est injecté dans PartitionLayout, RingRenderer et Interaction Manager. Ce mécanisme assure une réactivité immédiate : toute modification dans le volet Format est reflétée au cycle de rendu suivant, sans recharger le visuel.
+
+
+% ---------------------------------------------------------------------------

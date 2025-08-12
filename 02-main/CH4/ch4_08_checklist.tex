@@ -1,0 +1,34 @@
+% -----------------------------------------------------------------
+% 4.8 – Checklist de démarrage rapide
+% Fichier : ch4_08_checklist.tex
+% -----------------------------------------------------------------
+
+\section{Checklist de démarrage rapide}\label{sec:ch4_checklist}
+
+La checklist ci-dessous offre un aide-mémoire synthétique pour préparer un poste de travail et lancer un premier visuel Power BI en moins d’une heure. Chaque point renvoie à la sous-section détaillée correspondante ; son respect chronologique diminue significativement le temps de mise en route et prévient les blocages les plus courants.
+
+\begin{enumerate}[label=\textbf{Étape \arabic*:}, wide=0pt, itemsep=.8em]
+  \item \textbf{Installer Node.js (≥ v18 LTS)} : télécharger l’installateur officiel, exécuter avec les options par défaut, puis vérifier la version (\S\,\ref{sec:ch4_prerequis}).
+
+  \item \textbf{Ajouter l’outil pbiviz} : exécuter npm install -g powerbi-visuals-tools@latest et confirmer la disponibilité de l’exécutable via pbiviz --help (\S\,\ref{sec:ch4_prerequis}).
+
+  \item \textbf{Générer le certificat SSL local} : lancer pbiviz --install-cert, accepter l’importation dans le magasin racine et tester l’URL https://localhost:8080/assets (\S\,\ref{sec:ch4_setup_env}).
+
+  \item \textbf{Activer le mode développeur} : sur <app.powerbi.com>, ouvrir Settings → User settings → Developer et basculer l’interrupteur (\S\,\ref{sec:ch4_setup_env}).
+
+  \item \textbf{Créer le squelette du visuel} : dans un dossier de travail, exécuter pbiviz new <NomDuVisuel> puis npm install pour récupérer les dépendances (\S\,\ref{sec:ch4_new_visual}).
+
+  \item \textbf{Démarrer le serveur local} : à la racine du projet, exécuter pbiviz start et laisser la console ouverte pour compiler à chaud (\S\,\ref{sec:ch4_new_visual}).
+
+  \item \textbf{Insérer le conteneur développeur} : dans un rapport de test ouvert en mode Édition, cliquer sur l’icône <> et vérifier que le visuel se charge sans erreur (\S\,\ref{sec:ch4_debug}).
+
+  \item \textbf{Associer des champs de données} : glisser-déposer au moins un rôle requis, observer la mise à jour du compteur ou du rendu et contrôler la structure DataView via la console JavaScript (\S\,\ref{sec:ch4_debug}).
+
+  \item \textbf{Itérer sur le code} : modifier visual.ts ou visual.less, sauvegarder et valider le hot-reload. Si nécessaire, recharger la page après changement de capabilities.json (\S\,\ref{sec:ch4_debug}).
+
+  \item \textbf{Consigner les anomalies} : toute erreur rencontrée doit être ajoutée au cookbook interne avec son correctif, conformément au modèle « symptôme – diagnostic – résolution » (\S\,\ref{sec:ch4_troubleshoot}).
+
+  \item \textbf{Empaqueter pour validation hors mode dev} : lorsque le prototype est stable, exécuter pbiviz package, importer le fichier .pbiviz dans un rapport vierge et répéter les tests de données.
+\end{enumerate}
+
+Le respect de cette séquence permet de sécuriser la livraison d’une première version fonctionnelle tout en capitalisant immédiatement les bonnes pratiques et les leçons apprises. 

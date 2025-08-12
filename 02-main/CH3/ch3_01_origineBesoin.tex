@@ -4,12 +4,15 @@
 %-----------------------------------------------------------
 
 Dans le cadre de son activité de conseil, la société ECRINS~SA étudie la
-\emph{faisabilité} de visuels Power BI dépassant les limites du catalogue
+faisabilité de visuels Power BI dépassant les limites du catalogue
 natif et des extensions AppSource.  
 Deux scénarios métiers proposés par des clients—l’un marketing, l’autre
 analytique—ont été retenus afin de démontrer, sous forme de
-\textbf{preuve de concept (PoC)}, la viabilité technique de visuels
-personnalisés susceptibles d’être industrialisés par la suite.
+preuves de concept (PoC), la viabilité technique de visuels
+personnalisés.  
+Il ne s’agit pas de livrer des composants prêts à la production, mais de
+valider un processus reproductible qui pourra servir de référence à de
+futurs développements.
 
 %-----------------------------------------------------------
 \subsection{Besoin marketing : carte des flux passagers aéroportuaire}
@@ -17,34 +20,24 @@ personnalisés susceptibles d’être industrialisés par la suite.
 %-----------------------------------------------------------
 
 Un client gestionnaire d’un aéroport international souhaite
-\textbf{cartographier les flux de passagers sur l’ensemble du site}
-(parkings, halls d’enregistrement, points de contrôle, boutiques,
+cartographier les flux de passagers dans l'aéroport. 
+(Zones d'entrées, halls d’enregistrement, points de contrôle, boutiques,
 portes d’embarquement) pour identifier les zones de plus forte
 affluence et optimiser l’emplacement des surfaces publicitaires.  
-Le visuel attendu adopte le paradigme de la \emph{flow map} : des arcs
+Le visuel attendu adopte le paradigme de la carte de flux : des arcs
 reliant les points d’intérêt, dont l’épaisseur matérialise le volume de
 voyageurs, révèlent immédiatement les axes de déplacement dominants
 \parencite{GuoFlowMaps2011}.  
-Une couche de \textit{heat map} complétera la lecture en soulignant les
-« hot-spots » commerciaux.  
-Les choix techniques (plan SVG, coordonnées, routage A*, calcul de densité)
-seront détaillés au chapitre \ref{sec:implementation}.
+Une couche de carte de chaleur complétera la lecture en soulignant les
+« hot-spots ».  
+
 
 %-----------------------------------------------------------
 \subsection{Besoin d’analyse hiérarchique : Sunburst de décomposition}
 \label{subsec:need-hierarchical-sunburst}
 %-----------------------------------------------------------
 
-Un autre client d’ECRINS~SA exige une visualisation capable
-d’explorer \textit{n’importe quelle hiérarchie de données}
-(structure organisationnelle, catalogue produits, processus métier, etc.).
-Le \emph{Decomposition Tree} natif de Power BI, limité en personnalisation
-et en nombre de mesures, ne répond pas à cette exigence.  
-Un \textit{diagramme Sunburst} a donc été retenu : son organisation radiale
-affiche plusieurs niveaux en une seule vue et compare visuellement les
-contributions relatives de chaque branche
-\parencite{StaskoSunburst2000}.  
-L’objectif est de disposer d’un composant \textbf{personnalisable} et
-\textbf{réutilisable} pour tout scénario d’analyse hiérarchique ; les
-aspects d’implémentation (partition D3, drill, accessibilité) seront
-présentés également au chapitre \ref{sec:implementation}.
+Le second besoin a été formulé au cours d’un entretien tenu le 13 juin 2025 entre l’auteur, la professeure C. Bioley et un consultant décisionnel d’ECRINS SA.
+L’équipe souhaitait disposer d’un Decomposition Tree plus riche que le visuel natif de Power BI — celui-ci se révèle rapidement contraignant, tant par le nombre limité de mesures que par la faible marge de personnalisation offerte. 
+Après analyse, le choix s’est porté sur un Sunburst, dont la structure radiale permet d’afficher plusieurs niveaux hiérarchiques en une seule vue et de comparer d’un coup d’œil les contributions relatives de chaque branche \parencite{StaskoSunburst2000}. 
+

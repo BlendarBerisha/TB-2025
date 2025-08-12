@@ -1,0 +1,29 @@
+% ---------------------------------------------------------------------------
+%  ch4_4A_06_config.tex
+%  Section 4A.6 — Configuration des données et des paramètres (capabilities & settings)
+% ---------------------------------------------------------------------------
+\subsection{Configuration des données et des paramètres (capabilities.json \& settings.ts)}
+\label{subsec:4A-config}
+
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+La déclaration des rôles de données et des options de format pour le Passenger-Flow Map est centralisée dans le fichier capabilities.json. Cette métadonnée, exigée par le SDK Power BI, remplit deux fonctions : (i) définir le contrat des données d’entrée attendues et (ii) spécifier la structure du Format Pane exposée à l’utilisateur final.
+
+\paragraph{Rôles de données.} Le visuel requiert huit champs : l’identifiant de flux et les coordonnées source–destination ($\text{X}_1,\text{Y}_1,\text{X}_2,\text{Y}_2$), le volume de passagers, l’heure et la catégorie. Chacun est décrit par les propriétés name, displayName (localisé FR/EN) et kind (Grouping ou Measure). Par exemple, EdgeId agit comme clé primaire, tandis que Passagers est déclaré Measure. Le mappage dataViewMappings adopte le mode « table simple » : chaque ligne du dataset doit fournir ces huit valeurs. Lors de l’utilisation dans Power BI, l’utilisateur est guidé graphiquement pour affecter les colonnes du modèle aux rôles correspondants.
+
+\paragraph{Objets de format.} Outre le schéma des données, capabilities.json définit cinq groupes d’options – PathSettings, Visualization, Stroke, Particle et Colors. Chaque groupe contient des propriétés typées (numérique, booléen, couleur) assorties d’un label localisé.
+\begin{itemize}
+  \item PathSettings regroupe curvature, smoothness et avoidObstacles. Ces paramètres gouvernent respectivement la tension de l’interpolateur Catmull–Rom, le seuil angulaire de simplification et l’activation du maillage A*.
+  \item Visualization contient showControls, animationSpeed, showHeatmap et showObstacles. Ces options pilotent la présence du panneau, la vitesse de la particule, l’affichage de la carte de chaleur et, en mode débogage, le rendu des obstacles.
+  \item Stroke définit min, max, opacity et dashLength, contrôlant l’épaisseur, la transparence et le motif ponctuel des arcs.
+  \item Particle expose size et opacity, permettant d’ajuster la lisibilité de l’animation directionnelle.
+  \item Colors spécifie lowTraffic et highTraffic, extrémités de la palette linéaire qui encode l’intensité des flux.
+\end{itemize}
+
+\paragraph{Chargement et fusion des paramètres.} Au moment du rendu, le module Settings lit les objets présents dans DataView.metadata puis fusionne ces valeurs avec le bloc defaultSettings défini dans settings.ts. Le résultat est un objet typé VisualSettings auquel tous les modules accèdent. Ainsi, FlowRenderer récupère settings.stroke.min/max pour dimensionner les arcs, tandis que PathGrid se réfère à settings.pathSettings.avoidObstacles pour choisir le maillage approprié.
+
+\paragraph{Propagation des changements.} La méthode enumerateObjectInstances() implémentée dans visual.ts permet au host Power BI d’interroger le visuel et d’afficher dynamiquement l’état courant des options dans le Format Pane. Toute modification utilisateur déclenche une mise à jour du DataView.metadata; au cycle suivant de update(), Settings relit ces valeurs et le pipeline est relancé. 
+
+\paragraph{Port de l’architecture hexagonale.} En termes de conception, capabilities.json et Settings représentent le port « configuration et données » de l’architecture hexagonale. Power BI fournit le flux entrant (roles + metadata) ; l’application interne l’adapte via ses propres abstractions. Cette séparation renforce la modularité et permet, à terme, de réutiliser le cœur métier dans un autre contexte (ex. intégration dans un portail web hors Power BI) moyennant un nouvel adaptateur.
+

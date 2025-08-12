@@ -1,0 +1,20 @@
+% ---------------------------------------------------------------------------
+%  ch4_4B_07_synthese.tex
+%  Section 4B.7 — Synthèse et positionnement pour ECRINS SA
+% ---------------------------------------------------------------------------
+\subsection{Synthèse et positionnement pour ECRINS SA}
+\label{subsec:4B-synthese}
+
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+Le Radial Sunburst Decomposition Tree  confirme la faisabilité d’une représentation hiérarchique riche au sein de Power BI tout en se différenciant nettement du Passenger-Flow Map. Là où le visuel A démontrait la gestion d’un maillage spatial et l’animation de flux, le Sunburst met l’accent sur la lisibilité analytique, la légèreté du bundle et la personnalisation par l’utilisateur final.
+
+Grâce à d3.partition et à une allocation radiale paramétrique, le visuel restitue fidèlement les proportions numériques. 
+
+La logique métier reste découplée du moteur de rendu : le ViewModel expose une structure à plat qui pourrait, si nécessaire, être raccordée à un autre moteur (Canvas ou WebGL) sans réécrire la chaîne amont. Les paramètres exposés dans capabilities.json — profondeur maximale, activation des animations, palettes de couleurs, KPI central — rendent le composant facilement reconfigurable par les équipes métiers.
+
+La conformité visée (navigation clavier, contrastes, annonces ARIA) et l’intégration avec l’ISelectionManager en font un bon candidat pour un pilote interne et une base d’industrialisation. Contrairement au visuel A, aucune dépendance à un algorithme de path-finding n’est requise ; la transformation s’appuie sur le modèle hiérarchique déjà présent dans Power BI, ce qui simplifie la maintenance et le transfert de connaissances.
+
+Pour ECRINS SA, le Sunburst peut jouer un double rôle : outil opérationnel pour l’analyse budgétaire et gabarit réutilisable pour d’autres cas d’usage hiérarchiques. Sa modularité ouvre la voie à des évolutions ciblées (agrégation automatique, règles de colorimétrie pilotées par des seuils métiers). Par rapport au Passenger-Flow Map, il illustre une stratégie complémentaire : un composant léger, paramétrable et rapidement déployable. 
+% ---------------------------------------------------------------------------

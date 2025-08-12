@@ -1,0 +1,216 @@
+% =============================================================
+% Chapitre 6 — Industrialisation et mise en production
+% =============================================================
+
+\chapter{Industrialisation et mise en production}
+\label{chap:industrialisation}
+
+Ce chapitre décrit la chaîne d’intégration et de livraison recommandée pour les visuels personnalisés. Le périmètre est la diffusion interne via le magasin organisationnel ; la place de marché publique n’entre pas dans le dispositif. L’objectif est de produire, à chaque version, un paquet pbiviz fiable, reproductible et vérifiable, afin que la décision de publication repose sur des éléments objectifs.
+
+% -------------------------------------------------------------
+\section{Cadre général}
+\label{sec:ci-cadre}
+
+La chaîne d’industrialisation poursuit trois finalités. D’abord, garantir qu’un même code aboutit au même artefact, indépendamment de l’environnement où il est construit. Ensuite, détecter le plus tôt possible toute régression fonctionnelle ou de sécurité pour éviter de la déplacer vers l’aval. Enfin, fournir avec chaque paquet des preuves simples — audit, empreinte d’intégrité, journal des modifications — qui permettent une revue rapide et une diffusion maîtrisée dans le magasin organisationnel.
+
+Le dispositif sépare clairement la construction technique et la préparation à la diffusion. Les étapes répétitives et sensibles aux erreurs humaines sont automatisées : installation déterministe des dépendances, tests, audit de packaging, contrôles de seuils, génération et archivage des artefacts. Les responsabilités sont réparties de manière à éviter les angles morts : développement pour la qualité du code, intégration pour la production des artefacts, administration pour la décision de publication.
+
+% -------------------------------------------------------------
+\section{Notions utiles}
+\label{sec:definitions}
+
+Le magasin organisationnel est la galerie privée de visuels du tenant. Y publier un composant le rend disponible aux créateurs de rapports sans manipulation de fichiers locaux.
+
+L’audit automatisé est l’analyse fournie par l’outillage officiel au moment du packaging ; il signale des pratiques susceptibles de dégrader l’exécution dans le service et sert de garde-fou même sans objectif de certification publique.
+
+L’empreinte SHA-256 est une somme de contrôle jointe à la release ; elle prouve que le fichier n’a pas été modifié après sa production. La signature interne est une option de gouvernance : une signature cryptographique produite lors de la release pour attester l’origine du paquet. Elle n’est pas requise pour l’import dans le magasin organisationnel. Sa mise en œuvre opérationnelle figure en annexe~\ref{ann:signature-procedure}.
+
+% -------------------------------------------------------------
+\section{Exigences de la chaîne}
+\label{sec:exigences-ci}
+
+Les workflows s’exécutent sous Node version LTS 22 afin de stabiliser l’environnement d’exécution. Les dépendances sont installées de manière déterministe avec \texttt{npm ci}. Le packaging s’appuie sur l’outillage officiel des visuels et active l’audit de certification afin de détecter les usages non supportés. Un seuil de couverture minimale des tests est appliqué et la taille du paquet est contrôlée pour préserver les temps de chargement. Chaque release met à disposition le paquet pbiviz, son empreinte SHA-256, le rapport d’audit et le journal des modifications ; la signature interne, lorsqu’elle est adoptée, s’y ajoute et permet l’attribution. Ces contrôles s’alignent sur les critères transverses du projet (performance, accessibilité, sécurité) et évitent de dépendre d’un contrôle manuel tardif.
+
+% -------------------------------------------------------------
+\section{Chaîne d’intégration et de livraison}
+\label{sec:ci-cd}
+
+Chaque dépôt héberge un unique visuel. La chaîne repose sur deux workflows GitHub Actions complémentaires : un build continu (sur \textit{push} et \textit{pull request}) et une release sur marquage de version. Les listings ci-dessous sont génériques et directement utilisables dans un dépôt unique.
+
+\subsection{Build continu}
+\label{subsec:ci-build}
+
+Le build a pour but d’échouer tôt tout changement non conforme et de publier rapidement un artefact testable. Le pipeline ci-dessous contrôle la compilation, le style, la couverture, l’audit de packaging et la taille du paquet.
+
+\noindent\textbf{Workflow de build et packaging (un visuel par dépôt)}
+\begin{verbatim}
+name: ci-build
+
+on:
+  push: { branches: [ "main" ] }
+  pull_request: { branches: [ "main" ] }
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    concurrency:
+      group: build-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm' }
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - name: Tests et couverture minimale
+        shell: bash
+        run: |
+          npm test -- --ci --coverage --passWithNoTests || true
+          if [ -f coverage/coverage-summary.json ]; then
+            COVER=$(node -e "console.log(require('./coverage/coverage-summary.json').total.statements.pct || 0)")
+          else
+            COVER=0
+          fi
+          echo "Coverage: $COVER%"
+          awk 'BEGIN{exit !( '"$COVER"' >= 70 )}'
+
+      - name: Packaging avec audit (log capturé)
+        shell: bash
+        run: |
+          mkdir -p dist
+          npx pbiviz package --certification-audit -o dist 2>&1 | tee dist/packaging.log
+
+      - name: Controle de taille du paquet
+        shell: bash
+        run: |
+          shopt -s nullglob
+          files=(dist/?*.pbiviz)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "Aucun paquet .pbiviz produit"; exit 1
+          fi
+          max=0
+          for f in "${files[@]}"; do
+            size=$(wc -c <"$f")
+            [ "$size" -gt "$max" ] && max=$size
+          done
+          echo "Max bundle size: $max bytes"
+          [ "$max" -le 1048576 ]  # 1 MiB cible
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pbiviz-build
+          path: |
+            dist/*.pbiviz
+            dist/packaging.log
+          retention-days: 14
+\end{verbatim}
+
+\subsection{Release sur tag}
+\label{subsec:ci-release}
+
+La release reconstruit avec audit, calcule l’empreinte d’intégrité et publie les artefacts destinés à l’administrateur. Le déclenchement repose sur un marquage de version respectant SemVer (format vMAJ.MIN.PATCH, par exemple v1.3.0). Tout autre format est proscrit pour les livraisons. Par défaut, aucune signature n’est produite ; l’option de signature interne est décrite en annexe~\ref{ann:signature-procedure}.
+
+\noindent\textbf{Workflow de release (empreinte d’intégrité, un visuel par dépôt)}
+\begin{verbatim}
+name: ci-release
+
+on:
+  push: { tags: [ "v*" ] }
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: release-${{ github.ref }}
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm' }
+
+      - run: npm ci
+
+      - name: Vérifier cohérence version/tag
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG=$(node -p "require('./package.json').version")
+          echo "Tag: $TAG / package.json: $PKG"
+          [ "$TAG" = "$PKG" ] || { echo "Version et tag incohérents"; exit 1; }
+
+      - name: Packaging avec audit (log capturé)
+        shell: bash
+        run: |
+          mkdir -p dist
+          npx pbiviz package --certification-audit -o dist 2>&1 | tee dist/packaging.log
+
+      - name: Empreinte SHA-256
+        shell: bash
+        run: |
+          shopt -s nullglob
+          files=(dist/?*.pbiviz)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "Aucun paquet .pbiviz produit"; exit 1
+          fi
+          for f in "${files[@]}"; do
+            sha256sum "$f" > "$f.sha256"
+          done
+
+      - name: Publier les artefacts du job
+        uses: actions/upload-artifact@v4
+        with:
+          name: pbiviz-release-${{ github.ref_name }}
+          path: dist/*
+          retention-days: 90
+
+      - name: Créer la GitHub Release et joindre les fichiers
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          files: dist/*
+\end{verbatim}
+
+% -------------------------------------------------------------
+\section{Intégrité et signature}
+\label{sec:signature-principes}
+
+L’empreinte SHA-256 permet de vérifier, avant publication, que le fichier reçu est identique à celui produit par la chaîne. Toute divergence impose de refuser la diffusion et de demander une nouvelle release.
+
+La signature interne est une option destinée à renforcer l’attribution en prouvant que la release provient du pipeline autorisé. Elle n’est pas requise pour l’import dans le magasin organisationnel. Son activation, son exploitation et son renouvellement sont décrits en annexe~\ref{ann:signature-procedure} ; lorsque cette option est en place, un fichier \texttt{.p7s} accompagne le paquet et son empreinte.
+
+% -------------------------------------------------------------
+\section{Diffusion dans le magasin organisationnel}
+\label{sec:distribution}
+
+La diffusion s’effectue dans le magasin organisationnel après vérifications préalables. L’administrateur ajoute le paquet validé à la galerie interne afin qu’il soit disponible aux créateurs de rapports. La procédure pas à pas — contrôles, publication et retour arrière — est décrite en annexe~\ref{ann:org-store-procedure}.
+
+% -------------------------------------------------------------
+\section{Impacts et limites}
+\label{sec:limitations}
+
+Une diffusion interne sans certification publique peut limiter certaines fonctions du service dans des cas particuliers, notamment l’export de pages contenant des visuels non certifiés. Ces limites doivent être portées à la connaissance des utilisateurs et, si nécessaire, des vues alternatives sans visuels personnalisés doivent être prévues pour les besoins d’export.
+
+% -------------------------------------------------------------
+\section{Rôles et responsabilités}
+\label{sec:roles-controle}
+
+Le développement maintient un code testé, lisible et conforme aux règles de style. L’intégration continue orchestre les workflows, exécute l’audit, réalise le packaging et publie les artefacts, l’empreinte et le journal des modifications. L’administration vérifie les éléments de preuve, décide de la publication dans le magasin organisationnel et pilote, le cas échéant, le retour arrière. Le responsable métier valide l’adéquation fonctionnelle avant une diffusion élargie. La décision de mise à disposition appartient à l’administration, après avis du responsable métier et sur la base des preuves fournies par la chaîne.
+
+% -------------------------------------------------------------
+\section{Traçabilité et maintenance}
+\label{sec:maintenance-transfert}
+
+Chaque release conserve le paquet pbiviz, l’empreinte SHA-256, le rapport d’audit et le journal des modifications, ainsi que la signature lorsque l’option est activée. Cet archivage forme la mémoire technique du produit et facilite l’investigation en cas d’incident. La maintenance couvre la veille des versions de l’API des visuels, la mise à jour contrôlée des dépendances, la reconduction des tests et de l’audit, et la révision périodique des seuils de qualité. Lorsque la signature interne est en place, le renouvellement des certificats et la rotation des secrets sont planifiés dans le même cycle.

@@ -1,0 +1,57 @@
+% =============================================================
+% Chapter 4 – Playbook générique de développement des visuels Power BI
+% -------------------------------------------------------------
+% Ce fichier est le "chapitre maître" : il déclare le chapitre et
+% inclut chaque sous‑section majeure dans un fichier séparé.
+% Le découpage reprend la structure validée avec l’étudiant :
+%   4.0 Intro générale + rôle du playbook
+%   4.1 Présentation du SDK / pbiviz
+%   4.2 Pré‑requis techniques
+%   4.3 Mise en place de l’environnement
+%   4.4 Création d’un composant minimal
+%   4.5 Structure des fichiers générés
+%   4.6 Debug et hot‑reload dans Power BI Service
+%   4.7 Erreurs courantes & correctifs
+%   4.8 Checklist de démarrage rapide
+%   4.9 Paragraphe de transition vers les visuels A & B
+% Les fichiers .tex correspondants sont à placer dans
+% 02-main/CH4/   et nommés ch4_XX_<sujet>.tex.
+% =============================================================
+
+\chapter{Playbook générique de développement des visuels Power~BI}
+\label{chap:playbook}
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+% -----------------------------------------------------------------
+% 4.0 Intro – place le contexte et le rôle du playbook
+\input{02-main/CH4/ch4_00_introPlaybook.tex}
+
+% 4.1 Présentation du SDK Power BI Custom Visuals et de pbiviz
+\input{02-main/CH4/ch4_01_presentationSDK.tex}
+
+% 4.2 Pré‑requis techniques
+\input{02-main/CH4/ch4_02_prerequis.tex}
+
+% 4.3 Mise en place de l’environnement de développement
+\input{02-main/CH4/ch4_03_setupEnv.tex}
+
+% 4.4 Création d’un composant minimal avec pbiviz new
+\input{02-main/CH4/ch4_04_newVisual.tex}
+
+% 4.5 Structure des fichiers générés (capabilities.json, visual.ts, ...)
+\input{02-main/CH4/ch4_05_filesStructure.tex}
+
+% 4.6 Débogage et hot‑reload dans Power BI Service
+\input{02-main/CH4/ch4_06_debug.tex}
+
+% 4.7 Erreurs courantes et contournements
+\input{02-main/CH4/ch4_07_troubleshoot.tex}
+
+% 4.8 Checklist de démarrage rapide
+\input{02-main/CH4/ch4_08_checklist.tex}
+
+% 4.9 Paragraphe de transition vers les visuels A & B
+\input{02-main/CH4/ch4_09_transition.tex}
+
+% =============================================================

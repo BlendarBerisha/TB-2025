@@ -3,58 +3,21 @@
 \label{sec:success-criteria}
 %-----------------------------------------------------------
 
-Les critères de réussite du prototype servent d’indicateurs de \textit{faisabilité
-technique} et de \textit{rigueur méthodologique}, plutôt que d’objectifs
-fonctionnels exhaustifs.
-Ils visent à vérifier que la preuve de concept respecte un socle minimal en
-matière de performance, d’ergonomie et de qualité.
+Les critères exposés dans cette section définissent le périmètre attendu d’un prototype fonctionnel. Il ne s’agit pas d’un produit prêt à la mise en production, mais d’une preuve de faisabilité suffisamment solide pour démontrer la validité des choix techniques. De fait, certaines exigences secondaires — telles que la compatibilité mobile, l’export PDF, la lecture bidirectionnelle (RTL) ou encore le packaging AppSource — sont volontairement exclues.
 
-\begin{enumerate}[noitemsep,topsep=0pt,label=\arabic*)]
-    \item \textbf{Performance} : le temps de rendu et de mise à jour doit rester
-          inférieur à 300~ms, garantissant une interaction fluide pour
-          l’utilisateur.
-    \item \textbf{Accessibilité (WCAG 2.2)} : le visuel doit se conformer aux
-          recommandations WCAG 2.2 (contraste suffisant, navigation clavier,
-          attributs \texttt{aria} pertinents) afin d’être utilisable par le
-          plus grand nombre.
-    \item \textbf{Couverture fonctionnelle} : toutes les fonctionnalités
-          attendues (détails au survol, sélection et filtrage, zoom, etc.) sont
-          implémentées, assurant la pertinence métier du prototype.
-    \item \textbf{Intégration Power BI (cross-highlighting)} : le visuel prend
-          en charge le filtrage et le surlignement croisés avec les autres
-          visualisations du rapport, conformément au comportement natif de la
-          plateforme.
-    \item \textbf{Qualité du code} : le code source est modulaire, documenté et
-          couvert par des tests unitaires (≥ 75 \%), facilitant la maintenance.
-    \item \textbf{Sécurité (sandbox pbiviz)} : le prototype s’exécute dans
-          l’\emph{iframe} sandbox sans appel réseau externe ni usage d’API non
-          autorisées, passant l’audit
-          \texttt{pbiviz package --certification-audit}.
-    \item \textbf{Documentation} : un guide utilisateur et un guide technique
-          détaillent l’installation, l’usage et l’architecture interne du
-          visuel.
-\end{enumerate}
+\subsection{Performance}  
+Le visuel doit garantir un temps de rendu fluide et stable lors d’un usage courant. Pour le composant Passenger-Flow Map, la cible est fixée à un affichage fluide pour un temps de rendu inférieur à 300 ms. Le second visuel, de type Sunburst, repose quant à lui sur une hiérarchie à 3 niveaux, avec un objectif de latence perceptible inférieure à 100 ms à chaque interaction (chargement initial, drill-down, survol). Cette borne constitue une référence implicite pour l’expérience utilisateur fluide.
 
-\begin{table}[H]
-    \centering
-    \caption{Synthèse des critères de réussite}
-    \label{tab:success-criteria}
-    \begin{tabularx}{\textwidth}{@{}lX@{}}
-        \toprule
-        \textbf{Axe} & \textbf{Critère cible} \\
-        \midrule
-        Performance            & Temps de réponse du visuel < 300 ms \\
-        Accessibilité          & Conformité complète aux WCAG 2.2 \\
-        Couverture fonctionnelle & Fonctionnalités attendues implémentées \\
-        Intégration Power BI   & Cross-highlighting pleinement opérationnel \\
-        Qualité du code        & Code modulaire, tests ≥ 75 \%, commentaires \\
-        Sécurité               & Exécution conforme aux règles du sandbox \\
-        Documentation          & Guides utilisateur et développeur fournis \\
-        \bottomrule
-    \end{tabularx}
-\end{table}
+\subsection{Lisibilité minimale}  
+Les visuels doivent respecter une lisibilité suffisante pour assurer la clarté des données présentées. Cette exigence comprend notamment le respect des contrastes de couleur AA selon la norme WCAG~2.2, la taille et le poids de police suffisants pour être interprétés sans effort, et la possibilité de naviguer au clavier sur les éléments interactifs de base (sélection, activation). À ce stade, seule une navigation \texttt{tabindex} et une activation clavier (Enter) sont exigées, sans aller jusqu’à l’implémentation complète d’un lecteur d’écran (screen reader) ou de la palette daltonienne. Lorsque cela apporte une information utile, des attributs ARIA (p.~ex. aria-label et role) sont appliqués aux éléments véritablement actionnables afin de leur fournir un nom accessible ; à l’inverse, les formes purement décoratives sont exclues de la navigation et masquées aux technologies d’assistance.
 
-Chaque critère énuméré ci-dessus constituera un point de contrôle lors de
-l’évaluation finale : leur satisfaction attestera de la faisabilité technique
-et de la qualité du travail réalisé dans le cadre de ce
-\textit{proof of concept}.
+\subsection{Internationalisation essentielle}  
+Les visuels doivent prendre en compte les spécificités locales des utilisateurs. L’affichage des nombres, pourcentages et dates est localisé dynamiquement selon la langue définie par l’environnement Power BI. Les locales fr-CH (français suisse) et en-US (anglais international) sont utilisées comme référence pour les tests. Les chaînes de texte affichées (infobulles, boutons, titres) sont externalisées et traduites dans ces deux langues, garantissant un usage bilingue de base. Cette fonctionnalité est conforme aux recommandations d’accessibilité de Power BI pour les environnements multilingues (Microsoft, 2024).
+
+\subsection{Qualité du code}  
+Le code source doit être structuré de manière modulaire, commenté et testé selon les pratiques standard du développement front-end moderne. Le respect des bonnes pratiques de développement est assuré via une organisation logique des fichiers, une séparation claire des responsabilités (données, logique, rendu), et une couverture minimale de 70~\% du code par des tests unitaires Jest. Ces tests sont conçus pour détecter les erreurs de logique ou les cas limites susceptibles d’apparaître en usage réel. L’objectif n’est pas d’atteindre un niveau de robustesse de production, mais de garantir une base stable, maintenable et compréhensible.
+
+\subsection{Intégration continue (CI/CD)}
+Le visuel est maintenu dans un dépôt GitHub associé à une chaîne CI légère, capable d’effectuer automatiquement la compilation, les vérifications et la génération de l’artefact .pbiviz. La CI contrôle la taille du fichier .pbiviz à l’aide d’un seuil interne fixé à \SI{1}{\mebi\byte} (= 1\,048\,576~octets) ; au-delà, le pipeline échoue. Ce seuil vise à garantir des temps de chargement maîtrisés et une bonne hygiène de packaging ; il ne s’agit pas d’une contrainte officielle de Power BI Desktop. L’objectif est d’assurer la reproductibilité des builds et de détecter précocement toute dérive (taille, dépendances, erreurs de compilation).
+
+En résumé, ces cinq critères de réussite garantissent un équilibre entre réalisme technique, effort de développement soutenable, et pertinence fonctionnelle pour les métiers d’ECRINS SA. Ils seront évalués au chapitre~\ref{chap:evaluation}, selon une grille de validation fondée sur des mesures concrètes, des tests fonctionnels, et une revue de code.

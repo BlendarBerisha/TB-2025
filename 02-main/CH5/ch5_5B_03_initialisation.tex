@@ -1,0 +1,24 @@
+% ---------------------------------------------------------------------------
+%  ch4_4B_03_layout.tex
+%  Section 4B.3 — Algorithmes de construction des anneaux (partition, layout, radius)
+% ---------------------------------------------------------------------------
+\subsection{Algorithmes de construction des anneaux : partitionnement radial et allocation des rayons}
+\label{subsec:4B-layout}
+
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+Le cœur du visuel Radial Sunburst Decomposition Tree  réside dans l’algorithme de partitionnement qui convertit la hiérarchie pondérée en anneaux concentriques. La solution retient le partitionnement radial décrit par \parencite{stasko2000}, implémenté via d3.partition. Ce choix préserve l’ordre hiérarchique et la proportionnalité des valeurs : l’angle d’un segment reflète la part de son nœud dans le total.
+
+\paragraph{Agrégation des valeurs.} À partir de d3.hierarchy, chaque nœud reçoit une valeur égale à la somme de ses feuilles. Cette agrégation permet de distribuer l’espace angulaire selon la contribution de chaque sous-arbre.
+
+\paragraph{Partitionnement angulaire.} L’algorithme attribue à chaque nœud un angle proportionnel à sa valeur agrégée en conservant l’ordre des enfants, ce qui assure une lecture logique autour du cercle.
+
+\paragraph{Allocation radiale.} Les niveaux hiérarchiques occupent des anneaux successifs, du centre vers l’extérieur. Un disque intérieur peut être réservé pour afficher un indicateur de synthèse ; les rayons des anneaux sont alors recalculés sur l’espace restant afin de maintenir la lisibilité.
+
+\paragraph{Contrôle de la lisibilité.} Lorsque de très nombreuses petites branches sont présentes, ViewModel peut regrouper les contributions inférieures à un seuil (par exemple 2\%) dans un segment « Autres ». Cette agrégation limite le nombre de segments visibles sans déformer la répartition globale.
+
+\paragraph{Comparaison de layouts.} Des alternatives comme d3.pack (cercles tangents) ou les treemaps radiaux peuvent compliquer la lecture des proportions. Le partitionnement radial offre un compromis robuste entre fidélité numérique, continuité visuelle et guidage lors des transitions.
+
+En synthèse, la combinaison d3.hierarchy + d3.partition et une allocation radiale paramétrée produisent un sunburst lisible et fluide.
+% ---------------------------------------------------------------------------

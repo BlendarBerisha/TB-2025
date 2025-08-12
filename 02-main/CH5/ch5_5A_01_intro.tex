@@ -1,0 +1,58 @@
+% ---------------------------------------------------------------------------
+%  ch4_4A_01_principes.tex
+%  Section 4A.1 — Principes architecturaux et structure modulaire du visuel Passenger‑Flow Map
+% ---------------------------------------------------------------------------
+\subsection{Principes architecturaux et structure modulaire}
+\label{subsec:4A-principes-structure}
+
+\selectlanguage{french}
+\setlength{\parindent}{0pt}
+
+Le visuel Passenger\nobreakdash-Flow Map a été développé selon une architecture hexagonale modulaire. Ce paradigme \og ports\,\&\,adapters\fg{} isole la logique métier des interfaces d’entrée-sortie, limitant ainsi le couplage structurel et facilitant à la fois les tests unitaires et l’évolution incrémentale du code. Concrètement, le composant est scindé en plusieurs modules faiblement couplés, chacun assumant une responsabilité unique et communiquant via des interfaces abstraites. Cette séparation stricte entre le cœur fonctionnel et les périphériques – essentiellement les données Power BI, le rendu \textsc{dom} et les interactions utilisateur – garantit la cohérence interne et l’interchangeabilité future des composants.
+
+% ---------------- Schéma TikZ ------------------------------------------------
+\begin{figure}[H]
+  \centering
+  \tikzset{>={Stealth[length=5pt]}}
+  \usetikzlibrary{calc,arrows.meta}
+  \begin{tikzpicture}[
+      font=\small,
+      hex/.style  ={draw,dashed,thick,fill=gray!5},
+      mod/.style  ={draw,rounded corners=2pt,fill=blue!10,minimum width=2.9cm,minimum height=1.0cm,align=center},
+      util/.style ={draw,rounded corners=2pt,fill=yellow!20,minimum width=2.9cm,minimum height=1.0cm,align=center}]
+      % Hexagon vertices
+      \def\rad{1.8}
+      \foreach \i [count=\j] in {90,30,-30,-90,-150,150}{\coordinate (V\j) at (\i:\rad cm);}
+      % Hexagon
+      \draw[hex] (V1)--(V2)--(V3)--(V4)--(V5)--(V6)--cycle;
+      % Core
+      \node[font=\bfseries,align=center] at (0,0) {Cœur\\logique};
+
+      % Macro: place module at distance d, arrow to the same vertex/edge point
+      \newcommand{\placemodR}[5]{% V, angle, style, text, dist
+        \path (#1) ++(#2:#5) node[#3] (#1mod) {#4};
+        \draw[->,thick] (#1mod) -- (#1);
+      }
+
+      % Modules (top/bottom inchangés, latéraux éloignés)
+      \placemodR{V1}{90}{mod}{Settings\\Commons}{1.55cm}
+      \placemodR{V2}{30}{mod}{DataLoader\\(entrée)}{1.95cm}   % éloigné
+      \placemodR{V3}{-30}{mod}{FlowRenderer}{1.95cm}           % éloigné
+      \placemodR{V4}{-90}{mod}{PathSimplifier}{1.55cm}
+      \placemodR{V5}{-150}{mod}{PathGrid\\A*}{1.95cm}          % éloigné
+      \placemodR{V6}{150}{mod}{ControlPanel}{1.95cm}           % éloigné
+
+      % Heatmap module (dotted arrow vers V3 inchangé)
+      \path (V3) ++(0:3.4cm) node[util,anchor=west] (Heatmap) {Heatmap\\Renderer};
+      \draw[->,dotted,thick] (Heatmap.west) -- (V3);
+  \end{tikzpicture}
+  \caption{Architecture hexagonale du visuel Passenger-Flow Map.}
+  \label{fig:4A-hexagonal}
+\end{figure}
+
+
+
+La Figure~\ref{fig:4A-hexagonal} illustre cette organisation modulaire. L’hexagone central représente le cœur « Visual Shell » (visual.ts), contrôleur qui orchestre l’initialisation, la lecture des données, les filtres et le rendu. Autour, sept adaptateurs périphériques s’alignent sur les arêtes : (1) DataLoader, adaptateur d’entrée qui convertit le DataView brut de Power BI en structures internes ; (2) PathGrid\/A*, calculateur de trajectoire optimale fondé sur l’algorithme A* ; (3) PathSimplifier, filtre géométrique réduisant la complexité des chemins ; (4) FlowRenderer, moteur de rendu des flux qui génère et stylise les tracés \textsc{svg} ; (5) HeatmapRenderer, module optionnel dédié au rendu d’une carte de chaleur exprimant la densité de trafic ; (6) ControlPanel, panneau ui permettant filtres et interactions utilisateur ; (7) Settings / Commons, regroupement des paramètres exposés dans le Format Pane et des utilitaires transverses (constantes, journalisation).
+
+Chacun de ces modules correspond soit à un port de l’application hexagonale, soit à un adaptateur qui implémente ce port pour une technologie donnée. Ainsi, DataLoader constitue le port d’entrée des données, tandis que FlowRenderer et HeatmapRenderer se comportent comme adaptateurs de sortie graphique. De même, ControlPanel joue le rôle d’adaptateur d’interface utilisateur, parfaitement découplé de la logique de calcul interne. Tel que le formalise \parencite{cockburn2008}, cette organisation modulaire assure une séparation nette entre la computation interne et l’environnement externe, condition essentielle pour la maintenabilité de long terme et pour la conformité aux bonnes pratiques d’ingénierie logicielle.
+% ---------------------------------------------------------------------------

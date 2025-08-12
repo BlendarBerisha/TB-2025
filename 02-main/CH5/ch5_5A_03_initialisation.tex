@@ -1,0 +1,80 @@
+% ---------------------------------------------------------------------------
+%  ch4_4A_03_layout.tex
+%  Section 4A.3 — Calcul des trajectoires de flux : principe et réglages
+% ---------------------------------------------------------------------------
+\subsection{Calcul des trajectoires de flux : principe et réglages}
+\label{subsec:4A-layout}
+
+
+
+Le visuel Passenger\nobreakdash-Flow Map doit relier un point de départ et un point d’arrivée sans traverser les zones interdites. Le module PathGrid s’en charge en trois étapes : préparer le plan, trouver un chemin, puis simplifier le tracé pour l’affichage.
+
+\paragraph{Préparation du plan.}
+À l’ouverture, PathGrid pose une grille régulière sur le plan de l’aéroport (par exemple 200$\times$200 cases). Les coordonnées des flux sont ramenées sur cette grille et les zones « mur, contrôle, accès interdit » décrites dans obstacles.json — schéma extrait et figure d’overlay fournis en annexe~A2 (\autoref{ann:a2-fond}) — sont marquées comme non franchissables. Cette étape garantit qu’aucun tracé ne coupe un obstacle.
+
+\paragraph{Recherche du chemin.}
+Le chemin est calculé avec un algorithme de plus court trajet (A*). Concrètement, il explore les cases voisines jusqu’à rejoindre la destination, en évitant les « coupes de coin » qui rasent un obstacle. Si la destination est inaccessible, le visuel signale le problème et affiche une simple ligne droite pour rester lisible.
+
+La Figure \ref{fig:flow-a-star} illustre le principe appliqué : A* évite les cellules marquées comme obstacles, puis un lissage supprime les angles inutiles avant le rendu SVG.
+
+
+\begin{figure}[h]
+  \centering
+  \resizebox{.9\linewidth}{!}{
+  \begin{tikzpicture}[x=0.5cm,y=0.5cm,>=Latex]
+    % Styles
+    \tikzset{
+      obst/.style={fill=gray!30,draw=gray!60},
+      cell/.style={draw=gray!50,very thin},
+      pathraw/.style={line width=1.2pt},
+      pathsimpl/.style={line width=1.2pt, dashed},
+      start/.style={circle,draw,fill=white,inner sep=1pt},
+      goal/.style={diamond,draw,fill=white,inner sep=1pt},
+      legend/.style={font=\footnotesize,align=left},
+    }
+    % Grille 10x10
+    \foreach \i in {0,...,10} {
+      \draw[cell] (0,\i) -- (10,\i);
+      \draw[cell] (\i,0) -- (\i,10);
+    }
+    % Obstacles (corridor libre à y=4)
+    \fill[obst] (2,2) rectangle ++(2,2);  % bloc 1 (x:2-4, y:2-4)
+    \fill[obst] (6,2) rectangle ++(2,1);  % bloc 2 (x:6-8, y:2-3)
+    \fill[obst] (6,5) rectangle ++(2,2);  % bloc 3 (x:6-8, y:5-7)
+
+    % Source & Cible
+    \node[start,label=left:{\footnotesize Source}] (S) at (0.5,0.5) {};
+    \node[goal,label=right:{\footnotesize Cible}] (G) at (9.5,9.5) {};
+
+    % Chemin A* (brut, évite les obstacles)
+    \draw[pathraw]
+      (S) -- (1,1) -- (2,1) -- (3,1) -- (4,1) -- (5,1)
+      -- (5,2) -- (5,3) -- (5,4) % on monte jusqu'au couloir libre
+      -- (6,4) -- (7,4) -- (8,4) -- (9,4) % on traverse le couloir
+      -- (9,5) -- (9,6) -- (9,7) -- (9,8) -- (G); % on remonte vers la cible
+
+    % Chemin simplifié (pour l'affichage)
+    \draw[pathsimpl]
+      (S) .. controls (3,0.8) and (5.0,2.5) .. (5.0,4.0)
+          .. controls (6.8,4.0) and (8.6,4.2) .. (9.0,5.5)
+          .. controls (9.2,7.2) and (9.3,8.4) .. (G);
+
+    % Légende
+    \node[legend,draw=gray!40,rounded corners,inner sep=4pt,anchor=north west]
+      at (0, -0.5) {
+        \raisebox{2pt}{\tikz{\draw[obst] (0,0) rectangle (0.4,0.25);}} \; Obstacles \\
+        \tikz{\draw[pathraw] (0,0) -- (0.8,0);} \; Chemin A* (brut) \\
+        \tikz{\draw[pathsimpl] (0,0) -- (0.8,0);} \; Chemin simplifié (affichage) \\
+      };
+  \end{tikzpicture}}
+  \caption{Évitement d'obstacles et simplification de tracé (A* $\rightarrow$ rendu).}
+  \label{fig:flow-a-star}
+\end{figure}
+
+
+
+\paragraph{Allègement du tracé.}
+Le chemin brut peut contenir trop de points pour un rendu fluide. PathSimplifier enlève alors les petits angles inutiles selon un seuil réglable (smoothness). L’objectif est d’obtenir une courbe propre, légère à dessiner, sans changer la trajectoire perçue.
+
+\paragraph{Réglages dans le Format Pane.}
+Trois options pilotent le résultat : curvature (arrondi de la courbe), smoothness (niveau de simplification) et avoidObstacles (activation de l’évitement). Elles sont déclarées dans PathSettings (capabilities.json) et lues à chaque \verb|update()| via VisualSettings. Toute modification relance le calcul et le rendu.
