@@ -110,42 +110,43 @@ Le fond illustratif utilisé pour les démonstrations (plan d’orientation de l
 \end{figure}
 
 % =============================================================
-% Annexe A3 — Tests et conformité (v4 — données issues des captures)
-% -------------------------------------------------------------
-% =============================================================
-% Annexe A3 — Tests et conformité (v4 — données issues des captures)
-% -------------------------------------------------------------
-% =============================================================
-% Annexe A3 — Tests et conformité (v4 — données issues des captures)
+% Annexe A3 — Tests et conformité (v4 — revue experte)
 % -------------------------------------------------------------
 \section{Tests et conformité}
 \label{ann:a3-tests}
 
 \subsection{Environnement et périmètre}
-Après avoir importé les fichiers, les tests ont été réalisés sur Power BI Desktop sous Windows 11, machine AMD Ryzen 7 9800X3D, 32~Go RAM, NVIDIA RTX 5080. 
+Après importation des fichiers, les tests techniques ont été réalisés sur Power~BI Desktop 
+(canal classique) sous Windows~11, machine AMD Ryzen~7~9800X3D, 32~Go RAM, NVIDIA RTX~5080. 
 Visuels évalués : \textit{Passenger-Flow Map} et \textit{Radial Sunburst Decomposition Tree} (version 2.0.0.0). 
-Tailles mesurées des paquets \texttt{.pbiviz} (\textit{release} minifiée) : \textit{Radial Sunburst Decomposition Tree} \SI{37}{\kibi\byte} (\(\approx\) 37\,888~octets) ; \textit{Passenger-Flow Map} \SI{1006}{\kibi\byte} (\(\approx\) \SI{0.982}{\mebi\byte}). 
+Tailles mesurées des paquets \texttt{.pbiviz} (\textit{release} minifiée) : 
+\textit{Radial Sunburst Decomposition Tree} \SI{37}{\kibi\byte} (\(\approx\) 37\,888~octets) ; 
+\textit{Passenger-Flow Map} \SI{1006}{\kibi\byte} (\(\approx\) \SI{0.982}{\mebi\byte}). 
 (Conversion effectuée depuis les valeurs «~Ko~» affichées par l’explorateur Windows vers KiB/MiB, norme IEC.) 
 Jeux de données par défaut utilisés : \texttt{airport-flows-direct} et \texttt{sampleBudget}. 
-Date des mesures : 05/08/2025 (cf. planning Waterfall du chap.~3).
+Date des mesures : 05/08/2025 (cf. planning Waterfall du Chap.~3).
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=.95\linewidth]{Sunburst.png}
   \caption{Radial Sunburst Decomposition Tree — rendu sur dataset budgétaire de démonstration.}
-  \label{fig:a3-sunburst-demo}
 \end{figure}
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=.95\linewidth]{Passenger-flow.png}
   \caption{Passenger-Flow Map — rendu sur dataset de flux passagers de démonstration.}
-  \label{fig:a3-passenger-demo}
 \end{figure}
 
 \subsection{Protocole de mesure}
-Mesures saisies depuis l’Analyseur de performances. Les chiffres ci-dessous agrègent les durées «~Visual display (ms)~».\\
-\textbf{Critères projet (P95)} : \textit{Passenger-Flow Map} \(\leq\) 300~ms ; \textit{Radial Sunburst Decomposition Tree} \(\leq\) 100~ms (par interaction : chargement, drill, survol).
+Les mesures de performance ont été saisies depuis l’Analyseur de performances de Power~BI, 
+en relevant la durée «~Visual display (ms)~».  
+\textbf{Critères projet (P95)} : \textit{Passenger-Flow Map} \(\leq\) 300~ms ; 
+\textit{Radial Sunburst Decomposition Tree} \(\leq\) 100~ms (par interaction : chargement, drill, survol).
+
+En complément des mesures techniques, une \textbf{revue experte formative} a été menée par la professeure référente 
+(cf. Chap.~\ref{sec:validation-fonctionnelle}) afin d’évaluer la lisibilité, l’ergonomie de base et l’adéquation fonctionnelle.  
+Cette revue constitue la seule source de retours qualitatifs ; aucun test utilisateur ou démonstration interne n’a été conduit.
 
 \subsection{Résultats (synthèse)}
 \begin{table}[h]
@@ -200,11 +201,61 @@ Audit \texttt{--certification-audit} & À exécuter pour livraison : aucun bloca
 \bottomrule
 \end{tabularx}
 
+\subsection{Couverture des tests unitaires}
+\label{ann:a3-tests-coverage}
 
-% =============================================================
-% Annexe A5 — Procédure développeur « express »
-% -------------------------------------------------------------
-\section{Procédure développeur « express »}
+Les tests unitaires ont été exécutés avec Jest/ts-jest via \texttt{npm run test:cov} ; 
+les rapports sont archivés dans \texttt{coverage/}.  
+Le seuil CI retenu pour la couverture (déclarations) est fixé à \(\geq 70\%\). 
+Les deux visuels satisfont ce seuil.
+
+\begin{table}[H]\centering\small
+\caption{Synthèse de couverture et d'exécution des tests}
+\begin{tabular}{lrrrrrr}
+\toprule
+Visuel & \% Stmts & \% Branch & \% Funcs & \% Lines & Suites (ok/total) & Tests (ok/total) \\
+\midrule
+Radial Sunburst Decomposition Tree & 87.39 & 70.27 & 93.02 & 87.99 & 8/8  & 40/40 \\
+Passenger-Flow Map                 & 80.64 & 76.30 & 75.45 & 80.66 & 19/19 & 51/51 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+En lecture rapide, le \textit{Sunburst} présente une couverture globalement élevée et homogène ; 
+le \textit{Passenger-Flow Map} atteint des niveaux satisfaisants compte tenu de la part de logique graphique et d’interface.  
+Ces résultats valident la robustesse des tests et la conformité au seuil CI sur le périmètre technique défini.
+
+\section{Retours qualitatifs (revue experte)}
+\label{ann:a4-retours}
+
+Cette annexe synthétise les observations formulées lors de la revue experte réalisée 
+par la professeure référente, en environnement Power~BI Service, 
+sur les jeux de données de démonstration (\texttt{airport-flows-direct} et \texttt{sampleBudget}). 
+Aucune autre session de test utilisateur ni démonstration interne n’a été conduite.
+
+\subsection{Passenger-Flow Map}
+\begin{itemize}[nosep]
+  \item \textbf{Lisibilité des flux principaux} : claire dès le premier coup d’œil. Suggestion d’ajouter une variation d’épaisseur des traits par zone pour renforcer la hiérarchie visuelle.
+  \item \textbf{Carte de chaleur} : pertinente pour repérer les zones d’affluence, mais l’échantillon de données de démonstration ne permet pas de tester pleinement son potentiel.
+  \item \textbf{Légende et couleurs} : ajout d’une légende jugé utile ; possibilité de définir manuellement les paliers de couleur recommandée.
+\end{itemize}
+
+\subsection{Sunburst hiérarchique}
+\begin{itemize}[nosep]
+  \item \textbf{Hiérarchie et proportions} : compréhension immédiate.
+  \item \textbf{Navigation} : drill-down, drill-up et fil d’Ariane jugés naturels et faciles à utiliser.
+  \item \textbf{KPI central} : non indispensable mais pas gênant ; peut rester optionnel.
+\end{itemize}
+
+\subsection{Synthèse}
+La revue experte conclut que les deux visuels répondent à leurs objectifs métier initiaux.  
+La \textit{Passenger-Flow Map} apparaît comme un composant spécialisé, 
+avec des pistes d’amélioration sur la personnalisation visuelle et la clarté des légendes.  
+Le \textit{Sunburst} se distingue par sa polyvalence et son adaptabilité à différents contextes hiérarchiques.
+
+
+
+\section{Procédure développeur}
 \label{ann:a5-dev}
 
 \subsection{Prérequis (environnement)}
@@ -214,267 +265,222 @@ Audit \texttt{--certification-audit} & À exécuter pour livraison : aucun bloca
 \midrule
 OS & Windows 11 (64-bit) \\
 Power BI Desktop & Canal classique (build courant) \\
-Node.js & 22.18.0 (LTS) \\
-npm & 11.5.2 \\
+Node.js & 22.x (LTS) \\
+npm & 10/11 \\
 Power BI Visual Tools (pbiviz) & 6.1.3 \\
 \bottomrule
 \end{tabularx}
 
-\subsection{Arborescence minimale}
+\subsection{Arborescence de référence}
 \begin{lstlisting}[basicstyle=\ttfamily\small]
-/visuals/
-  passenger-flow/
-    src/ ...           assets/ ...
-    capabilities.json  pbiviz.json  package.json
-  radial-sunburst/
-    src/ ...           assets/ ...
-    capabilities.json  pbiviz.json  package.json
+/ (racine du dépot)
+  src/                  # sources TypeScript du visuel
+  assets/               # ressources statiques (icones, styles)
+  tests/                # tests unitaires Jest (optionnel)
+  dist/                 # artefacts .pbiviz (généré)
+  coverage/             # rapports de couverture (généré)
+  scripts/              # scripts internes (signature, etc.)
+    make_signing_keys.ps1
+    make_signing_keys.sh
+    openssl.cnf         # config locale si nécessaire (Windows)
+  capabilities.json
+  pbiviz.json
+  package.json
+  tsconfig.json
+  .eslintrc.cjs
+  .gitignore
+\end{lstlisting}
+
+\subsection{\texttt{tsconfig.json} (inclure les \texttt{.d.ts})}
+\begin{lstlisting}[language=json,basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible]
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es2022",
+    "sourceMap": true,
+    "outDir": "./.tmp/build/",
+    "moduleResolution": "node",
+    "declaration": true,
+    "lib": ["es2022", "dom"]
+  },
+  "files": ["./src/visual.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"],
+  "exclude": ["node_modules", "dist", ".tmp", "coverage"]
+}
 \end{lstlisting}
 
 \subsection{Scripts NPM (référence)}
-Passenger-Flow Map — extrait de package.json (remplacer par vos scripts réels)
 \begin{lstlisting}[language=json,basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible]
-"scripts": {
-  "lint": "eslint \"src/**/*.{ts,tsx}\"",
-  "build": "pbiviz package --resources --no-minify=false -o dist",
-  "start": "pbiviz start",
-  "test": "jest --ci",
-  "clean": "rimraf dist .tmp"
+{
+  "scripts": {
+    "lint": "eslint . --ext .ts,.tsx -f stylish",
+    "lint:ci": "eslint . --ext .ts,.tsx -f unix --max-warnings=0",
+    "test": "jest --ci",
+    "test:cov": "jest --ci --coverage --passWithNoTests --coverageReporters=json-summary --coverageReporters=text --coverageReporters=lcov",
+    "start": "pbiviz start",
+    "build": "pbiviz package"
+  }
 }
 \end{lstlisting}
 
-Radial Sunburst Decomposition Tree — extrait de package.json (remplacer par vos scripts réels)
-\begin{lstlisting}[language=json,basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible]
-"scripts": {
-  "lint": "eslint \"src/**/*.{ts,tsx}\"",
-  "build": "pbiviz package --resources --no-minify=false -o dist",
-  "start": "pbiviz start",
-  "test": "jest --ci",
-  "clean": "rimraf dist .tmp"
-}
+\subsection{Toolchain de build (devDependencies minimales)}
+\begin{itemize}
+  \item \texttt{webpack}, \texttt{webpack-cli}, \texttt{typescript}, \texttt{ts-loader}
+  \item \texttt{css-loader}, \texttt{json-loader}, \texttt{less}, \texttt{less-loader}
+  \item Qualité/tests : \texttt{eslint}, \texttt{@typescript-eslint/\{parser,eslint-plugin\}}, \texttt{jest}, \texttt{ts-jest}
+\end{itemize}
+
+\subsection{\texttt{.gitignore} (extraits pertinents)}
+\begin{lstlisting}[basicstyle=\ttfamily\small]
+node_modules/
+dist/
+coverage/
+.tmp/
+webpack.statistics*.html
+
+# Clés/certificats internes (ne pas versionner)
+scripts/ecrins-root.key
+scripts/ecrins-root.crt
+scripts/_codesign.key
+scripts/_codesign.crt
+*.p7s
 \end{lstlisting}
 
 \subsection{Démarrage local (dev)}
-\textbf{1)} npm ci dans le dossier du visuel. \textbf{2)} pbiviz start. Au premier lancement, installer le certificat HTTPS proposé par pbiviz (magasin «~Autorités de certification racines de confiance~» de l’ordinateur). \textbf{3)} Dans Power BI Desktop : Fichier \textrightarrow\ Options et paramètres \textrightarrow\ Options \textrightarrow\ Sécurité \textrightarrow\ activer le mode développeur. Le visuel Developer apparaît dans le ruban : l’ajouter au canevas pour charger les assets locaux.
+1) \texttt{npm ci}. 2) \texttt{pbiviz start}. Au premier lancement, installer le certificat HTTPS proposé par \texttt{pbiviz} (magasin « Autorités de certification racines de confiance »). 3) Power BI Desktop~\(\rightarrow\) Options~\(\rightarrow\) Sécurité~: activer le mode développeur. Le visuel Developer apparaît dans le ruban.
 
-\subsection{Packaging (artefact .pbiviz)}
-pbiviz package --certification-audit -o dist. Vérifier l’incrément de version dans pbiviz.json (schéma MAJOR.MINOR.PATCH.REV). Conserver le rapport d’audit avec l’artefact. La même commande est orchestrée automatiquement par la CI, voir le pipeline décrit au chapitre 6. 
-
-\subsection{Signature (si politique interne requise)}
-Appliquer la signature X.509 de l’organisation au paquet .pbiviz via l’étape dédiée de la CI (certificat stocké dans un coffre de secrets et injecté à la volée). La procédure d’import du certificat et la chaîne de confiance sont décrites dans le référentiel interne.
+\subsection{Packaging local (\texttt{.pbiviz})}
+Exécuter \texttt{pbiviz package --certification-audit}. Conserver le \texttt{packaging.log}. Vérifier l’incrément de version dans \texttt{pbiviz.json} (\(MAJOR.MINOR.PATCH\)). La CI orchestre les mêmes commandes (chap.~\ref{chap:industrialisation}).
 
 \subsection{Contrôles rapides (QA)}
-Lint \& tests unitaires npm run lint \& npm test; taille du paquet \(\leq\) 1~MiB (debug) ; audit de certification sans blocant ; démarrage Desktop OK en mode développeur.
-% =============================================================
-% Annexe A6 — Guide d’installation (utilisateurs) & changelog
-% -------------------------------------------------------------
-\section{Guide d’installation (utilisateurs) \& changelog}
-\label{ann:a6-install}
-Le choix du magasin organisationnel et ses implications sont motivés au \S\,6.3 ; l’annexe présente uniquement la procédure opératoire.
-
-\subsection{Installation — import manuel .pbiviz}
-Dans Power BI Desktop, ouvrir Insérer \textrightarrow\ Obtenir plus de visuels \textrightarrow\ Importer un visuel depuis un fichier puis sélectionner le paquet .pbiviz (AirportTrafficMap ou RadialSunburstDecompositionTree). En cas d’avertissement, confirmer la confiance si la provenance est ECRINS~SA. Le visuel apparaît alors dans le panneau Visualisations.
-
-\subsection{Installation — magasin organisationnel}
-Depuis Obtenir plus de visuels \textrightarrow\ Mon organisation, choisir le visuel publié par l’administrateur et cliquer Ajouter. Les mises à jour ultérieures sont propagées automatiquement pour un GUID identique.
-
-\subsection{Compatibilité et paramètres locataire}
-Usage ciblé Power BI Service/Desktop (canal classique). Si la politique «~n’autoriser que les visuels certifiés~» est active, ajouter une exception pour les visuels organisationnels ; bloquer l’import de visuels externes non approuvés si requis par la gouvernance interne.
-
-\subsection{Bonnes pratiques d’usage}
-Mapper les champs requis selon le capabilities.json du visuel ; éviter l’agrégation des coordonnées (X/Y) ; privilégier des hiérarchies à 2--3 niveaux pour le Sunburst ; vérifier les contrastes si un thème personnalisé est appliqué.
-
-\subsection{Modèle de changelog (à conserver dans le dépôt)}
-\begin{verbatim}
-# AirportTrafficMap
-## 2.0.0 — 2025-08-08
-- Première release interne (mode Heatmap optionnel, panneau de contrôle).
-- Perf validées (P95 <= 300 ms) sur dataset démo.
-- Audit certification: OK (réseau/éval non utilisés).
-
-# RadialSunburstDecompositionTree
-## 2.0.0 — 2025-08-08
-- Première release interne (drill down/up animé, KPI central).
-- Perf validées (P95 <= 100 ms) sur dataset démo.
-- Audit certification: OK (réseau/éval non utilisés).
-\end{verbatim}
-
-\subsection{Canal de diffusion sécurisé}
-Préférer le magasin organisationnel. Pour des livraisons externes, publier le .pbiviz sur un espace chiffré (SharePoint/OneDrive entreprise) et vérifier empreinte ou signature avant import.
-% =============================================================
-% Annexe — Publication dans le magasin organisationnel :
-%             vérifications préalables et mode opératoire
-% =============================================================
-
+Lint \& tests~: \texttt{npm run lint} \& \texttt{npm test} ; taille du paquet \(\leq\)~1~MiB ; audit sans bloquant ; démarrage Desktop OK.
 \section{Publication dans le magasin organisationnel : vérifications préalables et mode opératoire}
 \label{ann:org-store-procedure}
 
-\subsection{Objet et portée}
-Procédure complète pour publier un visuel personnalisé via le magasin organisationnel de Power BI : vérifications préalables, publication dans le portail d’administration, retour arrière. AppSource n’est pas concerné.
+\subsection{Pré-requis côté administrateur (mise à jour)}
+Dossier attendu pour la revue :
+\begin{itemize}
+  \item Paquet \texttt{.pbiviz}
+  \item Empreinte \texttt{.pbiviz.sha256}
+  \item Journal d’audit (\texttt{packaging.log})
+  \item Signature \texttt{.pbiviz.p7s} (si signature interne activée)
+  \item Référence de version (tag Git) et changelog
+  \item Certificat racine interne (\texttt{scripts/ecrins-root.crt}) pour vérification locale
+\end{itemize}
 
-\subsection{Pourquoi ces étapes}
-Avant diffusion, valider trois points : intégrité (fichier intact), attribution (signature interne, si activée) et conformité (audit). Cela accélère la décision et réduit le risque d’incident.
-
-\subsection{Pré-requis côté administrateur}
-Dossier de publication attendu : paquet \texttt{.pbiviz}, empreinte SHA-256, signature \texttt{.p7s} si la signature interne est activée, rapport d’audit, référence de version (tag) et, si nécessaire, le certificat racine interne pour vérifier la signature.
-
-\subsection{Vérification d’intégrité}
-But : s’assurer que le fichier n’a pas été modifié entre la CI et la réception.
-
+\subsection{Vérification d’intégrité (SHA-256)}
 \textbf{Linux/macOS}
 \begin{verbatim}
 sha256sum -c MonVisuel.pbiviz.sha256
-# "OK" confirme que l'empreinte correspond au fichier reçu
+# "OK" confirme la correspondance empreinte/fichier
 \end{verbatim}
-
 \textbf{Windows PowerShell}
 \begin{verbatim}
 Get-FileHash .\MonVisuel.pbiviz -Algorithm SHA256
-# Comparer la valeur avec celle contenue dans MonVisuel.pbiviz.sha256
+# Comparer au contenu de MonVisuel.pbiviz.sha256
 \end{verbatim}
 
-\subsection{Vérification de la signature interne (si activée)}
-But : attester l’origine du paquet et sa non-altération depuis la signature.
-
+\subsection{Vérification de la signature (si activée)}
 \textbf{Linux/macOS}
 \begin{verbatim}
 openssl smime -verify -binary \
   -in MonVisuel.pbiviz.p7s -inform DER \
   -content MonVisuel.pbiviz \
   -CAfile scripts/ecrins-root.crt -purpose any -out /dev/null
-# Code de retour 0 : signature valide et chaîne approuvée.
+# Code retour 0 : signature valide et chaîne approuvée
 \end{verbatim}
-
 \textbf{Windows}
-Utiliser OpenSSL pour Windows avec la commande ci-dessus, ou importer le certificat racine interne dans le magasin d’autorités approuvées puis utiliser l’outil interne retenu.
-
-\subsection{Contrôle de conformité technique}
-Ouvrir le rapport d’audit joint à la release. Vérifier l’absence d’accès réseau non autorisé, d’évaluation dynamique et tout avertissement bloquant. En cas d’alerte critique, ne pas publier.
-
-\subsection{Publication dans le magasin organisationnel}
-Dans le portail d’administration Power BI (section Visuels organisationnels) : Ajouter un visuel, choisir le \texttt{.pbiviz} validé, renseigner nom/description, restreindre la visibilité si besoin. Communiquer le nom, l’identifiant et la version publiés.
-
-\subsection{Mises à jour et gestion de versions}
-Publier une version plus récente du même composant (même identifiant). Refaire les vérifications intégrité/signature/audit avant remplacement. Conserver l’historique des releases et le changelog.
-
-\subsection{Contrôles post-publication}
-Charger le visuel dans un espace de recette ; vérifier rendu, interactions et absence d’erreurs. Documenter les limitations connues (p. ex. export restreint pour visuel non certifié).
-
-\subsection{Procédure de retour arrière}
-Retirer la version fautive et republier la dernière version stable archivée, après vérifications. Informer les équipes des impacts.
-
-\subsection*{Procès-verbal de validation (modèle)}
-\begin{center}
-\begin{tabular}{|p{4cm}|p{10cm}|}
-\hline
-Visuel & Nom du composant et identifiant \\ \hline
-Version & Tag et numéro de version \\ \hline
-Artefacts reçus & pbiviz, sha256, p7s (si actif), rapport d’audit, changelog \\ \hline
-Intégrité & Conforme / Non conforme (date, opérateur) \\ \hline
-Signature interne & Valide / Non valide / Non applicable (détail) \\ \hline
-Audit technique & Points bloquants : oui / non (résumé) \\ \hline
-Recette rapide & Rendu/Interactions/Erreurs service : RAS / remarques \\ \hline
-Décision & Publier / Refuser / Publier avec restrictions (motif) \\ \hline
-Responsables & Dév ; CI/CD ; Sécurité/Administration ; Approbation métier \\ \hline
-\end{tabular}
-\end{center}
-
-\subsection{Archivage}
-Archiver : \texttt{.pbiviz}, empreinte, signature (si activée), rapport d’audit, changelog et procès-verbal signé.
+Utiliser OpenSSL pour Windows avec la commande ci-dessus, ou importer la racine interne
+dans le magasin d’autorités approuvées et utiliser l’outil interne.
 % =============================================================
-% Annexe — Activer la signature interne (parcours simple)
+% A.6 — Activer la signature interne (parcours simple)
 % =============================================================
 \section{Activer la signature interne (parcours simple)}
 \label{ann:signature-procedure}
 
-Objet.
-Mise en place simple d’une signature interne pour les paquets \texttt{.pbiviz}. Non obligatoire ; si non activée, on reste en mode empreinte d’intégrité.
-
-Vue d’ensemble.
-1) Générer localement la racine et le certificat de signature.\\
-2) Copier-coller trois secrets dans GitHub.\\
-3) Taguer une version : la CI ajoutera automatiquement un fichier \texttt{.p7s}.
+\subsection*{Objet et périmètre}
+Mise en place simple d’une signature interne pour les paquets \texttt{.pbiviz}. Optionnelle : sans activation, la vérification se limite à l’empreinte d’intégrité (SHA-256).
 
 \subsection*{Étape 0 — Prérequis}
-Installer OpenSSL.
+Installer OpenSSL.\\
+\textbf{Windows (winget)} : \verb|winget install -e --id ShiningLight.OpenSSL.Light|\\
+\textbf{macOS} : \verb|brew install openssl| \quad \\
+\textbf{Linux (Debian/Ubuntu)} : \verb|sudo apt update && sudo apt install -y openssl|
 
-\textbf{Windows (PowerShell admin)}
-\begin{verbatim}
-choco install openssl -y
-\end{verbatim}
+\noindent\textit{Note (Windows).} Certaines distributions OpenSSL référencent un \texttt{OPENSSLDIR} non présent localement. Pour éviter les erreurs, fournir un fichier local \texttt{scripts/openssl.cnf} et, si nécessaire, le référencer via \texttt{-config}.
 
-\textbf{macOS}
-\begin{verbatim}
-brew install openssl
-\end{verbatim}
+\begin{lstlisting}[basicstyle=\ttfamily\small]
+openssl_conf = openssl_init
+[openssl_init]
+providers = provider_sect
+[provider_sect]
+default = default_sect
+[default_sect]
+activate = 1
+[req]
+distinguished_name = dn
+[dn]
+\end{lstlisting}
 
-\textbf{Linux (Debian/Ubuntu)}
-\begin{verbatim}
-sudo apt update && sudo apt install -y openssl
-\end{verbatim}
-
-\subsection*{Étape 1 — Générer la racine et le certificat (script local)}
-Créer \texttt{scripts/make\_signing\_keys.ps1} (Windows) \emph{ou} \texttt{scripts/make\_signing\_keys.sh} (macOS/Linux), puis exécuter. Fichiers produits dans \texttt{scripts/} :
-\texttt{ecrins-root.crt}, \texttt{ecrins-root.key}, \texttt{ecrins-codesign.crt}, \texttt{ecrins-codesign.key}. Une passphrase est affichée : la noter.
+\subsection*{Étape 1 — Générer la racine et le certificat (scripts locaux)}
+Créer \texttt{scripts/make\_signing\_keys.ps1} (Windows) ou \texttt{scripts/make\_signing\_keys.sh} (macOS/Linux), puis exécuter. Fichiers produits : \texttt{scripts/ecrins-root.crt},\\\texttt{scripts/ecrins-root.key}, \\\texttt{scripts/ecrins-codesign.crt}, \texttt{scripts/ecrins-codesign.key}. Une passphrase est affichée ; la conserver en lieu sûr.
 
 \textbf{PowerShell (Windows) — \texttt{scripts/make\_signing\_keys.ps1}}
-\begin{verbatim}
+\begin{lstlisting}[basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible]
 param(
-  [string]$Country="CH",
-  [string]$Org="ECRINS SA",
+  [string]$Country="CH", [string]$Org="ECRINS SA",
   [string]$RootCN="ECRINS Visuals Root CA",
   [string]$CodeCN="ECRINS Visuals Code Signing",
-  [int]$RootDays=3650,
-  [int]$CodeDays=1095
+  [int]$RootDays=3650, [int]$CodeDays=1095
 )
-function New-RandBase64([int]$n=32) {
-  $b = New-Object byte[] $n
-  [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b)
+$ErrorActionPreference = "Stop"
+function New-RandBase64([int]$n=32){
+  $b=New-Object byte[] $n
+  [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b)
   [Convert]::ToBase64String($b)
 }
-$ErrorActionPreference = "Stop"
-if (-not (Get-Command openssl -ErrorAction SilentlyContinue)) {
-  Write-Error "OpenSSL n'est pas disponible dans le PATH."
+if(-not(Get-Command openssl -ErrorAction SilentlyContinue)){
+  Write-Error "OpenSSL indisponible"
 }
 New-Item -ItemType Directory -Force -Path "scripts" | Out-Null
 Push-Location scripts
-$rootPass = New-RandBase64
-$codePass = New-RandBase64
-# Racine (clé chiffrée + cert auto-signé)
-openssl genrsa -aes256 -passout pass:$rootPass -out ecrins-root.key 4096
-openssl req -x509 -new -key ecrins-root.key -passin pass:$rootPass `
-  -sha256 -days $RootDays -subj "/C=$Country/O=$Org/CN=$RootCN" `
-  -out ecrins-root.crt
-# Certificat de signature (clé chiffrée + CSR + émission par la racine)
-openssl genrsa -aes256 -passout pass:$codePass -out ecrins-codesign.key 3072
-openssl req -new -key ecrins-codesign.key -passin pass:$codePass `
-  -subj "/C=$Country/O=$Org/CN=$CodeCN" -out ecrins-codesign.csr
+@"
+openssl_conf = openssl_init
+[openssl_init]
+providers = provider_sect
+[provider_sect]
+default = default_sect
+[default_sect]
+activate = 1
+[req]
+distinguished_name = dn
+[dn]
+"@ | Set-Content -Encoding ascii openssl.cnf
+$config = (Resolve-Path .\openssl.cnf).Path
+$rootPass=New-RandBase64; $codePass=New-RandBase64
+# Racine
+openssl genpkey -algorithm RSA -out ecrins-root.key -aes-256-cbc -pass pass:$rootPass -pkeyopt rsa_keygen_bits:4096
+openssl req -x509 -new -key ecrins-root.key -passin pass:$rootPass -sha256 -days $RootDays -subj "/C=$Country/O=$Org/CN=$RootCN" -config "$config" -out ecrins-root.crt
+# Signature
+openssl genpkey -algorithm RSA -out ecrins-codesign.key -aes-256-cbc -pass pass:$codePass -pkeyopt rsa_keygen_bits:3072
+openssl req -new -key ecrins-codesign.key -passin pass:$codePass -subj "/C=$Country/O=$Org/CN=$CodeCN" -config "$config" -out ecrins-codesign.csr
 @"
 basicConstraints=CA:FALSE
 keyUsage=digitalSignature
 extendedKeyUsage=codeSigning
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid,issuer
-"@ | Out-File -Encoding ascii codesign.ext
-openssl x509 -req -in ecrins-codesign.csr `
-  -CA ecrins-root.crt -CAkey ecrins-root.key -passin pass:$rootPass `
-  -CAcreateserial -out ecrins-codesign.crt `
-  -days $CodeDays -sha256 -extfile codesign.ext
-Write-Host ""
-Write-Host "A NOTER et conserver en lieu sûr :"
-Write-Host "ECRINS_CODESIGN_PASS = $codePass"
-Write-Host ""
-Write-Host "Copier-coller dans GitHub (Settings > Secrets > Actions) :"
-Write-Host "ECRINS_CODESIGN_CRT  <= contenu de scripts/ecrins-codesign.crt"
-Write-Host "ECRINS_CODESIGN_KEY  <= contenu de scripts/ecrins-codesign.key"
-Write-Host "ECRINS_CODESIGN_PASS <= valeur affichée ci-dessus"
-Write-Host ""
-Write-Host "Conserver hors GitHub : scripts/ecrins-root.key (clé privée racine)."
+"@ | Set-Content -Encoding ascii codesign.ext
+openssl x509 -req -in ecrins-codesign.csr -CA ecrins-root.crt -CAkey ecrins-root.key -passin pass:$rootPass -CAcreateserial -out ecrins-codesign.crt -days $CodeDays -sha256 -extfile codesign.ext
+Write-Host "`nSecrets à créer : ECRINS_CODESIGN_CRT / ECRINS_CODESIGN_KEY / ECRINS_CODESIGN_PASS"
+Write-Host ("ECRINS_CODESIGN_PASS = {0}" -f $codePass)
 Pop-Location
-\end{verbatim}
+\end{lstlisting}
 
 \textbf{Bash (macOS/Linux) — \texttt{scripts/make\_signing\_keys.sh}}
-\begin{verbatim}
+\begin{lstlisting}[basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible]
 #!/usr/bin/env bash
 set -euo pipefail
 C="${1:-CH}"; O="${2:-ECRINS SA}"
@@ -484,15 +490,24 @@ ROOT_DAYS="${5:-3650}"; CODE_DAYS="${6:-1095}"
 mkdir -p scripts && cd scripts
 code_pass="$(openssl rand -base64 32)"
 root_pass="$(openssl rand -base64 32)"
+cat > openssl.cnf <<'CNF'
+openssl_conf = openssl_init
+[openssl_init]
+providers = provider_sect
+[provider_sect]
+default = default_sect
+[default_sect]
+activate = 1
+[req]
+distinguished_name = dn
+[dn]
+CNF
 # Racine
-openssl genrsa -aes256 -passout pass:"$root_pass" -out ecrins-root.key 4096
-openssl req -x509 -new -key ecrins-root.key -passin pass:"$root_pass" \
-  -sha256 -days "$ROOT_DAYS" -subj "/C=$C/O=$O/CN=$ROOT_CN" \
-  -out ecrins-root.crt
-# Certificat de signature
-openssl genrsa -aes256 -passout pass:"$code_pass" -out ecrins-codesign.key 3072
-openssl req -new -key ecrins-codesign.key -passin pass:"$code_pass" \
-  -subj "/C=$C/O=$O/CN=$CODE_CN" -out ecrins-codesign.csr
+openssl genpkey -algorithm RSA -out ecrins-root.key -aes-256-cbc -pass pass:"$root_pass" -pkeyopt rsa_keygen_bits:4096
+openssl req -x509 -new -key ecrins-root.key -passin pass:"$root_pass" -sha256 -days "$ROOT_DAYS" -subj "/C=$C/O=$O/CN=$ROOT_CN" -config openssl.cnf -out ecrins-root.crt
+# Signature
+openssl genpkey -algorithm RSA -out ecrins-codesign.key -aes-256-cbc -pass pass:"$code_pass" -pkeyopt rsa_keygen_bits:3072
+openssl req -new -key ecrins-codesign.key -passin pass:"$code_pass" -subj "/C=$C/O=$O/CN=$CODE_CN" -config openssl.cnf -out ecrins-codesign.csr
 cat > codesign.ext <<'EOF'
 basicConstraints=CA:FALSE
 keyUsage=digitalSignature
@@ -500,44 +515,28 @@ extendedKeyUsage=codeSigning
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid,issuer
 EOF
-openssl x509 -req -in ecrins-codesign.csr \
-  -CA ecrins-root.crt -CAkey ecrins-root.key -passin pass:"$root_pass" \
-  -CAcreateserial -out ecrins-codesign.crt \
-  -days "$CODE_DAYS" -sha256 -extfile codesign.ext
-echo
-echo "A NOTER et conserver en lieu sûr :"
+openssl x509 -req -in ecrins-codesign.csr -CA ecrins-root.crt -CAkey ecrins-root.key -passin pass:"$root_pass" -CAcreateserial -out ecrins-codesign.crt -days "$CODE_DAYS" -sha256 -extfile codesign.ext
 echo "ECRINS_CODESIGN_PASS = $code_pass"
-echo
-echo "Copier-coller dans GitHub (Settings > Secrets > Actions) :"
-echo "ECRINS_CODESIGN_CRT  <= contenu de scripts/ecrins-codesign.crt"
-echo "ECRINS_CODESIGN_KEY  <= contenu de scripts/ecrins-codesign.key"
-echo "ECRINS_CODESIGN_PASS <= valeur affichée ci-dessus"
-echo
-echo "Conserver hors GitHub : scripts/ecrins-root.key (clé privée racine)."
-\end{verbatim}
+\end{lstlisting}
 
-Exécution.
-Windows :
+\noindent\textbf{Exécution.}
 \begin{verbatim}
+# Windows
 pwsh -File scripts/make_signing_keys.ps1
-\end{verbatim}
-macOS/Linux :
-\begin{verbatim}
+
+# macOS/Linux
 chmod +x scripts/make_signing_keys.sh
 ./scripts/make_signing_keys.sh
 \end{verbatim}
 
-\subsection*{Étape 2 — Créer les secrets GitHub}
-Créer \texttt{ECRINS\_CODESIGN\_Crt} (contenu de \texttt{scripts/ecrins-codesign.crt}), \texttt{ECRINS\_CODESIGN\_KEY} (contenu de \texttt{scripts/ecrins-codesign.key}), \texttt{ECRINS\_CODESIGN\_PASS} (valeur affichée par le script). La CI de release signera automatiquement si ces secrets existent.
+\subsection*{Étape 2 — Créer les secrets GitHub (noms exacts)}
+Dans \textit{Settings} → \textit{Secrets and variables} → \textit{Actions} → \textit{New repository secret}.\\
+\texttt{ECRINS\_CODESIGN\_CRT} → contenu de \texttt{scripts/ecrins-codesign.crt}\\
+\texttt{ECRINS\_CODESIGN\_KEY} → contenu de \texttt{scripts/ecrins-codesign.key}\\
+\texttt{ECRINS\_CODESIGN\_PASS} → passphrase affichée
 
 \subsection*{Étape 3 — Lancer une release}
-Créer un tag (ex. \texttt{v1.0.0}) et le pousser. Fichiers attendus dans la Release :
-\begin{verbatim}
-MonVisuel.pbiviz
-MonVisuel.pbiviz.sha256
-MonVisuel.pbiviz.p7s
-packaging.log
-\end{verbatim}
+Créer un tag \texttt{vX.Y.Z} et le pousser. La CI publie : \texttt{.pbiviz}, \texttt{.pbiviz.sha256}, \texttt{packaging.log} et, si secrets présents, \texttt{.pbiviz.p7s}. Voir l’annexe~\ref{ann:org-store-procedure} pour la vérification d’intégrité et de signature.
 
-\textbf{Vérification} : voir l’annexe~\ref{ann:org-store-procedure} (intégrité et signature).
-
+\subsection*{Sécurité}
+Ne pas versionner \texttt{scripts/ecrins-root.key} ni \texttt{scripts/ecrins-root.crt}. Restreindre l’accès aux secrets GitHub et planifier leur rotation.

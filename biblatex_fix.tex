@@ -1,0 +1,49 @@
+
+%% ===============================
+%% biblatex_fix.tex
+%% Drop-in patch to stop 'labelday/urlday' from printing
+%% Place this AFTER your \usepackage[...]{biblatex}
+%% and BEFORE \addbibresource and \printbibliography
+%% ===============================
+
+% Ensure only one language mapping
+\DeclareLanguageMapping{french}{french-apa}
+
+% 1) Remove day/month (including url date parts) from all entries and citations
+\AtEveryBibitem{%
+  \clearfield{day}\clearfield{month}%
+  \clearfield{urlday}\clearfield{urlmonth}%
+}
+\AtEveryCitekey{%
+  \clearfield{day}\clearfield{month}%
+  \clearfield{urlday}\clearfield{urlmonth}%
+}
+
+% 2) Define missing bibstrings to empty to avoid literal 'labelday/urlday' output
+\NewBibliographyString{labelday,labelmonth,urlday,urlmonth}
+\DefineBibliographyStrings{french}{
+  labelday   = {},
+  labelmonth = {},
+  urlday     = {},
+  urlmonth   = {},
+}
+
+% 3) Force the reference date to print year only (no month/day)
+\AtBeginBibliography{%
+  \renewbibmacro*{date+extrayear}{%
+    \printfield{labelyear}%
+    \printfield{extradate}}%
+}
+
+% 4) Print URL but suppress access date entirely (robust fallback)
+\renewbibmacro*{url+urldate}{%
+  \iffieldundef{url}{}{\printfield{url}}%
+}
+
+% 5) Optional: If you prefer to keep access year in parentheses, use this instead:
+% \renewbibmacro*{url+urldate}{%
+%   \iffieldundef{url}{}{\printfield{url}}%
+%   \iffieldundef{urlyear}{}{%
+%     \setunit{\addspace}\mkbibparens{consulté le \printfield{urlyear}}}%
+% }
+

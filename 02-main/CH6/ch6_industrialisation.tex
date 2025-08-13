@@ -29,26 +29,24 @@ L’empreinte SHA-256 est une somme de contrôle jointe à la release ; elle pro
 \section{Exigences de la chaîne}
 \label{sec:exigences-ci}
 
-Les workflows s’exécutent sous Node version LTS 22 afin de stabiliser l’environnement d’exécution. Les dépendances sont installées de manière déterministe avec \texttt{npm ci}. Le packaging s’appuie sur l’outillage officiel des visuels et active l’audit de certification afin de détecter les usages non supportés. Un seuil de couverture minimale des tests est appliqué et la taille du paquet est contrôlée pour préserver les temps de chargement. Chaque release met à disposition le paquet pbiviz, son empreinte SHA-256, le rapport d’audit et le journal des modifications ; la signature interne, lorsqu’elle est adoptée, s’y ajoute et permet l’attribution. Ces contrôles s’alignent sur les critères transverses du projet (performance, accessibilité, sécurité) et évitent de dépendre d’un contrôle manuel tardif.
+Les workflows s’exécutent sous Node~LTS~22. Les dépendances sont installées de manière déterministe avec \texttt{npm ci}. Le packaging s’appuie sur l’outillage officiel et active l’audit de certification afin de détecter les usages non supportés. Un seuil de couverture minimale des tests (déclarations) est appliqué (par défaut~\(\geq\)~70\,\%). La taille du paquet est contrôlée pour préserver les temps de chargement (\(\leq\)~1\,MiB). Chaque release met à disposition le paquet pbiviz, son empreinte SHA-256, le rapport d’audit et le journal des modifications ; la signature interne, lorsqu’elle est adoptée, s’y ajoute. Ces contrôles s’alignent sur les critères transverses du projet (performance, accessibilité, sécurité).
 
 % -------------------------------------------------------------
 \section{Chaîne d’intégration et de livraison}
 \label{sec:ci-cd}
 
-Chaque dépôt héberge un unique visuel. La chaîne repose sur deux workflows GitHub Actions complémentaires : un build continu (sur \textit{push} et \textit{pull request}) et une release sur marquage de version. Les listings ci-dessous sont génériques et directement utilisables dans un dépôt unique.
+Chaque dépôt héberge un unique visuel. La chaîne repose sur deux workflows GitHub Actions complémentaires : un build continu (sur \textit{push} et \textit{pull request}) et une release sur marquage de version.
 
 \subsection{Build continu}
 \label{subsec:ci-build}
-
-Le build a pour but d’échouer tôt tout changement non conforme et de publier rapidement un artefact testable. Le pipeline ci-dessous contrôle la compilation, le style, la couverture, l’audit de packaging et la taille du paquet.
 
 \noindent\textbf{Workflow de build et packaging (un visuel par dépôt)}
 \begin{verbatim}
 name: ci-build
 
 on:
-  push: { branches: [ "main" ] }
-  pull_request: { branches: [ "main" ] }
+  push: { branches: [ "master" ] }
+  pull_request: { branches: [ "master" ] }
   workflow_dispatch:
 
 jobs:
@@ -61,38 +59,73 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
-        with: { node-version: '22', cache: 'npm' }
+        with:
+          node-version: '22'
+          cache: 'npm'
 
-      - run: npm ci
+      - name: Install deps
+        run: npm ci
 
-      - run: npm run lint
+      - name: Lint (log non bloquant)
+        shell: bash
+        run: |
+          mkdir -p dist
+          npm run lint -- --verbose 2>&1 \
+            | tee dist/eslint.log || true
+
+      - name: Ensure webpack & loaders (no-save)
+        shell: bash
+        run: |
+          set -e
+          npm ls webpack >/dev/null 2>&1 || \
+            npm install --no-save -D webpack webpack-cli
+          npm ls ts-loader >/dev/null 2>&1 || \
+            npm install --no-save -D ts-loader
+          npm ls css-loader >/dev/null 2>&1 || \
+            npm install --no-save -D css-loader
+          npm ls json-loader >/dev/null 2>&1 || \
+            npm install --no-save -D json-loader
+          npm ls less-loader >/dev/null 2>&1 || \
+            npm install --no-save -D less less-loader
+          npm ls typescript >/dev/null 2>&1 || \
+            npm install --no-save -D typescript
 
       - name: Tests et couverture minimale
         shell: bash
+        env:
+          MIN_COVERAGE: "70"
         run: |
-          npm test -- --ci --coverage --passWithNoTests || true
+          npm test -- --ci --coverage --passWithNoTests \
+            --coverageReporters=json-summary \
+            --coverageReporters=text \
+            --coverageReporters=lcov || true
           if [ -f coverage/coverage-summary.json ]; then
-            COVER=$(node -e "console.log(require('./coverage/coverage-summary.json').total.statements.pct || 0)")
+            COVER=$(node -e "const s=require('./coverage/coverage-summary.json'); \
+process.stdout.write(String(s.total.statements.pct||0))")
           else
             COVER=0
           fi
-          echo "Coverage: $COVER%"
-          awk 'BEGIN{exit !( '"$COVER"' >= 70 )}'
+          echo "Coverage (statements): ${COVER}% (min: ${MIN_COVERAGE}%)"
+          awk -v c="$COVER" -v min="$MIN_COVERAGE" \
+            'BEGIN{ exit (c+0 < min+0) }'
 
       - name: Packaging avec audit (log capturé)
         shell: bash
         run: |
           mkdir -p dist
-          npx pbiviz package --certification-audit -o dist 2>&1 | tee dist/packaging.log
+          npx --yes --package powerbi-visuals-tools \
+            pbiviz package --certification-audit \
+            2>&1 | tee dist/packaging.log
 
-      - name: Controle de taille du paquet
+      - name: Contrôle de taille du paquet
         shell: bash
         run: |
           shopt -s nullglob
-          files=(dist/?*.pbiviz)
+          files=(dist/*.pbiviz)
           if [ ${#files[@]} -eq 0 ]; then
             echo "Aucun paquet .pbiviz produit"; exit 1
           fi
@@ -110,13 +143,16 @@ jobs:
           path: |
             dist/*.pbiviz
             dist/packaging.log
+            dist/eslint.log
+            coverage/coverage-summary.json
+            coverage/lcov.info
           retention-days: 14
 \end{verbatim}
 
 \subsection{Release sur tag}
 \label{subsec:ci-release}
 
-La release reconstruit avec audit, calcule l’empreinte d’intégrité et publie les artefacts destinés à l’administrateur. Le déclenchement repose sur un marquage de version respectant SemVer (format vMAJ.MIN.PATCH, par exemple v1.3.0). Tout autre format est proscrit pour les livraisons. Par défaut, aucune signature n’est produite ; l’option de signature interne est décrite en annexe~\ref{ann:signature-procedure}.
+La release reconstruit avec audit, calcule l’empreinte d’intégrité et publie les artefacts destinés à l’administrateur. Le déclenchement repose sur un marquage de version respectant SemVer (format \texttt{vMAJ.MIN.PATCH}, par exemple \texttt{v1.3.0}). Par défaut, aucune signature n’est produite ; l’option de signature interne est décrite en annexe~\ref{ann:signature-procedure}.
 
 \noindent\textbf{Workflow de release (empreinte d’intégrité, un visuel par dépôt)}
 \begin{verbatim}
@@ -133,12 +169,16 @@ jobs:
       cancel-in-progress: false
     permissions:
       contents: write
+
     steps:
       - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
-        with: { node-version: '22', cache: 'npm' }
+        with:
+          node-version: '22'
+          cache: 'npm'
 
       - run: npm ci
 
@@ -148,39 +188,95 @@ jobs:
           TAG="${GITHUB_REF_NAME#v}"
           PKG=$(node -p "require('./package.json').version")
           echo "Tag: $TAG / package.json: $PKG"
-          [ "$TAG" = "$PKG" ] || { echo "Version et tag incohérents"; exit 1; }
+          [ "$TAG" = "$PKG" ] || { \
+            echo "Version et tag incohérents"; exit 1; }
+
+      - name: Ensure webpack & loaders (no-save)
+        shell: bash
+        run: |
+          set -e
+          npm ls webpack >/dev/null 2>&1 || \
+            npm install --no-save -D webpack webpack-cli
+          npm ls ts-loader >/dev/null 2>&1 || \
+            npm install --no-save -D ts-loader
+          npm ls css-loader >/dev/null 2>&1 || \
+            npm install --no-save -D css-loader
+          npm ls json-loader >/dev/null 2>&1 || \
+            npm install --no-save -D json-loader
+          npm ls less-loader >/dev/null 2>&1 || \
+            npm install --no-save -D less less-loader
+          npm ls typescript >/dev/null 2>&1 || \
+            npm install --no-save -D typescript
 
       - name: Packaging avec audit (log capturé)
         shell: bash
         run: |
           mkdir -p dist
-          npx pbiviz package --certification-audit -o dist 2>&1 | tee dist/packaging.log
+          npx --yes --package powerbi-visuals-tools \
+            pbiviz package --certification-audit \
+            2>&1 | tee dist/packaging.log
 
       - name: Empreinte SHA-256
         shell: bash
         run: |
           shopt -s nullglob
-          files=(dist/?*.pbiviz)
+          files=(dist/*.pbiviz)
           if [ ${#files[@]} -eq 0 ]; then
             echo "Aucun paquet .pbiviz produit"; exit 1
           fi
           for f in "${files[@]}"; do
             sha256sum "$f" > "$f.sha256"
+            echo "SHA256($(basename "$f")): \
+$(cut -d' ' -f1 "$f.sha256")"
           done
 
-      - name: Publier les artefacts du job
-        uses: actions/upload-artifact@v4
+      - name: Signature (.p7s) si secrets présents
+        shell: bash
+        env:
+          ECRINS_CODESIGN_CRT: ${{ secrets.ECRINS_CODESIGN_CRT }}
+          ECRINS_CODESIGN_KEY: ${{ secrets.ECRINS_CODESIGN_KEY }}
+          ECRINS_CODESIGN_PASS: ${{ secrets.ECRINS_CODESIGN_PASS }}
+        run: |
+          set -e
+          shopt -s nullglob
+          files=(dist/*.pbiviz)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "Aucun paquet .pbiviz produit"; exit 1
+          fi
+          if [ -z "${ECRINS_CODESIGN_CRT:-}" ] || \
+             [ -z "${ECRINS_CODESIGN_KEY:-}" ] || \
+             [ -z "${ECRINS_CODESIGN_PASS:-}" ]; then
+            echo "Secrets de signature absents → skip signature."
+            exit 0
+          fi
+          printf "%s" "$ECRINS_CODESIGN_CRT" > dist/_codesign.crt
+          printf "%s" "$ECRINS_CODESIGN_KEY" > dist/_codesign.key
+          for f in "${files[@]}"; do
+            openssl smime -sign -binary \
+              -in "$f" \
+              -signer dist/_codesign.crt \
+              -inkey dist/_codesign.key \
+              -passin env:ECRINS_CODESIGN_PASS \
+              -outform DER -out "$f.p7s"
+            echo "Signed: $(basename "$f").p7s"
+          done
+
+      - uses: actions/upload-artifact@v4
         with:
           name: pbiviz-release-${{ github.ref_name }}
-          path: dist/*
+          path: |
+            dist/*.pbiviz
+            dist/*.sha256
+            dist/*.p7s
+            dist/packaging.log
           retention-days: 90
 
-      - name: Créer la GitHub Release et joindre les fichiers
-        uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
           files: dist/*
+          generate_release_notes: true
 \end{verbatim}
 
 % -------------------------------------------------------------

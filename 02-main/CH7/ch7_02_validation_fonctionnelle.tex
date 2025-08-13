@@ -5,27 +5,43 @@
 \section{Validation fonctionnelle et retours utilisateurs}
 \label{sec:validation-fonctionnelle}
 
-Au-delà des mesures techniques, la valeur d’un visuel Power BI se juge à son utilité perçue par les utilisateurs finaux. Dans le cadre de ce projet, des démonstrations internes ont été organisées afin de recueillir des retours qualitatifs auprès de parties prenantes métiers concernées. 
+Au-delà des mesures techniques, la valeur d’un visuel Power~BI se juge à son utilité perçue et à sa lisibilité dans des scénarios métier concrets. 
+Dans le cadre de ce projet, la validation fonctionnelle a pris la forme d’une \textbf{revue experte formative} réalisée par la professeure référente, 
+en conditions réelles dans un rapport Power~BI dédié.
 
-\subsection{Méthodologie des tests}
+\subsection{Méthodologie de la revue experte}
 
-Conformément au chapitre 3, l’évaluation fonctionnelle a combiné trois volets complémentaires : i) une revue experte basée sur des scénarios ciblés, ii) une courte démonstration interne, et iii) un mini-test utilisateur exploratoire (n=1) à visée qualitative. Chaque visuel a été présenté dans un rapport Power BI dédié, alimenté par les jeux de données de démonstration décrits au chapitre 3, avec les cas d’usage suivants :
+Conformément au protocole décrit au Chapitre~\ref{sec:validation-sources}, 
+l’évaluation a consisté à examiner chaque visuel au travers de scénarios ciblés, 
+alimentés par les jeux de données de démonstration présentés au Chapitre~3. 
+Les cas d’usage testés étaient les suivants :
 \begin{itemize}[nosep]
-  \item Carte de flux de passagers : filtrage par tranches horaires, distinction du type de flux (départs/arrivées), activation de la couche de densité (carte de chaleur), vérification de la mise à jour des infobulles et des interactions croisées.
-  \item Sunburst hiérarchique : navigation par drill-down et drill-up, sélection de branches, application de filtres numériques simples, vérification du cross-filtering avec les autres visuels du rapport.
+  \item \textbf{Carte de flux de passagers} : filtrage par tranches horaires, distinction du type de flux (départs/arrivées), activation de la couche de densité (carte de chaleur), vérification de la mise à jour des infobulles et des interactions croisées.
+  \item \textbf{Sunburst hiérarchique} : navigation par drill-down et drill-up, utilisation du fil d’Ariane, sélection de branches, application de filtres numériques simples, vérification du cross-filtering avec les autres visuels du rapport.
 \end{itemize}
-Les observations ont été consignées au moyen d’une grille d’observation et de questions ouvertes, sans prétention de représentativité statistique.
+Les observations ont été consignées sous forme de commentaires qualitatifs, 
+sans prétention de représentativité statistique.
 
 \subsection{Retours sur la carte de flux de passagers}
 
-Les retours soulignent une lecture immédiate des axes dominants et des zones d’affluence. La bascule carte de chaleur est jugée utile pour repérer d’un coup d’œil les points chauds, tandis que les infobulles et les interactions croisées facilitent l’exploration. L’ergonomie du panneau de contrôle (filtres rapides) est appréciée.
+La lecture des grands flux est jugée immédiate et efficace. 
+Il est suggéré qu’une \textit{variation d’épaisseur des traits par zone} pourrait renforcer la hiérarchie visuelle. 
+La carte de chaleur est considérée comme pertinente pour identifier rapidement les zones d’affluence, 
+mais l’échantillon de données disponible ne permet pas de tester pleinement son potentiel. 
+L’ajout d’une \textbf{légende} explicite est recommandé, ainsi que la possibilité de 
+\textit{définir manuellement les paliers de couleur} plutôt que de s’appuyer uniquement sur un calcul automatique.
 
 \subsection{Retours sur le visuel Sunburst}
 
-Le sunburst est perçu comme clair et efficace pour appréhender les hiérarchies et comparer les contributions relatives. La navigation par drill-down et drill-up, le fil d'Ariane et le KPI central améliorent la compréhension et le sens métier. La réactivité lors des interactions a été notée positivement.
-
+La hiérarchie et les proportions sont claires dès le premier coup d’œil. 
+La navigation drill-down et le fil d’Ariane sont jugés naturels et faciles à prendre en main. 
+Le KPI central n’est pas perçu comme indispensable, mais ne gêne pas la lecture ; 
+il pourrait donc rester en option désactivable.
 
 \subsection{Satisfaction générale et axes d’amélioration}
 
-Dans l’ensemble, le niveau de validation est jugé suffisant pour un usage professionnel sur les périmètres visés. La carte de flux est considérée comme un composant spécialisé, pertinent pour des besoins ciblés d’analyse spatiale. Le sunburst apparaît plus transversal et réutilisable dans plusieurs rapports hiérarchiques.
-
+La revue experte conclut que le niveau de validation est suffisant pour un usage professionnel 
+dans le cadre des périmètres visés. 
+La carte de flux apparaît comme un composant spécialisé, pertinent pour l’analyse de flux spatiaux ciblés, 
+avec un potentiel d’amélioration sur la personnalisation visuelle (épaisseurs, paliers de couleur, légende). 
+Le Sunburst se distingue par sa polyvalence et sa facilité de réutilisation dans différents contextes hiérarchiques.

@@ -116,29 +116,60 @@
 
 % Use APA style
 % Bibliography — APA7, noms en casse normale, année seule
-\usepackage[backend=biber,style=apa]{biblatex}
+% --- Config biblatex APA (garde une seule ligne de mapping) ---
+\usepackage[
+  backend=biber,
+  style=apa,
+  sorting=nyt,
+  maxcitenames=2, giveninits=true,
+  doi=true, isbn=false, url=true,
+  date=year,
+  language=french, autolang=other
+]{biblatex}
 \DeclareLanguageMapping{french}{french-apa}
-
-\ExecuteBibliographyOptions{date=year} % n’affiche que l’année
-
-\AtEveryBibitem{\clearfield{day}\clearfield{month}}
-\AtEveryCitekey{\clearfield{day}\clearfield{month}}
-
-\DeclareFieldFormat{labelday}{}
-\DeclareFieldFormat{elabelday}{}
-\DeclareFieldFormat{labelmonth}{}
-\DeclareFieldFormat{elabelmonth}{}
-
-\renewcommand*{\mkbibnamefamily}[1]{#1}
-\renewcommand*{\mkbibnamegiven}[1]{#1}
-\renewcommand*{\mkbibnameprefix}[1]{#1}
-\renewcommand*{\mkbibnamesuffix}[1]{#1}
-
 \addbibresource{03-tail/bibliography.bib}
+% Recommandé pour APA avec biblatex
+\usepackage{csquotes}
 
-\DefineBibliographyStrings{french}{
-  nodate    = {{}s.\adddot\addspace d\adddot},
+% ——— Patch "labelday/urlday" robuste (appliqué après tous les styles) ———
+\makeatletter
+\AtBeginDocument{%
+  % s’assure que les bibstrings existent et sont vides (évite l’impression brute)
+  \NewBibliographyString{labelday,labelmonth,urlday,urlmonth}%
+  \DefineBibliographyStrings{french}{%
+    labelday   = {},
+    labelmonth = {},
+    urlday     = {},
+    urlmonth   = {},
+  }%
+
+  % la date de référence imprime année + extradate (a, b, c), jamais jour/mois
+  \renewbibmacro*{date+extrayear}{%
+    \printfield{labelyear}%
+    \printfield{extradate}%
+  }%
+
+  % (option) urldate réduit à l’année ; commente cette macro si tu veux cacher l’url-date
+  \renewbibmacro*{urldate}{%
+    \iffieldundef{urlyear}
+      {}
+      {\printtext[urldate]{\printfield{urlyear}}}%
+  }%
+
+  % le label de date se base uniquement sur year
+  \DeclareLabeldate{%
+    \field{year}%
+    \literal{nodate}%
+  }%
+
+  % purge systématique des jours/mois (y compris url-*)
+  \AtEveryBibitem{\clearfield{day}\clearfield{month}\clearfield{urlday}\clearfield{urlmonth}}%
+  \AtEveryCitekey{\clearfield{day}\clearfield{month}\clearfield{urlday}\clearfield{urlmonth}}%
 }
+\makeatother
+
+\input{biblatex_fix.tex}
+
 
 % Tables of contents, figures, tables and listings
 % ------------------------------------------------

@@ -7,7 +7,7 @@ Power~BI est conçu autour d’une architecture de visualisation ouverte et exte
 Chaque visuel — graphique, jauge, carte ou autre — est rendu côté client à partir d’un DataView spécifique, généré automatiquement à partir du modèle de données filtré, via du code JavaScript/TypeScript exécuté dans Power~BI Desktop ou dans le service web \parencite{MicrosoftOpenVis2015}.  
 Depuis 2015, Microsoft propose non seulement une panoplie de visuels « core » (natifs), mais permet aussi l’importation de visuels additionnels développés par la communauté ou des éditeurs tiers \parencite{MicrosoftMarketplace2016}.  
 Cette ouverture repose sur des standards web — « en s’appuyant sur des standards ouverts d’Internet et des bibliothèques open-source comme D3.js », note Microsoft \parencite{MicrosoftD3Blog2017} — et se matérialise sur GitHub où le code source de nombreux visuels natifs est publié \parencite{GitHubPowerBISamples2024}.  
-L’API publique a évolué de la branche 5.10 à la version stable 6.1.2 (26 mai 2025), qui introduit un DOM sécurisé ainsi que la Rendering Events API, renforçant la cohérence entre ouverture et sécurité \parencite{MicrosoftApiChangelog2025}.
+
 
 Cette section examine d’abord le fonctionnement interne d’un visuel Power BI — de son chargement sécurisé à son intégration interactive — avant de présenter la plateforme AppSource, qui permet d’étendre les visuels disponibles sans développement.
 
@@ -38,7 +38,7 @@ Chaque visuel reçoit, du moteur Power BI, les données filtrées qui lui sont a
 Pour les visuels custom, ce code est empaqueté dans un fichier .pbiviz contenant scripts, styles et manifeste \parencite{MicrosoftPbivizDocs2023}.  
 Power BI exécute alors le visuel dans un bac à sable sécurisé (sandbox) : une iframe isolée du reste du rapport \parencite{OkVizSandbox2022}.  
 Le visuel n’accède ni aux autres visuels ni au modèle global ; il ne « voit » que les champs explicitement liés par l’utilisateur.  
-Depuis la mise à jour 2.140 (février 2024), tout visuel — privé (organizational visual) ou destiné à AppSource — est audité par l’option pbiviz package --certification-audit de powerbi-visuals-tools ≥ 6.1 : les appels réseau (fetch, XMLHttpRequest, WebSockets) et l’évaluation dynamique de code (eval, Function) sont bloqués, et l’exécution est interrompue au-delà d’environ 120 s de CPU ou de 230 Mio de mémoire \parencite{MicrosoftCertificationGuide2025}.  
+Depuis la mise à jour 2.140 (février 2024), tout visuel — privé (organizational visual) ou destiné à AppSource — est audité par l’option pbiviz package --certification-audit de powerbi-visuals-tools ≥ 6.1 : les appels réseau (fetch, XMLHttpRequest, WebSockets) et l’évaluation dynamique de code (eval, Function) sont bloqués 
 Ces garde-fous empêchent qu’un code malveillant puisse lire ou exfiltrer des données sans autorisation \parencite{MediumSecurityPBI2023}.
 
 %-----------------------------------------------------------

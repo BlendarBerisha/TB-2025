@@ -33,7 +33,7 @@ L’accès direct aux bibliothèques open-source autorise statistiques avancées
 
 Le résultat demeure une image statique — « les visualisations Python dans Power BI sont des bitmaps 72 DPI, sans interactivité directe » \parencite{MicrosoftPythonRVisualsDocs2024}.  
 Impossible donc d’initier un filtrage croisé depuis le graphique ; seul un filtre externe relance le script.  
-Power BI transmet au script au plus 150 000 lignes et 100 colonnes, alloue 250 Mio de mémoire et impose un temps plafond de cinq minutes en local, soixante secondes dans le service ; la sortie PNG des visuels R est limitée à 2 Mio \parencite{MicrosoftRPackagesService2025}.  
+Power BI transmet au script au plus 150 000 lignes, alloue 250 Mio de mémoire et impose un temps plafond de cinq minutes en local, soixante secondes dans le service ; la sortie PNG des visuels R est limitée à 2 Mio \parencite{MicrosoftRPackagesService2025}.  
 Le runtime cloud, actuellement R 4.3.3 et Python 3.11, restreint le package compressé à 30 Mio, et l’affichage de ces visuels exige une licence Pro ou un workspace Premium : un utilisateur Free ne les verra pas.
 
 \subsection{Enjeux de sécurité et de maintenance}

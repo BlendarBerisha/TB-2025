@@ -7,12 +7,39 @@
 \section{Limites}
 \label{sec:chap8-limites}
 
-Les résultats doivent être interprétés à l’aune de la portée définie en amont et des conditions d’évaluation. D’abord, les deux visuels livrés demeurent des prototypes ciblés. Ils ont été dimensionnés pour des scénarios précis, sur des données de démonstration et dans un environnement de test contrôlé, puis évalués selon le protocole du chapitre~7 (cf. annexe~\ref{ann:a3-tests}). Cette configuration ne couvre ni la diversité des contextes métier, ni la variabilité des volumes et de la cardinalité que l’on rencontre en production. La \textit{Passenger-Flow Map} s’appuie, par exemple, sur un plan donné : une généralisation à d’autres sites exigerait une cartographie paramétrable et une vérification des performances avec des flux plus denses. Le \textit{Sunburst} au-delà de deux ou trois niveaux impose, de son côté, une validation de lisibilité et d’ergonomie avec des hiérarchies profondes.
+Les résultats doivent être interprétés à l’aune de la portée définie en amont et des conditions d’évaluation. 
+D’abord, les deux visuels livrés demeurent des prototypes ciblés. 
+Ils ont été dimensionnés pour des scénarios précis, sur des données de démonstration et dans un environnement de test contrôlé, 
+puis évalués selon le protocole du Chapitre~\ref{sec:validation-fonctionnelle} (cf. annexe~\ref{ann:a3-tests}). 
+Cette configuration ne couvre ni la diversité des contextes métier, ni la variabilité des volumes et de la cardinalité que l’on rencontre en production. 
+La \textit{Passenger-Flow Map} s’appuie, par exemple, sur un plan donné : 
+une généralisation à d’autres sites exigerait une cartographie paramétrable et une vérification des performances avec des flux plus denses. 
+Le \textit{Sunburst}, au-delà de deux ou trois niveaux, impose de son côté une validation de lisibilité et d’ergonomie avec des hiérarchies profondes.
 
-Sur le plan des performances, les mesures rapportées reflètent un périmètre de test réduit et une charge mono-utilisateur. Elles ne constituent pas une garantie en charge concurrente ni en présence de modèles plus complexes, de thèmes personnalisés, d’expressions DAX coûteuses, d’autres visuels sur la même page ou de navigateurs hétérogènes. L’externalité des résultats reste donc limitée : des écarts sont attendus lorsque l’on s’éloigne des hypothèses de test.
+Sur le plan des performances, les mesures rapportées reflètent un périmètre de test réduit et une charge mono-utilisateur. 
+Elles ne constituent pas une garantie en charge concurrente ni en présence de modèles plus complexes, de thèmes personnalisés, d’expressions DAX coûteuses, 
+d’autres visuels sur la même page ou de navigateurs hétérogènes. 
+L’externalité des résultats reste donc limitée : des écarts sont attendus lorsque l’on s’éloigne des hypothèses de test.
 
-La compatibilité mobile et l’accessibilité n’étaient pas des objectifs exhaustifs. Si les visuels fonctionnent sur poste de travail et dans Power BI Service, l’ergonomie et la lisibilité sur l’application mobile n’ont pas fait l’objet d’un design dédié. De même, plusieurs points d’accessibilité restent à confirmer formellement, notamment la navigation clavier et les contrastes lorsque des thèmes personnalisés sont appliqués, le projet s’étant borné au périmètre défini en chapitre~3.2.
+La compatibilité mobile et l’accessibilité n’étaient pas des objectifs exhaustifs. 
+Si les visuels fonctionnent sur poste de travail et dans Power~BI Service, 
+l’ergonomie et la lisibilité sur l’application mobile n’ont pas fait l’objet d’un design dédié. 
+De même, plusieurs points d’accessibilité restent à confirmer formellement, notamment la navigation clavier et les contrastes lorsque des thèmes personnalisés sont appliqués, 
+le projet s’étant borné au périmètre défini en Chapitre~\ref{chap:methodo}.
 
-Les choix de diffusion relèvent d’un cadre interne. La publication via le magasin organisationnel a été privilégiée ; la certification publique AppSource, l’usage d’API privilégiées et les scénarios d’export entièrement automatisés n’ont pas été visés. La chaîne CI/CD proposée (chapitre~6) couvre la construction déterministe, l’audit au packaging, l’empreinte d’intégrité et, à titre optionnel, la signature interne. Elle ne constitue pas, en l’état, un dispositif de conformité exhaustive : elle n’intègre pas d’analyse de licences tierces, de revue de sécurité du code au-delà de l’audit de packaging, ni de tests bout-en-bout dans le service sous charge. Par ailleurs, la signature cryptographique reste un mécanisme de gouvernance interne ; elle n’est pas requise par la plateforme pour le magasin organisationnel et ne remplace pas une politique de contrôle d’accès et de séparation des rôles.
+Les choix de diffusion relèvent d’un cadre interne. 
+La publication via le magasin organisationnel a été privilégiée ; 
+La chaîne CI/CD proposée (Chapitre~\ref{chap:industrialisation}) couvre la construction déterministe, l’audit au packaging, l’empreinte d’intégrité et, à titre optionnel, la signature interne. 
+Elle ne constitue pas, en l’état, un dispositif de conformité exhaustive : 
+elle n’intègre pas d’analyse de licences tierces, de revue de sécurité du code au-delà de l’audit de packaging, ni de tests bout-en-bout dans le service sous charge. 
+Par ailleurs, la signature cryptographique reste un mécanisme de gouvernance interne ; 
+elle n’est pas requise par la plateforme pour le magasin organisationnel et ne remplace pas une politique de contrôle d’accès et de séparation des rôles.
 
-Enfin, l’écosystème évolue rapidement. Une mise à jour du SDK Power BI Custom Visuals, des dépendances JavaScript (par exemple D3) ou des politiques du service peut imposer une recompilation et des adaptations, malgré l’architecture modulaire retenue. Sur le versant opérationnel, la rotation des certificats et la gestion des secrets doivent être disciplinées pour éviter les ruptures de signature ; la perte de la clé racine interne, bien que documentée en annexe, entraînerait une régénération de la chaîne et un effort de transition. Les retours utilisateurs recueillis relèvent d’une validation qualitative à petit échantillon (revue experte et mini-test exploratoire) : ils éclairent les choix, sans constituer une preuve statistiquement généralisable.
+Enfin, l’écosystème évolue rapidement. 
+Une mise à jour du SDK Power~BI Custom Visuals, des dépendances JavaScript (par exemple D3) ou des politiques du service peut imposer une recompilation et des adaptations, 
+malgré l’architecture modulaire retenue. 
+Sur le versant opérationnel, la rotation des certificats et la gestion des secrets doivent être disciplinées pour éviter les ruptures de signature ; 
+la perte de la clé racine interne, bien que documentée en annexe, entraînerait une régénération de la chaîne et un effort de transition. 
+Les retours utilisateurs proviennent uniquement d’une \textbf{revue experte} (perspective unique) : 
+ils éclairent les choix et suggèrent des axes d’amélioration, 
+mais ne constituent pas une preuve statistiquement généralisable.

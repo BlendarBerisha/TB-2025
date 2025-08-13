@@ -5,6 +5,20 @@
 
 Lorsque les visuels natifs ne suffisent plus et qu’un script Python ou R se révèle trop limité, la solution la plus aboutie consiste à créer un visuel complet à l’aide du Software Development Kit (SDK) de Power BI. Microsoft distribue ce SDK sous la forme du package npm powerbi-visuals-tools, dont la version stable 6.1.2 publiée le 26 mai 2025 sert de référence pour ce travail \parencite{MicrosoftSDKNpm2025}.  
 
+\begin{quote}\small
+\textbf{Note méthodologique — Convention de versionnage.}
+Dans le cadre de ce rapport, les numéros de version se rapportent à des artefacts distincts et non interchangeables. Pour éviter toute ambiguïté, chaque mention associe systématiquement le \emph{composant} et sa \emph{version}.
+
+\textit{API des visuels (}\texttt{powerbi-visuals-api}\textit{).} Il s'agit des définitions TypeScript de l'API publiques des visuels. La version indiquée renvoie à la valeur \texttt{apiVersion} référencée par \texttt{pbiviz.json}. % ex. 5.11.0
+
+\textit{Outils CLI (}\texttt{powerbi-visuals-tools} / \texttt{pbiviz}\textit{).} Il s'agit de l'outillage de développement, de test et de packaging (\texttt{pbiviz new/start/package}, options d'audit de certification, etc.). % ex. 6.1.x
+
+\textit{Produit Power BI (Desktop / Service).} Il s'agit du client et de la plateforme d'exécution. Leur numérotation (p.~ex. Desktop 2.140.x) est indépendante de l'API et de la CLI.
+
+\label{rule:versioning}
+\end{quote}
+
+
 \subsection{Principe général.} Un visuel Power BI est, en substance, une mini-application web encapsulée. Le développeur décrit, dans un fichier capabilities.json, les champs de données et les options de format qu’il souhaite exposer, puis implémente en TypeScript une classe qui respecte l’interface IVisual. Power BI invoque la méthode update(options) à chaque changement de filtre ou de données ; le code traduit alors les informations reçues en éléments DOM (SVG ou Canvas) à l’aide, par exemple, de D3.js.  
 
 \subsection{Pipeline de développement}\label{sec:pipeline-ref}
